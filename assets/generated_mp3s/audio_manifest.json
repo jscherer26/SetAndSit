@@ -1,0 +1,702 @@
+[
+  {
+    "title": "Intro Framing #1",
+    "fileName": "INTRO_FRAMING_01.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 8,
+    "text": "Welcome. Take a moment to transition from whatever was filling your day into this quiet space you've set aside.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #2",
+    "fileName": "INTRO_FRAMING_02.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 10,
+    "text": "As you begin, remember there is nowhere else you need to be right now and nothing else you need to accomplish.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #3",
+    "fileName": "INTRO_FRAMING_03.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 9,
+    "text": "Allowing yourself to step off the wheel of doing, and stepping gently into the space of simply being.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #4",
+    "fileName": "INTRO_FRAMING_04.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 9,
+    "text": "Setting a gentle intention to remain present, open, and curious for the duration of this practice.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #5",
+    "fileName": "INTRO_FRAMING_05.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 7,
+    "text": "Giving yourself full permission to drop the demands of your schedule and rest into stillness.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #6",
+    "fileName": "INTRO_FRAMING_06.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 8,
+    "text": "Arriving right here, right now, as you let go of what came before and whatever comes next.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #7",
+    "fileName": "INTRO_FRAMING_07.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 7,
+    "text": "Taking a moment to acknowledge yourself for carving out this time for balance and presence.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #8",
+    "fileName": "INTRO_FRAMING_08.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 8,
+    "text": "Let your awareness settle gently into this room, this body, and this moment.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #9",
+    "fileName": "INTRO_FRAMING_09.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 7,
+    "text": "Stepping out of the stream of daily activity and inviting a sense of peaceful focus.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Intro Framing #10",
+    "fileName": "INTRO_FRAMING_10.mp3",
+    "category": "INTRO_FRAMING",
+    "durationSeconds": 8,
+    "text": "As we begin, let go of any expectations for how this meditation should feel.",
+    "priorityScore": 3,
+    "minDelayBefore": 2,
+    "maxDelayBefore": 4
+  },
+  {
+    "title": "Posture Setup #1",
+    "fileName": "POSTURE_SETUP_01.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 11,
+    "text": "Finding a comfortable posture, whether sitting or lying down, allowing your spine to be naturally upright yet relaxed.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #2",
+    "fileName": "POSTURE_SETUP_02.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 10,
+    "text": "Let your shoulders drop away from your ears, releasing any holding in your jaw, neck, and chest.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #3",
+    "fileName": "POSTURE_SETUP_03.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 10,
+    "text": "Resting your hands comfortably on your lap or by your side, allowing your body to feel grounded and fully supported.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #4",
+    "fileName": "POSTURE_SETUP_04.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 9,
+    "text": "If you are seated, feel your feet flat on the ground, establishing a stable and steady foundation.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #5",
+    "fileName": "POSTURE_SETUP_05.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 7,
+    "text": "Gently softening the muscle around your eyes, unclenching the jaw, and letting your belly relax.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #6",
+    "fileName": "POSTURE_SETUP_06.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 8,
+    "text": "Lengthening lightly through the crown of your head while letting your lower body rest heavily into your seat.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #7",
+    "fileName": "POSTURE_SETUP_07.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 9,
+    "text": "Allowing your posture to embody a quality of quiet dignity\u2014alert, yet completely at ease.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #8",
+    "fileName": "POSTURE_SETUP_08.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 7,
+    "text": "Checking in with your body, making any minor adjustments so you can sit with minimal strain.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #9",
+    "fileName": "POSTURE_SETUP_09.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 6,
+    "text": "Softening the face, loosening the neck, and letting the arms hang freely.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Posture Setup #10",
+    "fileName": "POSTURE_SETUP_10.mp3",
+    "category": "POSTURE_SETUP",
+    "durationSeconds": 7,
+    "text": "Feeling the physical points of contact between your body and the surface beneath you.",
+    "priorityScore": 4,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #1",
+    "fileName": "PRIMARY_FOCUS_01.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 9,
+    "text": "Bringing your attention now to the physical sensation of breathing, noticing the rise and fall of the chest or abdomen.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #2",
+    "fileName": "PRIMARY_FOCUS_02.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 7,
+    "text": "Following the full trajectory of one in-breath, and the complete flow of one out-breath.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #3",
+    "fileName": "PRIMARY_FOCUS_03.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 9,
+    "text": "Noticing where you feel the breath most distinctly\u2014perhaps at the nostrils, the back of the throat, or the belly.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #4",
+    "fileName": "PRIMARY_FOCUS_04.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 8,
+    "text": "There is no need to alter or control your breathing. Simply let the body breathe itself.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #5",
+    "fileName": "PRIMARY_FOCUS_05.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 6,
+    "text": "Riding the natural wave of the breath, resting your awareness in each movement.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #6",
+    "fileName": "PRIMARY_FOCUS_06.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 6,
+    "text": "Anchor your mind to the quiet sensation of air passing in and out of the body.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #7",
+    "fileName": "PRIMARY_FOCUS_07.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 9,
+    "text": "Noticing the subtle pause at the top of the inhalation, and the brief stillness at the end of the exhalation.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #8",
+    "fileName": "PRIMARY_FOCUS_08.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 8,
+    "text": "Allowing the breath to be your home base\u2014a simple, steady anchor in the present moment.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #9",
+    "fileName": "PRIMARY_FOCUS_09.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 7,
+    "text": "Feeling the subtle expansion as you inhale, and the gentle release as you exhale.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Primary Focus #10",
+    "fileName": "PRIMARY_FOCUS_10.mp3",
+    "category": "PRIMARY_FOCUS",
+    "durationSeconds": 7,
+    "text": "Whenever you need a grounding point, return your attention to the rhythm of the breath.",
+    "priorityScore": 5,
+    "minDelayBefore": 3,
+    "maxDelayBefore": 5
+  },
+  {
+    "title": "Attitudinal #1",
+    "fileName": "ATTITUDINAL_01.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 8,
+    "text": "Practicing an attitude of non-striving. You aren't trying to fix anything or achieve a special state.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #2",
+    "fileName": "ATTITUDINAL_02.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 7,
+    "text": "Meeting whatever arises with patience, allowing things to be exactly as they already are.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #3",
+    "fileName": "ATTITUDINAL_03.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 8,
+    "text": "Bringing a sense of soft curiosity to your experience, free from judgment or criticism.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #4",
+    "fileName": "ATTITUDINAL_04.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 7,
+    "text": "If you notice tension or discomfort, see if you can soften around it rather than resisting it.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #5",
+    "fileName": "ATTITUDINAL_05.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 6,
+    "text": "Approaching yourself with kindness and openness, welcoming whatever is here.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #6",
+    "fileName": "ATTITUDINAL_06.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 12,
+    "text": "Observing your experience like weather passing through the open sky\u2014constant, shifting, and temporary.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #7",
+    "fileName": "ATTITUDINAL_07.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 7,
+    "text": "Resting in beginner's mind, witnessing this breath as if it were the very first time.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #8",
+    "fileName": "ATTITUDINAL_08.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 7,
+    "text": "Releasing the need to control. Simply letting experience unfold moment by moment.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #9",
+    "fileName": "ATTITUDINAL_09.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 6,
+    "text": "Allowing yourself to be an compassionate observer of your own mind and body.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Attitudinal #10",
+    "fileName": "ATTITUDINAL_10.mp3",
+    "category": "ATTITUDINAL",
+    "durationSeconds": 7,
+    "text": "There is no right or wrong way to feel right now. Simply stay open to what is.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #1",
+    "fileName": "MIND_WANDERING_01.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 7,
+    "text": "If you notice your mind has drifted into thoughts or plans, simply notice where it went without judgment.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #2",
+    "fileName": "MIND_WANDERING_02.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 8,
+    "text": "Mind wandering is completely natural. The moment you notice it, you are already back.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #3",
+    "fileName": "MIND_WANDERING_03.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 8,
+    "text": "Gently acknowledge whatever pulled your attention away, and guide your focus smoothly back to the breath.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #4",
+    "fileName": "MIND_WANDERING_04.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 8,
+    "text": "Thoughts will arise like bubbles in water. Notice them, let them pop, and return to the anchor.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #5",
+    "fileName": "MIND_WANDERING_05.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 9,
+    "text": "No need to be frustrated when the mind strays. Each awakening is an opportunity to practice gentle return.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #6",
+    "fileName": "MIND_WANDERING_06.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 10,
+    "text": "Whenever the story of the mind takes over, unhook kindly and return to the sensation of this breath.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #7",
+    "fileName": "MIND_WANDERING_07.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 7,
+    "text": "Quietly label the distraction as 'thinking' or 'planning', and let it drift away.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #8",
+    "fileName": "MIND_WANDERING_08.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 9,
+    "text": "Softly release the thought, let your shoulders drop, and re-center on the physical anchor.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #9",
+    "fileName": "MIND_WANDERING_09.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 8,
+    "text": "Bringing the mind back with the same firmness and patience you would offer a young child.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Mind Wandering #10",
+    "fileName": "MIND_WANDERING_10.mp3",
+    "category": "MIND_WANDERING",
+    "durationSeconds": 7,
+    "text": "Noticing where the mind was... and softly bringing awareness back to right here.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #1",
+    "fileName": "SUSTAINED_SILENCE_01.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 4,
+    "text": "Resting now in quiet awareness for the next few moments.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #2",
+    "fileName": "SUSTAINED_SILENCE_02.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 3,
+    "text": "Allowing yourself to settle into the stillness.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #3",
+    "fileName": "SUSTAINED_SILENCE_03.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 4,
+    "text": "Sinking deeper into open, quiet presence.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #4",
+    "fileName": "SUSTAINED_SILENCE_04.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 4,
+    "text": "Maintaining your anchor as we sit together in quiet.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #5",
+    "fileName": "SUSTAINED_SILENCE_05.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 4,
+    "text": "Letting the voice fade away, remaining with the breath.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #6",
+    "fileName": "SUSTAINED_SILENCE_06.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 4,
+    "text": "Exploring the quiet space between thoughts.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #7",
+    "fileName": "SUSTAINED_SILENCE_07.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 3,
+    "text": "Resting gently in the silence.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #8",
+    "fileName": "SUSTAINED_SILENCE_08.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 3,
+    "text": "Allowing the stillness to settle around you.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #9",
+    "fileName": "SUSTAINED_SILENCE_09.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 3,
+    "text": "Simply breathing, in open stillness.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Sustained Silence #10",
+    "fileName": "SUSTAINED_SILENCE_10.mp3",
+    "category": "SUSTAINED_SILENCE",
+    "durationSeconds": 4,
+    "text": "Holding a gentle awareness through this space of quiet.",
+    "priorityScore": 7,
+    "minDelayBefore": 45,
+    "maxDelayBefore": 300
+  },
+  {
+    "title": "Somatic Reentry #1",
+    "fileName": "SOMATIC_REENTRY_01.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 10,
+    "text": "Gently expanding your awareness back into the whole physical body, feeling the breath moving through you.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #2",
+    "fileName": "SOMATIC_REENTRY_02.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 7,
+    "text": "Noticing the contact of your body with your seat, feeling anchored and present.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #3",
+    "fileName": "SOMATIC_REENTRY_03.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 8,
+    "text": "Inviting small movements into your fingers and toes as you slowly wake up the body.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #4",
+    "fileName": "SOMATIC_REENTRY_04.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 8,
+    "text": "Taking a deeper in-breath, filling the chest, and letting out a long, relaxing sigh.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #5",
+    "fileName": "SOMATIC_REENTRY_05.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 6,
+    "text": "Bringing awareness to the sounds in the room around you, reorienting to your space.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #6",
+    "fileName": "SOMATIC_REENTRY_06.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 8,
+    "text": "Carrying this sense of quiet calm with you as you prepare to transition back to your day.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #7",
+    "fileName": "SOMATIC_REENTRY_07.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 7,
+    "text": "Feeling the grounding support of the earth beneath you as your awareness expands.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #8",
+    "fileName": "SOMATIC_REENTRY_08.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 6,
+    "text": "Allowing a moment of gratitude for taking this time for your health and well-being.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #9",
+    "fileName": "SOMATIC_REENTRY_09.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 8,
+    "text": "Slowly deepening your breath, feeling refreshed, grounded, and clear.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  },
+  {
+    "title": "Somatic Reentry #10",
+    "fileName": "SOMATIC_REENTRY_10.mp3",
+    "category": "SOMATIC_REENTRY",
+    "durationSeconds": 9,
+    "text": "When you feel ready, gently open your eyes or un-focus your gaze, taking in the room around you.",
+    "priorityScore": 6,
+    "minDelayBefore": 30,
+    "maxDelayBefore": 600
+  }
+]

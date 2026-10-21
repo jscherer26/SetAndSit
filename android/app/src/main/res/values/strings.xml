@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher & Display Name (escaped for XML) -->
+    <string name="app_name">Set&amp;Sit</string>
+    <string name="app_subtitle">Adaptive Guided Meditation</string>
+</resources>
