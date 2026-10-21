@@ -32,6 +32,7 @@ class _PracticeScreenState extends State<PracticeScreen>
 
   final AudioPlayer _audioPlayer = AudioPlayer();
   StreamSubscription? _playerCompleteSubscription;
+  StreamSubscription? _playerLogSubscription;
   Timer? _countdownTimer;
   Timer? _silenceTimer;
   Timer? _fallbackTimer;
@@ -61,18 +62,46 @@ class _PracticeScreenState extends State<PracticeScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
+    _initAudioPlayer();
+    _startCountdownTimer();
+    _playCurrentQueueItem();
+  }
+
+  void _initAudioPlayer() {
     _playerCompleteSubscription = _audioPlayer.onPlayerComplete.listen((_) {
       if (mounted) _advanceQueue();
     });
 
-    _startCountdownTimer();
-    _playCurrentQueueItem();
+    _playerLogSubscription = _audioPlayer.onLog.listen((msg) {
+      debugPrint('[AudioPlayer] $msg');
+    });
+
+    _audioPlayer.setAudioContext(
+      AudioContext(
+        android: const AudioContextAndroid(
+          isSpeakerphoneOn: false,
+          stayAwake: true,
+          contentType: AndroidContentType.speech,
+          usageType: AndroidUsageType.media,
+          audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+        ),
+        iOS: AudioContextIOS(
+          category: AVAudioSessionCategory.playback,
+          options: const {
+            AVAudioSessionOptions.mixWithOthers,
+          },
+        ),
+      ),
+    ).catchError((e) {
+      debugPrint('[AudioPlayer] Error setting AudioContext: $e');
+    });
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
     _playerCompleteSubscription?.cancel();
+    _playerLogSubscription?.cancel();
     _countdownTimer?.cancel();
     _silenceTimer?.cancel();
     _fallbackTimer?.cancel();
@@ -110,6 +139,13 @@ class _PracticeScreenState extends State<PracticeScreen>
     if (item is PauseSilenceItem) {
       _silenceSecondsRemaining = item.durationSeconds;
       _silenceTimer?.cancel();
+      _fallbackTimer?.cancel();
+
+      if (_silenceSecondsRemaining <= 0) {
+        _advanceQueue();
+        return;
+      }
+
       _silenceTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (_silenceSecondsRemaining > 1) {
           setState(() {
@@ -124,6 +160,17 @@ class _PracticeScreenState extends State<PracticeScreen>
     } else if (item is PlayAudioItem) {
       _silenceTimer?.cancel();
       _fallbackTimer?.cancel();
+
+      // Arm a safety watchdog timer so queue CANNOT freeze if onPlayerComplete is dropped
+      final clipMs = (item.durationSeconds * 1000).round();
+      final timeoutMs = max(2000, clipMs + 1500);
+      _fallbackTimer = Timer(Duration(milliseconds: timeoutMs), () {
+        if (mounted && !_isFinished) {
+          debugPrint('[PracticeScreen] Watchdog timeout triggered for ${item.id}');
+          _advanceQueue();
+        }
+      });
+
       try {
         final rawPath = item.audioAssetPath.replaceFirst('assets/', '');
         final isBell = item.isBell;
@@ -133,13 +180,7 @@ class _PracticeScreenState extends State<PracticeScreen>
         await _audioPlayer.setVolume(volume);
         await _audioPlayer.play(AssetSource(rawPath));
       } catch (e) {
-        // If file playback fails, advance after clip duration
-        final durSeconds = max(1, item.durationSeconds.round());
-        _fallbackTimer = Timer(Duration(seconds: durSeconds), () {
-          if (mounted && !_isFinished) {
-            _advanceQueue();
-          }
-        });
+        debugPrint('[PracticeScreen] Error playing ${item.audioAssetPath}: $e');
       }
       setState(() {});
     }
@@ -286,8 +327,8 @@ class _PracticeScreenState extends State<PracticeScreen>
                       );
                     },
                     child: Container(
-                      width: 250,
-                      height: 250,
+                      width: 220,
+                      height: 220,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColors.circleOuterGlow,
@@ -298,8 +339,8 @@ class _PracticeScreenState extends State<PracticeScreen>
                       ),
                       child: Center(
                         child: Container(
-                          width: 190,
-                          height: 190,
+                          width: 168,
+                          height: 168,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: AppColors.white,
@@ -313,7 +354,7 @@ class _PracticeScreenState extends State<PracticeScreen>
                                     : _formatTime(_totalSecondsRemaining),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: _isFinished ? 24 : 40,
+                                  fontSize: _isFinished ? 22 : 36,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textBlack,
                                 ),
@@ -325,7 +366,7 @@ class _PracticeScreenState extends State<PracticeScreen>
                                     : 'remaining',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 13,
                                   color: AppColors.textMuted,
                                 ),
                               ),
@@ -336,7 +377,25 @@ class _PracticeScreenState extends State<PracticeScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 16),
+
+                  // Progress Line anchored directly below the circle (width matches the circle)
+                  SizedBox(
+                    width: 220,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(3),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 5,
+                        backgroundColor: AppColors.pillUnselected,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.darkOlive,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
 
                   if (_isFinished) ...[
                     const Text(
@@ -415,27 +474,60 @@ class _PracticeScreenState extends State<PracticeScreen>
                     ),
                     const SizedBox(height: 8),
 
-                    Text(
-                      currentItem?.displayTitle ?? 'Preparing Practice Space',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textBlack,
+                    // Single-line concise title (e.g. "External Arrival (10)")
+                    SizedBox(
+                      height: 28,
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          currentItem?.displayTitle ?? 'Preparing Practice Space',
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textBlack,
+                          ),
+                        ),
                       ),
                     ),
 
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: 260,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 6,
-                          backgroundColor: AppColors.pillUnselected,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppColors.darkOlive,
+                    const SizedBox(height: 12),
+
+                    // Spoken Guidance Text with minHeight so it never causes layout shifts
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: 76,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: Text(
+                            (currentItem?.text != null && currentItem!.text.isNotEmpty)
+                                ? currentItem!.text
+                                : (currentItem is PauseSilenceItem
+                                    ? 'Resting in open stillness...'
+                                    : ''),
+                            key: ValueKey<String>(
+                              (currentItem?.text != null && currentItem!.text.isNotEmpty)
+                                  ? currentItem!.text
+                                  : (currentItem is PauseSilenceItem ? 'silence' : ''),
+                            ),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13.5,
+                              fontStyle: (currentItem?.text != null && currentItem!.text.isNotEmpty)
+                                  ? FontStyle.normal
+                                  : FontStyle.italic,
+                              color: (currentItem?.text != null && currentItem!.text.isNotEmpty)
+                                  ? AppColors.textBlack
+                                  : AppColors.textMuted,
+                              height: 1.35,
+                            ),
                           ),
                         ),
                       ),

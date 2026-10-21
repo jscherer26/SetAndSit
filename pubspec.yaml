@@ -65,8 +65,9 @@ flutter:
     - assets/generated_mp3s/
     - assets/icon/
     - assets/raw/session_manifest.json
-    - assets/audio/Grace/
-    - assets/audio/Kia/
+    - assets/raw/audio_durations.json
+    - assets/audio/grace/
+    - assets/audio/kia/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

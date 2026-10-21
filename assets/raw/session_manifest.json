@@ -3,6 +3,969 @@
   "schema_version": "3.5.0",
   "description": "Production session manifest with 16 segments, multi-variant script banks, and Flutter asset audio maps.",
   "script_bank": {
+    "S01": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Gentle Arrival",
+        "active": true,
+        "text": "Letting ourselves settle into this space... seeing if it's possible to allow whatever happened earlier today to simply fade into the background.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. Present Unhurried Space",
+        "active": false,
+        "text": "Just pausing here... allowing the momentum of the day to begin slowing down all on its own, with nowhere else to be right now.",
+        "word_count": 24
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Stepping into Quiet",
+        "active": false,
+        "text": "As we transition into this practice... just feeling the weight of the body landing here, letting the ground fully support you.",
+        "word_count": 21
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Welcoming Stillness",
+        "active": false,
+        "text": "Taking a gentle breath... and noticing the simple fact that you have paused, setting aside this time entirely for yourself.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Transitioning Inward",
+        "active": false,
+        "text": "Allowing the mind to lay down its heavy loads for a little while... knowing nothing requires your immediate attention right in this moment.",
+        "word_count": 23
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Easing the Mind",
+        "active": false,
+        "text": "If it feels supportive, perhaps letting the eyes close softly... or just resting your gaze on a neutral spot ahead of you.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Softening the Gaze",
+        "active": false,
+        "text": "Taking a moment to adjust the body... finding a posture that feels genuinely comfortable and at ease, without any rigid rules.",
+        "word_count": 21
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Finding Comfort",
+        "active": false,
+        "text": "Settling into your seat... giving yourself permission to transition out of doing mode, and into simply being.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Settling In",
+        "active": false,
+        "text": "Allowing yourself to inhabit this quiet space... seeing if we can let go of any expectations about how this session should unfold.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Space to Unwind",
+        "active": false,
+        "text": "Taking a slow, deliberate breath... acknowledging your decision to be present right here, right now.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Reclaiming Peace",
+        "active": false,
+        "text": "Thinking of this moment as returning home to yourself... no striving, no pressure, just resting here.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Arriving Home",
+        "active": false,
+        "text": "Letting go of any ambition to succeed at meditating... simply allowing your body to be exactly as it is.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Softening Ambition",
+        "active": false,
+        "text": "Marking this transition from activity to stillness with a long exhale... letting your physical presence settle into the room.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Mindful Pause",
+        "active": false,
+        "text": "Feeling the physical support beneath you as you land here... knowing it is safe to relax and take your time.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Quiet Presence",
+        "active": false,
+        "text": "Welcome to this moment of stillness... allowing your posture to feel grounded, supported, and completely at ease.",
+        "word_count": 17
+      }
+    ],
+    "S02": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Autonomy & Choice",
+        "active": true,
+        "text": "And as we arrive, knowing you can adjust your posture at any time... exploring whether it feels right to let the eyes gently close, or simply keeping a soft gaze.",
+        "word_count": 30
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. Shifting at Will",
+        "active": false,
+        "text": "Listening to what your body needs right now... feeling completely free to shift, stretch, or open your eyes whenever you need to.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. No Rigid Rules",
+        "active": false,
+        "text": "Remembering there is no right way to do this... taking whatever guidance feels supportive today, and simply letting go of the rest.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Honoring Your Body",
+        "active": false,
+        "text": "Just noticing that you have full sovereignty over your physical body... throughout every minute of this practice.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Letting Go of Suggestions",
+        "active": false,
+        "text": "Giving yourself permission to adapt these practices... fitting your unique physical needs and energy levels today.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Self-Sovereignty",
+        "active": false,
+        "text": "Taking all the time you need... finding a posture that feels genuinely sustainable and easy.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Sustainable Ease",
+        "active": false,
+        "text": "There are no expectations here... inviting you to participate as much or as little as feels right for you today.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Zero Obligation",
+        "active": false,
+        "text": "Knowing that at any time, you can open your eyes, stretch, or change your focus... holding absolute veto power over every suggestion.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Veto Power",
+        "active": false,
+        "text": "Listening closely to your own inner wisdom... letting it guide your physical posture and breathing rhythm.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Inner Wisdom",
+        "active": false,
+        "text": "Trusting your personal boundaries... knowing that pushing or forcing is never helpful or necessary here.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Adaptive Practice",
+        "active": false,
+        "text": "Giving yourself permission to pause, rest, or move... whenever your body asks for it.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Trusting Boundaries",
+        "active": false,
+        "text": "Following your own internal cadence... taking what serves you and simply leaving whatever does not.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Permission to Pause",
+        "active": false,
+        "text": "Resting assured that however you are experiencing this practice... it is completely valid and right for you.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Personal Pace",
+        "active": false,
+        "text": "Honoring whatever your nervous system needs in each moment... letting comfort and safety guide this session.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Complete Validity",
+        "active": false,
+        "text": "If at any point focusing inward feels intense, you are always welcome to open your eyes and re-orient to the room.",
+        "word_count": 21
+      }
+    ],
+    "S03": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Natural Breath Flow",
+        "active": true,
+        "text": "Softly noticing the body as it breathes itself... resting your attention on that natural rise and fall, without needing to change a single thing.",
+        "word_count": 24
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. Breath as Anchor",
+        "active": false,
+        "text": "Just feeling the air entering and leaving the body... noticing where that sensation is most obvious, and allowing the breath to be exactly as it is.",
+        "word_count": 26
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Effortless Breathing",
+        "active": false,
+        "text": "Seeing if we can step out of the way just a bit... observing the effortless rhythm of the inhale and the exhale.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Cool Air & Warm Air",
+        "active": false,
+        "text": "Noticing the cool air entering as you breathe in... and the slightly warmer air leaving as you breathe out.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Unforced Rhythm",
+        "active": false,
+        "text": "Feeling the gentle expansion of the ribs with each inhale... and the natural release as the breath empties.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Soft Ribcage Expansion",
+        "active": false,
+        "text": "If focusing on the breath feels supportive, resting your attention there... if not, feeling free to use your hands resting in your lap as an anchor.",
+        "word_count": 26
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Breath Choice",
+        "active": false,
+        "text": "Imagining each breath like a gentle wave on the shore... rising, falling, steady and reliable.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Wave of Breath",
+        "active": false,
+        "text": "Softly placing a hand on the stomach if you like... feeling the subtle rise with every breath.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Belly Breathing",
+        "active": false,
+        "text": "With each inhale, inviting a feeling of presence... and with each exhale, gently releasing any lingering tightness.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Inhaling Presence",
+        "active": false,
+        "text": "Noticing how effortless breathing can be... when we step out of the way and let the body regulate itself.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Respiratory Ease",
+        "active": false,
+        "text": "Paying light attention to the brief pause at the top of the inhale... and the quiet stillness at the end of the exhale.",
+        "word_count": 23
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. The Space Between",
+        "active": false,
+        "text": "Whenever the mind wanders, gently returning your attention... back to the felt sensation of your next breath.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Returning to Breath",
+        "active": false,
+        "text": "Feeling the gentle passage of air... as the lungs fill naturally and empty smoothly.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Gentle Airflow",
+        "active": false,
+        "text": "Allowing the simple rhythm of your breathing... to soothe and quiet your nervous system.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Soothing Cycle",
+        "active": false,
+        "text": "There is no need to force a deep breath... simply observing whatever natural rhythm your body chooses right now.",
+        "word_count": 19
+      }
+    ],
+    "S04": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Contact Points",
+        "active": true,
+        "text": "Beginning by noticing the points of contact between your body and the surface beneath you\u2014the weight of your seat, or the support of the floor.",
+        "word_count": 25
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. Dependable Surface",
+        "active": false,
+        "text": "Bringing your awareness to the physical support holding you right now. Noticing the steady, dependable surface beneath your feet and hands.",
+        "word_count": 21
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Feeling Your Weight",
+        "active": false,
+        "text": "Allowing your attention to rest on the physical body. Noticing the simple sensation of your weight, supported completely by the chair or the ground.",
+        "word_count": 24
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Gravity Holding",
+        "active": false,
+        "text": "Feeling gravity holding you securely, allowing you to let go of holding yourself up quite so tightly.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Solid Foundation",
+        "active": false,
+        "text": "Noticing where your body connects with the earth, feeling the solid, unmoving foundation beneath you.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Soles & Spine",
+        "active": false,
+        "text": "Directing your attention to the soles of your feet or the base of your spine, anchoring your awareness in physical touch.",
+        "word_count": 21
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Leaning Into Support",
+        "active": false,
+        "text": "Allowing yourself to lean into the support of your surroundings, sensing the steady structure holding your weight.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Texture & Air",
+        "active": false,
+        "text": "Noticing the texture of clothing against your skin, or the temperature of the air around your hands and face.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Gentle Curiosity",
+        "active": false,
+        "text": "Bringing a gentle curiosity to the physical sensations of contact, stability, and physical presence.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Sinking Deeper",
+        "active": false,
+        "text": "Letting gravity do its work, feeling your body settling a fraction of an inch deeper into its support.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Skin & Boundary",
+        "active": false,
+        "text": "Noticing the boundaries of your body, where your skin is meeting the air and where your physical form is meeting the room.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Balanced Architecture",
+        "active": false,
+        "text": "Tuning into the steady physical architecture of your posture, balanced with ease and gentle strength.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Undeniable Reality",
+        "active": false,
+        "text": "Anchoring your mind in the simple, undeniable physical reality of being supported right here and right now.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Heavy & Relaxed",
+        "active": false,
+        "text": "Sensing the physical weight of your arms and legs, letting them rest heavy and relaxed.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Grounded Center",
+        "active": false,
+        "text": "Resting your awareness in the stable center of your physical body, feeling grounded and secure.",
+        "word_count": 15
+      }
+    ],
+    "S05": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Ambient Soundscape",
+        "active": true,
+        "text": "Tuning into the ambient sounds around you. Noticing sounds in the distance, then closer, without clinging to any single sound.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. 3 Tactile Details",
+        "active": false,
+        "text": "Gently noticing three distinct things you can feel right now, like the texture of your clothes or air on your skin.",
+        "word_count": 21
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Auditory Anchor",
+        "active": false,
+        "text": "Allowing sound to wash over you like music. You don't need to name the sounds\u2014just receive them.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Tactile Awareness",
+        "active": false,
+        "text": "Focusing on the temperature of the air against your hands or face. Noticing the quiet boundary where your skin meets the room.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Orienting Outward",
+        "active": false,
+        "text": "If internal focusing feels intense, try orienting outward. Perhaps looking softly around the room and naming three pleasant visual details.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Listening to Silence",
+        "active": false,
+        "text": "Noticing the backdrop of quiet behind all the subtle sounds in your environment.",
+        "word_count": 13
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Room Awareness",
+        "active": false,
+        "text": "Feeling the space surrounding your body. Recognizing that you are safe in this physical room.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Sensory Receptors",
+        "active": false,
+        "text": "Bringing soft interest to whatever sensory inputs are present\u2014sounds, textures, subtle smells.",
+        "word_count": 12
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Grounding Touch",
+        "active": false,
+        "text": "Gently pressing your feet firmly into the floor for five seconds to anchor yourself to the solid earth.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Open Hearing",
+        "active": false,
+        "text": "Listening to the quiet hum of the building or environment around you without needing to analyze it.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Visual Softening",
+        "active": false,
+        "text": "Keeping your eyes open with a soft focus, taking in light and shapes around you without straining.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Fabric on Skin",
+        "active": false,
+        "text": "Noticing the sensation of your clothing touching your shoulders, back, or legs.",
+        "word_count": 12
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Constant Gravity",
+        "active": false,
+        "text": "Feeling the constant, dependable pull of gravity holding you safely anchored to the earth.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Spatial Presence",
+        "active": false,
+        "text": "Sensing the distance between you and the walls or objects in your room.",
+        "word_count": 13
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Outer World Anchor",
+        "active": false,
+        "text": "Using the physical environment around you as a steadying anchor whenever you feel distracted.",
+        "word_count": 14
+      }
+    ],
+    "S06": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. 4-6 Gentle Pacing",
+        "active": true,
+        "text": "If it feels supportive, we might explore a slightly longer exhale... breathing in fully, and letting the air release just a bit slower.",
+        "word_count": 23
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. Extended Exhale",
+        "active": false,
+        "text": "Inviting a smooth, steady rhythm... inhaling a sense of ease, and allowing the out-breath to carry away any residual tension.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Smooth Rhythm",
+        "active": false,
+        "text": "Just letting the breath deepen at its own pace... finding a rhythm that feels incredibly soothing to your nervous system right now.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Diaphragmatic Expansion",
+        "active": false,
+        "text": "Directing the breath deep into the diaphragm... allowing the lower abdomen to expand softly with each inhale.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Calming Breath Pacing",
+        "active": false,
+        "text": "With every long exhale... sending a gentle signal to your nervous system that it is safe to rest.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Box Breathing Light",
+        "active": false,
+        "text": "Gently inhaling for a few counts... pausing briefly... and exhaling softly, resting in that quiet stillness.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Soft Sigh Exhale",
+        "active": false,
+        "text": "Taking a full breath in through the nose... and letting it out with a soft sighing sound through the mouth.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Ocean Breathing",
+        "active": false,
+        "text": "Inhaling deeply, expanding the ribcage... exhaling slowly, like the sound of quiet ocean waves.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Counting Breath Cycles",
+        "active": false,
+        "text": "Counting 'one' softly on the next inhale... 'two' on the exhale... just up to four, then gently restarting.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Lower Rib Expansion",
+        "active": false,
+        "text": "Perhaps placing the palms on the lower ribs... feeling them widen as you breathe in, and sink back as you breathe out.",
+        "word_count": 22
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Conscious Slowdown",
+        "active": false,
+        "text": "Intentionally slowing down the speed of the next breath cycle... just a tiny bit.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Refreshing Inhale",
+        "active": false,
+        "text": "Inhaling fresh energy into the lungs... and exhaling quiet calm into the nervous system.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Smooth Transitions",
+        "active": false,
+        "text": "Focusing lightly on making the transition... seamlessly blending the in-breath into the out-breath.",
+        "word_count": 13
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Mindful Pacing",
+        "active": false,
+        "text": "Letting the inhalation be smooth and continuous... followed by a long, unhurried exhalation.",
+        "word_count": 13
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Restorative Breathing",
+        "active": false,
+        "text": "Allowing your exhale to be slightly longer than your inhale... noticing how this gently relaxes the physical body.",
+        "word_count": 18
+      }
+    ],
+    "S07": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Jaw & Eye Softening",
+        "active": true,
+        "text": "Softly relaxing the muscles around your eyes and unclenching your jaw. Letting a gentle sigh out on your next exhale.",
+        "word_count": 20
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. Physiological Sigh",
+        "active": false,
+        "text": "Taking two quick inhales through your nose... followed by one long, slow exhale through open lips.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Neck & Throat Release",
+        "active": false,
+        "text": "Gently rolling your shoulders back and tilting your ear toward your shoulder to release throat and vagal nerve tension.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Soft Inner Smile",
+        "active": false,
+        "text": "Bringing a subtle, inner smile to the corners of your eyes and mouth, inviting a feeling of safety.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Vagal Tone Sigh",
+        "active": false,
+        "text": "Breathing in deeply, and as you exhale, creating a low humming sound in your throat.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Ocular Relaxation",
+        "active": false,
+        "text": "Resting your eyes completely behind closed eyelids, allowing the delicate eye muscles to sink backward.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Softening the Belly",
+        "active": false,
+        "text": "Completely softening your stomach muscles. Letting go of holding your belly in.",
+        "word_count": 12
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Soothing Touch",
+        "active": false,
+        "text": "Placing one hand on your neck or cheek if that feels comforting, feeling the warmth of self-soothing.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Tongue & Throat Release",
+        "active": false,
+        "text": "Letting your tongue rest heavily on the floor of your mouth, softening the throat muscles.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Diaphragm Unlocking",
+        "active": false,
+        "text": "Feeling the solar plexus region below your sternum softening and unwinding with your exhale.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Downshifting Signal",
+        "active": false,
+        "text": "Sending a signal of total safety through your nervous system with this long, quiet exhale.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Softening Forehead",
+        "active": false,
+        "text": "Smoothing out any brow furrows or forehead tension with a gentle mental sweep.",
+        "word_count": 13
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Lateral Head Sway",
+        "active": false,
+        "text": "Gently swaying your head side to side to stimulate the vagus pathways running along your neck.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Deep System Unwind",
+        "active": false,
+        "text": "Allowing your heart rate to gently slow down as your body recognizes it is in a safe space.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Rest and Digest",
+        "active": false,
+        "text": "Welcoming your body into its natural rest-and-digest response.",
+        "word_count": 8
+      }
+    ],
+    "S08": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Gentle Breath Anchor",
+        "active": true,
+        "text": "Resting your attention lightly on your chosen anchor. When the mind wanders, gently bringing it back without judgment.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. The Moment of Mindfulness",
+        "active": false,
+        "text": "Wandering is natural. The moment you realize you were distracted IS the moment of mindfulness. Gently returning.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Single Point Focus",
+        "active": false,
+        "text": "Choosing one single physical point\u2014the breath at your nostrils, or your feet on the floor\u2014and resting your focus there.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. Training the Mind",
+        "active": false,
+        "text": "Treating your wandering mind like a beloved puppy you are training. Patiently guide it back every time.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Sustained Attention",
+        "active": false,
+        "text": "Maintaining a soft, steady focus on the gentle rise and fall of your abdomen.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Soft Precision",
+        "active": false,
+        "text": "Precision doesn't mean tension. Resting your mind on your anchor as gently as a butterfly on a flower.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Zero Frustration",
+        "active": false,
+        "text": "No matter how many times your mind wanders, bring it back 100 times with zero frustration.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Breath Count 1 to 10",
+        "active": false,
+        "text": "Count silently from 1 to 10 with each exhale. If you lose count, simply start over at 1.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Centered Awareness",
+        "active": false,
+        "text": "Re-centering your mind on the felt sensation of this current moment.",
+        "word_count": 11
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Core Window Presence",
+        "active": false,
+        "text": "Staying steadily present during this quiet period of central practice.",
+        "word_count": 10
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Deepening Focus",
+        "active": false,
+        "text": "Allowing your focus to settle deeper into quiet concentration.",
+        "word_count": 9
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Returning Home",
+        "active": false,
+        "text": "Returning home to your focal anchor with every breath in.",
+        "word_count": 10
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Mindful Steadiness",
+        "active": false,
+        "text": "Cultivating a calm, immovable center within yourself.",
+        "word_count": 7
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Gentle Precision",
+        "active": false,
+        "text": "Holding your attention with steady, affectionate curiosity.",
+        "word_count": 7
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Resting in Anchor",
+        "active": false,
+        "text": "Resting fully in this single point of focus.",
+        "word_count": 8
+      }
+    ],
+    "S09": [
+      {
+        "variant_id": "v01",
+        "variant_name": "1. Cloud Watching",
+        "active": true,
+        "text": "Expanding your awareness to whatever arises in this moment\u2014thoughts, feelings, or sensations\u2014watching them pass like clouds.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v02",
+        "variant_name": "2. Riverbank Analogy",
+        "active": false,
+        "text": "Imagining sitting by a riverbank. Watching your thoughts float past on leaves without jumping into the water.",
+        "word_count": 17
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "3. Open Sky Mind",
+        "active": false,
+        "text": "Allowing your mind to be like a vast blue sky. Thoughts are just weather passing through.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v04",
+        "variant_name": "4. The Neutral Witness",
+        "active": false,
+        "text": "Noticing whatever comes up with curiosity rather than judgment. Simply saying to yourself, 'ah, there is a thought'.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v05",
+        "variant_name": "5. Non-Striving Presence",
+        "active": false,
+        "text": "There is nothing you need to accomplish here. Just siting as the quiet witness of your inner experience.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v06",
+        "variant_name": "6. Observing Mind",
+        "active": false,
+        "text": "Noticing how thoughts arise on their own, staying for a moment, and dissolving when left alone.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v07",
+        "variant_name": "7. Spacious Awareness",
+        "active": false,
+        "text": "Creating space around your experiences. You are not your thoughts; you are the awareness observing them.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v08",
+        "variant_name": "8. Guest House Analogy",
+        "active": false,
+        "text": "Welcoming every feeling or thought as an unexpected guest. Letting them come and go freely.",
+        "word_count": 15
+      },
+      {
+        "variant_id": "v09",
+        "variant_name": "9. Sound & Thought Field",
+        "active": false,
+        "text": "Observing internal thoughts and external sounds together in one wide field of open awareness.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v10",
+        "variant_name": "10. Allowing What Is",
+        "active": false,
+        "text": "Surrendering the need to change anything right now. Allowing everything to be exactly as it is.",
+        "word_count": 16
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "11. Ocean & Waves",
+        "active": false,
+        "text": "You are the deep, quiet ocean floor. Thoughts are just surface ripples.",
+        "word_count": 12
+      },
+      {
+        "variant_id": "v12",
+        "variant_name": "12. Gentle Detachment",
+        "active": false,
+        "text": "Stepping back slightly from your thoughts, as if watching a movie screen.",
+        "word_count": 12
+      },
+      {
+        "variant_id": "v13",
+        "variant_name": "13. Rest in Awareness",
+        "active": false,
+        "text": "Resting in the quiet background of awareness that stays present beneath all mental activity.",
+        "word_count": 14
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "14. Unconditional Acceptance",
+        "active": false,
+        "text": "Meeting whatever arises right now with kindness and non-resistance.",
+        "word_count": 9
+      },
+      {
+        "variant_id": "v15",
+        "variant_name": "15. Spacious Mind",
+        "active": false,
+        "text": "Letting your mind be vast and open, holding space for all your experiences effortlessly.",
+        "word_count": 14
+      }
+    ],
     "S10": [
       {
         "variant_id": "v01",
@@ -543,106 +1506,106 @@
         "variant_id": "v01",
         "variant_name": "1. Visual Orientation",
         "active": true,
-        "text": "When you feel ready, softly opening your eyes, if they were closed. Taking in three colorful objects around your space.",
-        "word_count": 20
+        "text": "And as we prepare to close... gently letting the light back in, allowing the eyes to flutter open, and just reorienting to the physical space around you.",
+        "word_count": 27
       },
       {
         "variant_id": "v02",
         "variant_name": "2. Soft Gaze Return",
         "active": false,
-        "text": "Allowing your eyelids to flutter open gently, keeping a soft, relaxed focus without staring.",
-        "word_count": 14
+        "text": "Taking your time coming back... softly taking in the colors and shapes of the room, bringing this quiet presence with you.",
+        "word_count": 21
       },
       {
         "variant_id": "v03",
         "variant_name": "3. Environment Welcome",
         "active": false,
-        "text": "Welcoming the visual world back into your field of view with openness and curiosity.",
-        "word_count": 14
+        "text": "Slowly letting the outside world back in... feeling the contact of your body on the seat, and resting your gaze lightly on whatever is in front of you.",
+        "word_count": 28
       },
       {
         "variant_id": "v04",
         "variant_name": "4. Light Reception",
         "active": false,
-        "text": "Feeling light entering your eyes again as you slowly open them, taking in colors and shapes.",
-        "word_count": 16
+        "text": "Seeing your surroundings with fresh, clear, and calm eyes as we bring this session to a close.",
+        "word_count": 17
       },
       {
         "variant_id": "v05",
         "variant_name": "5. Space Integration",
         "active": false,
-        "text": "Looking around your space and noticing two textures or patterns near you.",
-        "word_count": 12
+        "text": "Blinking a few times softly... allowing your vision to adjust to the light, and taking in the entire room with a wide, relaxed perspective.",
+        "word_count": 24
       },
       {
         "variant_id": "v06",
         "variant_name": "6. Soft Eye Opening",
         "active": false,
-        "text": "Gently opening your eyes, if they were closed, carrying the inner stillness of practice into your outer vision.",
+        "text": "Gently opening the eyes, if they were closed... carrying the inner stillness of practice into your outer vision.",
         "word_count": 18
       },
       {
         "variant_id": "v07",
         "variant_name": "7. Re-engaging Light",
         "active": false,
-        "text": "Letting your eyes flutter open slowly, adapting peacefully to the light in the room.",
-        "word_count": 14
+        "text": "Letting the eyes flutter open slowly... adapting peacefully to the ambient light in the room.",
+        "word_count": 15
       },
       {
         "variant_id": "v08",
         "variant_name": "8. Outer World Return",
         "active": false,
-        "text": "Returning your gaze to the room while keeping your body feeling grounded.",
-        "word_count": 12
+        "text": "Returning your gaze to the space around you... while keeping the body feeling grounded and secure.",
+        "word_count": 16
       },
       {
         "variant_id": "v09",
         "variant_name": "9. Grounding Visuals",
         "active": false,
-        "text": "Locating one grounding object in the room and resting your gaze on it for a moment.",
-        "word_count": 16
+        "text": "Locating one grounding object in the room... and just resting your gaze on it for a moment.",
+        "word_count": 17
       },
       {
         "variant_id": "v10",
         "variant_name": "10. Fresh Vision",
         "active": false,
-        "text": "Seeing your surroundings with fresh, clear, and calm eyes.",
-        "word_count": 9
+        "text": "Seeing the physical objects around you with fresh, clear, and calm eyes.",
+        "word_count": 12
       },
       {
         "variant_id": "v11",
         "variant_name": "11. Eyelid Flutter",
         "active": false,
-        "text": "Blinking a few times softly as your vision adjusts to the ambient light.",
-        "word_count": 13
+        "text": "Blinking a few times softly... taking in the light and shapes around you without straining.",
+        "word_count": 15
       },
       {
         "variant_id": "v12",
         "variant_name": "12. Room Horizon",
         "active": false,
-        "text": "Taking in the entire room with a wide, relaxed visual perspective.",
+        "text": "Taking in the entire room... with a wide, relaxed visual perspective.",
         "word_count": 11
       },
       {
         "variant_id": "v13",
         "variant_name": "13. Mindful Vision",
         "active": false,
-        "text": "Bringing the same gentle mindfulness to what you see as you did to what you felt.",
-        "word_count": 16
+        "text": "Bringing the same gentle mindfulness to what you see... as you just did to what you felt.",
+        "word_count": 17
       },
       {
         "variant_id": "v14",
         "variant_name": "14. Gentle Eye Unfurl",
         "active": false,
-        "text": "Opening your eyes completely when you feel fully ready.",
+        "text": "Opening the eyes completely... whenever you feel fully ready.",
         "word_count": 9
       },
       {
         "variant_id": "v15",
         "variant_name": "15. Outer Awareness",
         "active": false,
-        "text": "Re-establishing full visual presence in your physical location.",
-        "word_count": 8
+        "text": "Re-establishing full visual presence... right here in your physical location.",
+        "word_count": 10
       }
     ],
     "S16": [
@@ -751,2959 +1714,6 @@
         "text": "And now carrying this peace forward into your day.",
         "word_count": 9
       }
-    ],
-    "S01": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Gentle Arrival",
-        "active": true,
-        "text": "Taking a moment to arrive right where you are. Allowing whatever happened before this moment to fade into the background, giving yourself permission to just be here.",
-        "word_count": 27
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Present Unhurried Space",
-        "active": false,
-        "text": "Pausing whatever you were doing, and letting your attention settle into this present space. There is nothing else you need to fix or figure out right now.",
-        "word_count": 27
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Stepping into Quiet",
-        "active": false,
-        "text": "As you are stepping into this practice, letting the busyness of your day gently drop away. Allowing yourself to settle into a quiet, unhurried space.",
-        "word_count": 25
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Welcoming Stillness",
-        "active": false,
-        "text": "Welcome to this moment of stillness. Wherever you find yourself right now, allowing your posture to feel supported, grounded, and easeful.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Transitioning Inward",
-        "active": false,
-        "text": "Giving yourself permission to transition out of doing mode and into simply being mode. You might choose to sit tall or lie back comfortably.",
-        "word_count": 24
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Easing the Mind",
-        "active": false,
-        "text": "Allowing your mind to lay down its heavy loads for a little while. Nothing requires your immediate attention right in this moment.",
-        "word_count": 22
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Softening the Gaze",
-        "active": false,
-        "text": "If it feels supportive, you might let your eyes close softly, or rest your gaze on a neutral point on the floor ahead of you.",
-        "word_count": 25
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Finding Comfort",
-        "active": false,
-        "text": "Taking a moment to adjust your body so you feel physically comfortable and at ease. There are no rigid postures required here.",
-        "word_count": 22
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Settling In",
-        "active": false,
-        "text": "Settling into your seat or resting surface. Noticing the simple fact that you have paused, setting aside this time entirely for yourself.",
-        "word_count": 22
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Space to Unwind",
-        "active": false,
-        "text": "Allowing yourself to inhabit this quiet sanctuary. Letting go of any expectations about how this session should or shouldn't go.",
-        "word_count": 20
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Reclaiming Peace",
-        "active": false,
-        "text": "Taking a gentle breath and acknowledging your decision to be present. You have arrived, and you are ready.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Arriving Home",
-        "active": false,
-        "text": "Thinking of this moment as returning home to yourself. No striving, no pressure\u2014just resting in this moment.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Softening Ambition",
-        "active": false,
-        "text": "Letting go of any ambition to succeed at meditating. Simply allowing your body to be right where it is.",
-        "word_count": 19
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Mindful Pause",
-        "active": false,
-        "text": "Marking this transition from activity to stillness with a slow, deliberate breath. Letting your physical presence settle.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Quiet Presence",
-        "active": false,
-        "text": "Feeling the support beneath you as you land here. You are safe relaxing and taking your time.",
-        "word_count": 17
-      }
-    ],
-    "S02": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Autonomy & Choice",
-        "active": true,
-        "text": "Remembering that you are in complete control of your experience. You can choose to close your eyes, keep them open softly, and to adjust your posture at any point.",
-        "word_count": 29
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Shifting at Will",
-        "active": false,
-        "text": "Feeling free to shift or adjust your position whenever you like. If at any point focusing inward feels uncomfortable, you are always welcome to open your eyes and make any necessary adjustment.",
-        "word_count": 32
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. No Rigid Rules",
-        "active": false,
-        "text": "There is no right way to do this. You might choose to sit tall, lie down, or follow what feels easeful and supportive for your body today.",
-        "word_count": 27
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Honoring Your Body",
-        "active": false,
-        "text": "Your comfort and safety is guiding this practice. Honor whatever your body needs in each moment.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Letting Go of Suggestions",
-        "active": false,
-        "text": "If any suggestion doesn't resonate with you, feeling free to let it go and do whatever serves your nervous system best.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Self-Sovereignty",
-        "active": false,
-        "text": "Noticing that you have full sovereignty over your body and your breathing throughout every minute of this meditation.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Sustainable Ease",
-        "active": false,
-        "text": "Taking all the time you need to find a posture that feels genuinely sustainable, comfortable, and easy.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Zero Obligation",
-        "active": false,
-        "text": "There are no expectations here. You are invited to participate as much or as little as feels right for you today.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Veto Power",
-        "active": false,
-        "text": "At any time, you can open your eyes, stretch, or change your focus. You hold absolute veto power over every prompt.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Inner Wisdom",
-        "active": false,
-        "text": "Listening closely to your own inner wisdom, letting it guide your physical posture and breathing rhythm.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Adaptive Practice",
-        "active": false,
-        "text": "Allowing yourself to adapt these practices to fit your unique physical needs and energy levels today.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Trusting Boundaries",
-        "active": false,
-        "text": "Trusting your personal boundaries. Pushing or forcing is never helpful or necessary here.",
-        "word_count": 13
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Permission to Pause",
-        "active": false,
-        "text": "Giving yourself permission to pause, rest, or move whenever your body asks for it.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Personal Pace",
-        "active": false,
-        "text": "Following your own internal cadence. Taking what serves you and leaving whatever does not.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Complete Validity",
-        "active": false,
-        "text": "Resting assured that however you are experiencing this practice is completely valid and right for you.",
-        "word_count": 16
-      }
-    ],
-    "S03": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Natural Breath Flow",
-        "active": true,
-        "text": "Bringing gentle attention to the sensation of breathing. Feeling the rise and fall of your abdomen without trying to alter your rhythm.",
-        "word_count": 22
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Breath as Anchor",
-        "active": false,
-        "text": "Allowing your breathing to act as a steady anchor at this moment. Noticing where you feel it most clearly\u2014in the nostrils, chest, or belly.",
-        "word_count": 24
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Effortless Breathing",
-        "active": false,
-        "text": "Observing the simple, continuous rhythm of inhaling and exhaling. Your body knows exactly how to breathe without any effort from you.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Cool Air & Warm Air",
-        "active": false,
-        "text": "Noticing the cool air entering as you inhale, and the slightly warmer air leaving as you exhale.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Unforced Rhythm",
-        "active": false,
-        "text": "There is no need to force a deep breath. Simply observing whatever natural rhythm your body chooses right now.",
-        "word_count": 19
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Soft Ribcage Expansion",
-        "active": false,
-        "text": "Feeling the gentle expansion of your ribs with each inhale, and the natural release as the breath empties.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Breath Choice",
-        "active": false,
-        "text": "If focusing on the breath feels supportive, resting your attention there. If not, feeling free to use your hands resting on your lap as your anchor.",
-        "word_count": 26
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Wave of Breath",
-        "active": false,
-        "text": "Imagining each breath like a gentle wave on the shore\u2014rising, falling, steady and reliable.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Belly Breathing",
-        "active": false,
-        "text": "Softly placing a hand on your stomach if you like, feeling the subtle rise with every breath.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Inhaling Presence",
-        "active": false,
-        "text": "With each inhale, inviting a feeling of presence. With each exhale, releasing any lingering tightness.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Respiratory Ease",
-        "active": false,
-        "text": "Noticing how effortless breathing can be when we step out of the way and let the body regulate itself.",
-        "word_count": 19
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. The Space Between",
-        "active": false,
-        "text": "Paying light attention to the brief pause at the top of the inhale, and the quiet stillness at the end of the exhale.",
-        "word_count": 23
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Returning to Breath",
-        "active": false,
-        "text": "Whenever your mind wanders, gently returning your attention to the felt sensation of your next breath.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Gentle Airflow",
-        "active": false,
-        "text": "Feeling the gentle passage of air as your lungs fill naturally and empty smoothly.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Soothing Cycle",
-        "active": false,
-        "text": "Allowing the simple rhythm of your breathing to soothe and quiet your nervous system.",
-        "word_count": 14
-      }
-    ],
-    "S04": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Contact Points",
-        "active": true,
-        "text": "Beginning by noticing the points of contact between your body and the surface beneath you\u2014the weight of your seat, or the support of the floor.",
-        "word_count": 25
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Dependable Surface",
-        "active": false,
-        "text": "Bringing your awareness to the physical support holding you right now. Noticing the steady, dependable surface beneath your feet and hands.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Feeling Your Weight",
-        "active": false,
-        "text": "Allowing your attention to rest on the physical body. Noticing the simple sensation of your weight, supported completely by the chair or the ground.",
-        "word_count": 24
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Gravity Holding",
-        "active": false,
-        "text": "Feeling gravity holding you securely, allowing you to let go of holding yourself up quite so tightly.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Solid Foundation",
-        "active": false,
-        "text": "Noticing where your body connects with the earth, feeling the solid, unmoving foundation beneath you.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Soles & Spine",
-        "active": false,
-        "text": "Directing your attention to the soles of your feet or the base of your spine, anchoring your awareness in physical touch.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Leaning Into Support",
-        "active": false,
-        "text": "Allowing yourself to lean into the support of your surroundings, sensing the steady structure holding your weight.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Texture & Air",
-        "active": false,
-        "text": "Noticing the texture of clothing against your skin, or the temperature of the air around your hands and face.",
-        "word_count": 19
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Gentle Curiosity",
-        "active": false,
-        "text": "Bringing a gentle curiosity to the physical sensations of contact, stability, and physical presence.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Sinking Deeper",
-        "active": false,
-        "text": "Letting gravity do its work, feeling your body settling a fraction of an inch deeper into its support.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Skin & Boundary",
-        "active": false,
-        "text": "Noticing the boundaries of your body, where your skin is meeting the air and where your physical form is meeting the room.",
-        "word_count": 22
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Balanced Architecture",
-        "active": false,
-        "text": "Tuning into the steady physical architecture of your posture, balanced with ease and gentle strength.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Undeniable Reality",
-        "active": false,
-        "text": "Anchoring your mind in the simple, undeniable physical reality of being supported right here and right now.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Heavy & Relaxed",
-        "active": false,
-        "text": "Sensing the physical weight of your arms and legs, letting them rest heavy and relaxed.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Grounded Center",
-        "active": false,
-        "text": "Resting your awareness in the stable center of your physical body, feeling grounded and secure.",
-        "word_count": 15
-      }
-    ],
-    "S05": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Ambient Soundscape",
-        "active": true,
-        "text": "Tuning into the ambient sounds around you. Noticing sounds in the distance, then closer, without clinging to any single sound.",
-        "word_count": 20
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. 3 Tactile Details",
-        "active": false,
-        "text": "Gently noticing three distinct things you can feel right now, like the texture of your clothes or air on your skin.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Auditory Anchor",
-        "active": false,
-        "text": "Allowing sound to wash over you like music. You don't need to name the sounds\u2014just receive them.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Tactile Awareness",
-        "active": false,
-        "text": "Focusing on the temperature of the air against your hands or face. Noticing the quiet boundary where your skin meets the room.",
-        "word_count": 22
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Orienting Outward",
-        "active": false,
-        "text": "If internal focusing feels intense, try orienting outward. Perhaps looking softly around the room and naming three pleasant visual details.",
-        "word_count": 20
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Listening to Silence",
-        "active": false,
-        "text": "Noticing the backdrop of quiet behind all the subtle sounds in your environment.",
-        "word_count": 13
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Room Awareness",
-        "active": false,
-        "text": "Feeling the space surrounding your body. Recognizing that you are safe in this physical room.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Sensory Receptors",
-        "active": false,
-        "text": "Bringing soft interest to whatever sensory inputs are present\u2014sounds, textures, subtle smells.",
-        "word_count": 12
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Grounding Touch",
-        "active": false,
-        "text": "Gently pressing your feet firmly into the floor for five seconds to anchor yourself to the solid earth.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Open Hearing",
-        "active": false,
-        "text": "Listening to the quiet hum of the building or environment around you without needing to analyze it.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Visual Softening",
-        "active": false,
-        "text": "Keeping your eyes open with a soft focus, taking in light and shapes around you without straining.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Fabric on Skin",
-        "active": false,
-        "text": "Noticing the sensation of your clothing touching your shoulders, back, or legs.",
-        "word_count": 12
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Constant Gravity",
-        "active": false,
-        "text": "Feeling the constant, dependable pull of gravity holding you safely anchored to the earth.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Spatial Presence",
-        "active": false,
-        "text": "Sensing the distance between you and the walls or objects in your room.",
-        "word_count": 13
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Outer World Anchor",
-        "active": false,
-        "text": "Using the physical environment around you as a steadying anchor whenever you feel distracted.",
-        "word_count": 14
-      }
-    ],
-    "S06": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. 4-6 Gentle Pacing",
-        "active": true,
-        "text": "Inhaling slowly through your nose for four counts... and exhaling gently through your mouth for six counts.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Extended Exhale",
-        "active": false,
-        "text": "Allowing your exhale to be slightly longer than your inhale. This extended breathing signal relaxes your body.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Smooth Rhythm",
-        "active": false,
-        "text": "Breathing in softly... filling the belly... and releasing smoothly, letting go of all the air.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Diaphragmatic Expansion",
-        "active": false,
-        "text": "Directing your breath deep into your diaphragm, allowing your lower abdomen to expand like a balloon.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Calming Breath Pacing",
-        "active": false,
-        "text": "Inhaling ease and calm... Exhaling tension and effort. Repeating at your own comfortable pace.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Box Breathing Light",
-        "active": false,
-        "text": "Gently inhaling for four... pausing briefly... exhaling for four... and pausing in quiet stillness.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Soft Sigh Exhale",
-        "active": false,
-        "text": "Taking a full breath in through your nose, and letting it out with a soft sighing sound through your mouth.",
-        "word_count": 20
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Ocean Breathing",
-        "active": false,
-        "text": "Inhaling deeply, expanding your ribcage... Exhaling slowly, like the sound of quiet ocean waves.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Counting Breath Cycles",
-        "active": false,
-        "text": "Counting 'one' on your next inhale... 'two' on the exhale... up to four, then gently restarting.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Lower Rib Expansion",
-        "active": false,
-        "text": "Placing your palms on your lower ribs. Feeling them widen as you breathe in, and sink back as you breathe out.",
-        "word_count": 21
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Conscious Slowdown",
-        "active": false,
-        "text": "Intentionally slowing down the speed of your next breath cycle just a tiny bit.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Refreshing Inhale",
-        "active": false,
-        "text": "Inhaling fresh energy into your lungs... Exhaling quiet calm into your nervous system.",
-        "word_count": 13
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Smooth Transitions",
-        "active": false,
-        "text": "Focusing on making the transition between breathing in and breathing out seamlessly and softly.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Mindful Pacing",
-        "active": false,
-        "text": "Letting your inhalation be smooth and continuous, followed by a long, unhurried exhalation.",
-        "word_count": 13
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Restorative Breathing",
-        "active": false,
-        "text": "With every long exhale, you are signaling your parasympathetic nervous system that it is safe to rest.",
-        "word_count": 17
-      }
-    ],
-    "S07": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Jaw & Eye Softening",
-        "active": true,
-        "text": "Softly relaxing the muscles around your eyes and unclenching your jaw. Letting a gentle sigh out on your next exhale.",
-        "word_count": 20
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Physiological Sigh",
-        "active": false,
-        "text": "Taking two quick inhales through your nose... followed by one long, slow exhale through open lips.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Neck & Throat Release",
-        "active": false,
-        "text": "Gently rolling your shoulders back and tilting your ear toward your shoulder to release throat and vagal nerve tension.",
-        "word_count": 19
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Soft Inner Smile",
-        "active": false,
-        "text": "Bringing a subtle, inner smile to the corners of your eyes and mouth, inviting a feeling of safety.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Vagal Tone Sigh",
-        "active": false,
-        "text": "Breathing in deeply, and as you exhale, creating a low humming sound in your throat.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Ocular Relaxation",
-        "active": false,
-        "text": "Resting your eyes completely behind closed eyelids, allowing the delicate eye muscles to sink backward.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Softening the Belly",
-        "active": false,
-        "text": "Completely softening your stomach muscles. Letting go of holding your belly in.",
-        "word_count": 12
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Soothing Touch",
-        "active": false,
-        "text": "Placing one hand on your neck or cheek if that feels comforting, feeling the warmth of self-soothing.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Tongue & Throat Release",
-        "active": false,
-        "text": "Letting your tongue rest heavily on the floor of your mouth, softening the throat muscles.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Diaphragm Unlocking",
-        "active": false,
-        "text": "Feeling the solar plexus region below your sternum softening and unwinding with your exhale.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Downshifting Signal",
-        "active": false,
-        "text": "Sending a signal of total safety through your nervous system with this long, quiet exhale.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Softening Forehead",
-        "active": false,
-        "text": "Smoothing out any brow furrows or forehead tension with a gentle mental sweep.",
-        "word_count": 13
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Lateral Head Sway",
-        "active": false,
-        "text": "Gently swaying your head side to side to stimulate the vagus pathways running along your neck.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Deep System Unwind",
-        "active": false,
-        "text": "Allowing your heart rate to gently slow down as your body recognizes it is in a safe space.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Rest and Digest",
-        "active": false,
-        "text": "Welcoming your body into its natural rest-and-digest response.",
-        "word_count": 8
-      }
-    ],
-    "S08": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Gentle Breath Anchor",
-        "active": true,
-        "text": "Resting your attention lightly on your chosen anchor. When the mind wanders, gently bringing it back without judgment.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. The Moment of Mindfulness",
-        "active": false,
-        "text": "Wandering is natural. The moment you realize you were distracted IS the moment of mindfulness. Gently returning.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Single Point Focus",
-        "active": false,
-        "text": "Choosing one single physical point\u2014the breath at your nostrils, or your feet on the floor\u2014and resting your focus there.",
-        "word_count": 19
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. Training the Mind",
-        "active": false,
-        "text": "Treating your wandering mind like a beloved puppy you are training. Patiently guide it back every time.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Sustained Attention",
-        "active": false,
-        "text": "Maintaining a soft, steady focus on the gentle rise and fall of your abdomen.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Soft Precision",
-        "active": false,
-        "text": "Precision doesn't mean tension. Resting your mind on your anchor as gently as a butterfly on a flower.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Zero Frustration",
-        "active": false,
-        "text": "No matter how many times your mind wanders, bring it back 100 times with zero frustration.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Breath Count 1 to 10",
-        "active": false,
-        "text": "Count silently from 1 to 10 with each exhale. If you lose count, simply start over at 1.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Centered Awareness",
-        "active": false,
-        "text": "Re-centering your mind on the felt sensation of this current moment.",
-        "word_count": 11
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Core Window Presence",
-        "active": false,
-        "text": "Staying steadily present during this quiet period of central practice.",
-        "word_count": 10
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Deepening Focus",
-        "active": false,
-        "text": "Allowing your focus to settle deeper into quiet concentration.",
-        "word_count": 9
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Returning Home",
-        "active": false,
-        "text": "Returning home to your focal anchor with every breath in.",
-        "word_count": 10
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Mindful Steadiness",
-        "active": false,
-        "text": "Cultivating a calm, immovable center within yourself.",
-        "word_count": 7
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Gentle Precision",
-        "active": false,
-        "text": "Holding your attention with steady, affectionate curiosity.",
-        "word_count": 7
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Resting in Anchor",
-        "active": false,
-        "text": "Resting fully in this single point of focus.",
-        "word_count": 8
-      }
-    ],
-    "S09": [
-      {
-        "variant_id": "v01",
-        "variant_name": "1. Cloud Watching",
-        "active": true,
-        "text": "Expanding your awareness to whatever arises in this moment\u2014thoughts, feelings, or sensations\u2014watching them pass like clouds.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Riverbank Analogy",
-        "active": false,
-        "text": "Imagining sitting by a riverbank. Watching your thoughts float past on leaves without jumping into the water.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v03",
-        "variant_name": "3. Open Sky Mind",
-        "active": false,
-        "text": "Allowing your mind to be like a vast blue sky. Thoughts are just weather passing through.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v04",
-        "variant_name": "4. The Neutral Witness",
-        "active": false,
-        "text": "Noticing whatever comes up with curiosity rather than judgment. Simply saying to yourself, 'ah, there is a thought'.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v05",
-        "variant_name": "5. Non-Striving Presence",
-        "active": false,
-        "text": "There is nothing you need to accomplish here. Just siting as the quiet witness of your inner experience.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v06",
-        "variant_name": "6. Observing Mind",
-        "active": false,
-        "text": "Noticing how thoughts arise on their own, staying for a moment, and dissolving when left alone.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v07",
-        "variant_name": "7. Spacious Awareness",
-        "active": false,
-        "text": "Creating space around your experiences. You are not your thoughts; you are the awareness observing them.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v08",
-        "variant_name": "8. Guest House Analogy",
-        "active": false,
-        "text": "Welcoming every feeling or thought as an unexpected guest. Letting them come and go freely.",
-        "word_count": 15
-      },
-      {
-        "variant_id": "v09",
-        "variant_name": "9. Sound & Thought Field",
-        "active": false,
-        "text": "Observing internal thoughts and external sounds together in one wide field of open awareness.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Allowing What Is",
-        "active": false,
-        "text": "Surrendering the need to change anything right now. Allowing everything to be exactly as it is.",
-        "word_count": 16
-      },
-      {
-        "variant_id": "v11",
-        "variant_name": "11. Ocean & Waves",
-        "active": false,
-        "text": "You are the deep, quiet ocean floor. Thoughts are just surface ripples.",
-        "word_count": 12
-      },
-      {
-        "variant_id": "v12",
-        "variant_name": "12. Gentle Detachment",
-        "active": false,
-        "text": "Stepping back slightly from your thoughts, as if watching a movie screen.",
-        "word_count": 12
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Rest in Awareness",
-        "active": false,
-        "text": "Resting in the quiet background of awareness that stays present beneath all mental activity.",
-        "word_count": 14
-      },
-      {
-        "variant_id": "v14",
-        "variant_name": "14. Unconditional Acceptance",
-        "active": false,
-        "text": "Meeting whatever arises right now with kindness and non-resistance.",
-        "word_count": 9
-      },
-      {
-        "variant_id": "v15",
-        "variant_name": "15. Spacious Mind",
-        "active": false,
-        "text": "Letting your mind be vast and open, holding space for all your experiences effortlessly.",
-        "word_count": 14
-      }
     ]
-  },
-  "voice_assets": {
-    "kia": {
-      "S03": {
-        "v01": {
-          "path": "assets/audio/kia/S03_v01.mp3",
-          "size_bytes": 92594
-        },
-        "v02": {
-          "path": "assets/audio/kia/S03_v02.mp3",
-          "size_bytes": 93012
-        },
-        "v03": {
-          "path": "assets/audio/kia/S03_v03.mp3",
-          "size_bytes": 98237
-        },
-        "v04": {
-          "path": "assets/audio/kia/S03_v04.mp3",
-          "size_bytes": 63964
-        },
-        "v05": {
-          "path": "assets/audio/kia/S03_v05.mp3",
-          "size_bytes": 72532
-        },
-        "v06": {
-          "path": "assets/audio/kia/S03_v06.mp3",
-          "size_bytes": 87788
-        },
-        "v07": {
-          "path": "assets/audio/kia/S03_v07.mp3",
-          "size_bytes": 118717
-        },
-        "v08": {
-          "path": "assets/audio/kia/S03_v08.mp3",
-          "size_bytes": 89251
-        },
-        "v09": {
-          "path": "assets/audio/kia/S03_v09.mp3",
-          "size_bytes": 59158
-        },
-        "v10": {
-          "path": "assets/audio/kia/S03_v10.mp3",
-          "size_bytes": 95729
-        },
-        "v11": {
-          "path": "assets/audio/kia/S03_v11.mp3",
-          "size_bytes": 67099
-        },
-        "v12": {
-          "path": "assets/audio/kia/S03_v12.mp3",
-          "size_bytes": 73786
-        },
-        "v13": {
-          "path": "assets/audio/kia/S03_v13.mp3",
-          "size_bytes": 75667
-        },
-        "v14": {
-          "path": "assets/audio/kia/S03_v14.mp3",
-          "size_bytes": 73786
-        },
-        "v15": {
-          "path": "assets/audio/kia/S03_v15.mp3",
-          "size_bytes": 49127
-        }
-      },
-      "S02": {
-        "v01": {
-          "path": "assets/audio/kia/S02_v01.mp3",
-          "size_bytes": 109104
-        },
-        "v02": {
-          "path": "assets/audio/kia/S02_v02.mp3",
-          "size_bytes": 124568
-        },
-        "v03": {
-          "path": "assets/audio/kia/S02_v03.mp3",
-          "size_bytes": 96356
-        },
-        "v04": {
-          "path": "assets/audio/kia/S02_v04.mp3",
-          "size_bytes": 70025
-        },
-        "v05": {
-          "path": "assets/audio/kia/S02_v05.mp3",
-          "size_bytes": 81937
-        },
-        "v06": {
-          "path": "assets/audio/kia/S02_v06.mp3",
-          "size_bytes": 70443
-        },
-        "v07": {
-          "path": "assets/audio/kia/S02_v07.mp3",
-          "size_bytes": 73368
-        },
-        "v08": {
-          "path": "assets/audio/kia/S02_v08.mp3",
-          "size_bytes": 64800
-        },
-        "v09": {
-          "path": "assets/audio/kia/S02_v09.mp3",
-          "size_bytes": 85698
-        },
-        "v10": {
-          "path": "assets/audio/kia/S02_v10.mp3",
-          "size_bytes": 60412
-        },
-        "v11": {
-          "path": "assets/audio/kia/S02_v11.mp3",
-          "size_bytes": 67099
-        },
-        "v12": {
-          "path": "assets/audio/kia/S02_v12.mp3",
-          "size_bytes": 57695
-        },
-        "v13": {
-          "path": "assets/audio/kia/S02_v13.mp3",
-          "size_bytes": 52470
-        },
-        "v14": {
-          "path": "assets/audio/kia/S02_v14.mp3",
-          "size_bytes": 74413
-        },
-        "v15": {
-          "path": "assets/audio/kia/S02_v15.mp3",
-          "size_bytes": 66263
-        }
-      },
-      "S01": {
-        "v01": {
-          "path": "assets/audio/kia/S01_v01.mp3",
-          "size_bytes": 100536
-        },
-        "v02": {
-          "path": "assets/audio/kia/S01_v02.mp3",
-          "size_bytes": 91968
-        },
-        "v03": {
-          "path": "assets/audio/kia/S01_v03.mp3",
-          "size_bytes": 107223
-        },
-        "v04": {
-          "path": "assets/audio/kia/S01_v04.mp3",
-          "size_bytes": 111612
-        },
-        "v05": {
-          "path": "assets/audio/kia/S01_v05.mp3",
-          "size_bytes": 94893
-        },
-        "v06": {
-          "path": "assets/audio/kia/S01_v06.mp3",
-          "size_bytes": 77339
-        },
-        "v07": {
-          "path": "assets/audio/kia/S01_v07.mp3",
-          "size_bytes": 84444
-        },
-        "v08": {
-          "path": "assets/audio/kia/S01_v08.mp3",
-          "size_bytes": 78593
-        },
-        "v09": {
-          "path": "assets/audio/kia/S01_v09.mp3",
-          "size_bytes": 94893
-        },
-        "v10": {
-          "path": "assets/audio/kia/S01_v10.mp3",
-          "size_bytes": 91132
-        },
-        "v11": {
-          "path": "assets/audio/kia/S01_v11.mp3",
-          "size_bytes": 71070
-        },
-        "v12": {
-          "path": "assets/audio/kia/S01_v12.mp3",
-          "size_bytes": 95729
-        },
-        "v13": {
-          "path": "assets/audio/kia/S01_v13.mp3",
-          "size_bytes": 66263
-        },
-        "v14": {
-          "path": "assets/audio/kia/S01_v14.mp3",
-          "size_bytes": 93430
-        },
-        "v15": {
-          "path": "assets/audio/kia/S01_v15.mp3",
-          "size_bytes": 62292
-        }
-      },
-      "S04": {
-        "v01": {
-          "path": "assets/audio/kia/S04_v01.mp3",
-          "size_bytes": 104506
-        },
-        "v02": {
-          "path": "assets/audio/kia/S04_v02.mp3",
-          "size_bytes": 85698
-        },
-        "v03": {
-          "path": "assets/audio/kia/S04_v03.mp3",
-          "size_bytes": 106387
-        },
-        "v04": {
-          "path": "assets/audio/kia/S04_v04.mp3",
-          "size_bytes": 61874
-        },
-        "v05": {
-          "path": "assets/audio/kia/S04_v05.mp3",
-          "size_bytes": 60621
-        },
-        "v06": {
-          "path": "assets/audio/kia/S04_v06.mp3",
-          "size_bytes": 79011
-        },
-        "v07": {
-          "path": "assets/audio/kia/S04_v07.mp3",
-          "size_bytes": 62919
-        },
-        "v08": {
-          "path": "assets/audio/kia/S04_v08.mp3",
-          "size_bytes": 61874
-        },
-        "v09": {
-          "path": "assets/audio/kia/S04_v09.mp3",
-          "size_bytes": 74413
-        },
-        "v10": {
-          "path": "assets/audio/kia/S04_v10.mp3",
-          "size_bytes": 64800
-        },
-        "v11": {
-          "path": "assets/audio/kia/S04_v11.mp3",
-          "size_bytes": 86325
-        },
-        "v12": {
-          "path": "assets/audio/kia/S04_v12.mp3",
-          "size_bytes": 70652
-        },
-        "v13": {
-          "path": "assets/audio/kia/S04_v13.mp3",
-          "size_bytes": 83817
-        },
-        "v14": {
-          "path": "assets/audio/kia/S04_v14.mp3",
-          "size_bytes": 61874
-        },
-        "v15": {
-          "path": "assets/audio/kia/S04_v15.mp3",
-          "size_bytes": 62501
-        }
-      },
-      "S05": {
-        "v01": {
-          "path": "assets/audio/kia/S05_v01.mp3",
-          "size_bytes": 94057
-        },
-        "v02": {
-          "path": "assets/audio/kia/S05_v02.mp3",
-          "size_bytes": 78175
-        },
-        "v03": {
-          "path": "assets/audio/kia/S05_v03.mp3",
-          "size_bytes": 66681
-        },
-        "v04": {
-          "path": "assets/audio/kia/S05_v04.mp3",
-          "size_bytes": 79011
-        },
-        "v05": {
-          "path": "assets/audio/kia/S05_v05.mp3",
-          "size_bytes": 110567
-        },
-        "v06": {
-          "path": "assets/audio/kia/S05_v06.mp3",
-          "size_bytes": 45574
-        },
-        "v07": {
-          "path": "assets/audio/kia/S05_v07.mp3",
-          "size_bytes": 53724
-        },
-        "v08": {
-          "path": "assets/audio/kia/S05_v08.mp3",
-          "size_bytes": 70025
-        },
-        "v09": {
-          "path": "assets/audio/kia/S05_v09.mp3",
-          "size_bytes": 72323
-        },
-        "v10": {
-          "path": "assets/audio/kia/S05_v10.mp3",
-          "size_bytes": 67726
-        },
-        "v11": {
-          "path": "assets/audio/kia/S05_v11.mp3",
-          "size_bytes": 62292
-        },
-        "v12": {
-          "path": "assets/audio/kia/S05_v12.mp3",
-          "size_bytes": 52470
-        },
-        "v13": {
-          "path": "assets/audio/kia/S05_v13.mp3",
-          "size_bytes": 61039
-        },
-        "v14": {
-          "path": "assets/audio/kia/S05_v14.mp3",
-          "size_bytes": 52888
-        },
-        "v15": {
-          "path": "assets/audio/kia/S05_v15.mp3",
-          "size_bytes": 57695
-        }
-      },
-      "S06": {
-        "v01": {
-          "path": "assets/audio/kia/S06_v01.mp3",
-          "size_bytes": 81937
-        },
-        "v02": {
-          "path": "assets/audio/kia/S06_v02.mp3",
-          "size_bytes": 70443
-        },
-        "v03": {
-          "path": "assets/audio/kia/S06_v03.mp3",
-          "size_bytes": 90505
-        },
-        "v04": {
-          "path": "assets/audio/kia/S06_v04.mp3",
-          "size_bytes": 64382
-        },
-        "v05": {
-          "path": "assets/audio/kia/S06_v05.mp3",
-          "size_bytes": 67099
-        },
-        "v06": {
-          "path": "assets/audio/kia/S06_v06.mp3",
-          "size_bytes": 101581
-        },
-        "v07": {
-          "path": "assets/audio/kia/S06_v07.mp3",
-          "size_bytes": 70025
-        },
-        "v08": {
-          "path": "assets/audio/kia/S06_v08.mp3",
-          "size_bytes": 91968
-        },
-        "v09": {
-          "path": "assets/audio/kia/S06_v09.mp3",
-          "size_bytes": 85698
-        },
-        "v10": {
-          "path": "assets/audio/kia/S06_v10.mp3",
-          "size_bytes": 81519
-        },
-        "v11": {
-          "path": "assets/audio/kia/S06_v11.mp3",
-          "size_bytes": 48918
-        },
-        "v12": {
-          "path": "assets/audio/kia/S06_v12.mp3",
-          "size_bytes": 65218
-        },
-        "v13": {
-          "path": "assets/audio/kia/S06_v13.mp3",
-          "size_bytes": 67099
-        },
-        "v14": {
-          "path": "assets/audio/kia/S06_v14.mp3",
-          "size_bytes": 62501
-        },
-        "v15": {
-          "path": "assets/audio/kia/S06_v15.mp3",
-          "size_bytes": 73995
-        }
-      },
-      "S07": {
-        "v01": {
-          "path": "assets/audio/kia/S07_v01.mp3",
-          "size_bytes": 89042
-        },
-        "v02": {
-          "path": "assets/audio/kia/S07_v02.mp3",
-          "size_bytes": 80683
-        },
-        "v03": {
-          "path": "assets/audio/kia/S07_v03.mp3",
-          "size_bytes": 80474
-        },
-        "v04": {
-          "path": "assets/audio/kia/S07_v04.mp3",
-          "size_bytes": 58113
-        },
-        "v05": {
-          "path": "assets/audio/kia/S07_v05.mp3",
-          "size_bytes": 59158
-        },
-        "v06": {
-          "path": "assets/audio/kia/S07_v06.mp3",
-          "size_bytes": 63964
-        },
-        "v07": {
-          "path": "assets/audio/kia/S07_v07.mp3",
-          "size_bytes": 44738
-        },
-        "v08": {
-          "path": "assets/audio/kia/S07_v08.mp3",
-          "size_bytes": 70652
-        },
-        "v09": {
-          "path": "assets/audio/kia/S07_v09.mp3",
-          "size_bytes": 55605
-        },
-        "v10": {
-          "path": "assets/audio/kia/S07_v10.mp3",
-          "size_bytes": 71070
-        },
-        "v11": {
-          "path": "assets/audio/kia/S07_v11.mp3",
-          "size_bytes": 63337
-        },
-        "v12": {
-          "path": "assets/audio/kia/S07_v12.mp3",
-          "size_bytes": 51843
-        },
-        "v13": {
-          "path": "assets/audio/kia/S07_v13.mp3",
-          "size_bytes": 65845
-        },
-        "v14": {
-          "path": "assets/audio/kia/S07_v14.mp3",
-          "size_bytes": 61039
-        },
-        "v15": {
-          "path": "assets/audio/kia/S07_v15.mp3",
-          "size_bytes": 44738
-        }
-      },
-      "S08": {
-        "v01": {
-          "path": "assets/audio/kia/S08_v01.mp3",
-          "size_bytes": 77339
-        },
-        "v02": {
-          "path": "assets/audio/kia/S08_v02.mp3",
-          "size_bytes": 94893
-        },
-        "v03": {
-          "path": "assets/audio/kia/S08_v03.mp3",
-          "size_bytes": 90505
-        },
-        "v04": {
-          "path": "assets/audio/kia/S08_v04.mp3",
-          "size_bytes": 67099
-        },
-        "v05": {
-          "path": "assets/audio/kia/S08_v05.mp3",
-          "size_bytes": 60412
-        },
-        "v06": {
-          "path": "assets/audio/kia/S08_v06.mp3",
-          "size_bytes": 70652
-        },
-        "v07": {
-          "path": "assets/audio/kia/S08_v07.mp3",
-          "size_bytes": 65636
-        },
-        "v08": {
-          "path": "assets/audio/kia/S08_v08.mp3",
-          "size_bytes": 77130
-        },
-        "v09": {
-          "path": "assets/audio/kia/S08_v09.mp3",
-          "size_bytes": 42857
-        },
-        "v10": {
-          "path": "assets/audio/kia/S08_v10.mp3",
-          "size_bytes": 42230
-        },
-        "v11": {
-          "path": "assets/audio/kia/S08_v11.mp3",
-          "size_bytes": 38469
-        },
-        "v12": {
-          "path": "assets/audio/kia/S08_v12.mp3",
-          "size_bytes": 39096
-        },
-        "v13": {
-          "path": "assets/audio/kia/S08_v13.mp3",
-          "size_bytes": 39932
-        },
-        "v14": {
-          "path": "assets/audio/kia/S08_v14.mp3",
-          "size_bytes": 37215
-        },
-        "v15": {
-          "path": "assets/audio/kia/S08_v15.mp3",
-          "size_bytes": 29483
-        }
-      },
-      "S09": {
-        "v01": {
-          "path": "assets/audio/kia/S09_v01.mp3",
-          "size_bytes": 111194
-        },
-        "v02": {
-          "path": "assets/audio/kia/S09_v02.mp3",
-          "size_bytes": 75667
-        },
-        "v03": {
-          "path": "assets/audio/kia/S09_v03.mp3",
-          "size_bytes": 56232
-        },
-        "v04": {
-          "path": "assets/audio/kia/S09_v04.mp3",
-          "size_bytes": 83817
-        },
-        "v05": {
-          "path": "assets/audio/kia/S09_v05.mp3",
-          "size_bytes": 59994
-        },
-        "v06": {
-          "path": "assets/audio/kia/S09_v06.mp3",
-          "size_bytes": 75249
-        },
-        "v07": {
-          "path": "assets/audio/kia/S09_v07.mp3",
-          "size_bytes": 61457
-        },
-        "v08": {
-          "path": "assets/audio/kia/S09_v08.mp3",
-          "size_bytes": 58113
-        },
-        "v09": {
-          "path": "assets/audio/kia/S09_v09.mp3",
-          "size_bytes": 72532
-        },
-        "v10": {
-          "path": "assets/audio/kia/S09_v10.mp3",
-          "size_bytes": 57068
-        },
-        "v11": {
-          "path": "assets/audio/kia/S09_v11.mp3",
-          "size_bytes": 47664
-        },
-        "v12": {
-          "path": "assets/audio/kia/S09_v12.mp3",
-          "size_bytes": 43275
-        },
-        "v13": {
-          "path": "assets/audio/kia/S09_v13.mp3",
-          "size_bytes": 61457
-        },
-        "v14": {
-          "path": "assets/audio/kia/S09_v14.mp3",
-          "size_bytes": 45156
-        },
-        "v15": {
-          "path": "assets/audio/kia/S09_v15.mp3",
-          "size_bytes": 67726
-        }
-      },
-      "S10": {
-        "v01": {
-          "path": "assets/audio/kia/S10_v01.mp3",
-          "size_bytes": 97192
-        },
-        "v02": {
-          "path": "assets/audio/kia/S10_v02.mp3",
-          "size_bytes": 75876
-        },
-        "v03": {
-          "path": "assets/audio/kia/S10_v03.mp3",
-          "size_bytes": 109104
-        },
-        "v04": {
-          "path": "assets/audio/kia/S10_v04.mp3",
-          "size_bytes": 64800
-        },
-        "v05": {
-          "path": "assets/audio/kia/S10_v05.mp3",
-          "size_bytes": 95938
-        },
-        "v06": {
-          "path": "assets/audio/kia/S10_v06.mp3",
-          "size_bytes": 54351
-        },
-        "v07": {
-          "path": "assets/audio/kia/S10_v07.mp3",
-          "size_bytes": 55605
-        },
-        "v08": {
-          "path": "assets/audio/kia/S10_v08.mp3",
-          "size_bytes": 58949
-        },
-        "v09": {
-          "path": "assets/audio/kia/S10_v09.mp3",
-          "size_bytes": 38469
-        },
-        "v10": {
-          "path": "assets/audio/kia/S10_v10.mp3",
-          "size_bytes": 35125
-        },
-        "v11": {
-          "path": "assets/audio/kia/S10_v11.mp3",
-          "size_bytes": 63337
-        },
-        "v12": {
-          "path": "assets/audio/kia/S10_v12.mp3",
-          "size_bytes": 30946
-        },
-        "v13": {
-          "path": "assets/audio/kia/S10_v13.mp3",
-          "size_bytes": 63964
-        },
-        "v14": {
-          "path": "assets/audio/kia/S10_v14.mp3",
-          "size_bytes": 28020
-        },
-        "v15": {
-          "path": "assets/audio/kia/S10_v15.mp3",
-          "size_bytes": 34707
-        }
-      },
-      "S11": {
-        "v01": {
-          "path": "assets/audio/kia/S11_v01.mp3",
-          "size_bytes": 91132
-        },
-        "v02": {
-          "path": "assets/audio/kia/S11_v02.mp3",
-          "size_bytes": 90505
-        },
-        "v03": {
-          "path": "assets/audio/kia/S11_v03.mp3",
-          "size_bytes": 81519
-        },
-        "v04": {
-          "path": "assets/audio/kia/S11_v04.mp3",
-          "size_bytes": 62292
-        },
-        "v05": {
-          "path": "assets/audio/kia/S11_v05.mp3",
-          "size_bytes": 67308
-        },
-        "v06": {
-          "path": "assets/audio/kia/S11_v06.mp3",
-          "size_bytes": 35752
-        },
-        "v07": {
-          "path": "assets/audio/kia/S11_v07.mp3",
-          "size_bytes": 43902
-        },
-        "v08": {
-          "path": "assets/audio/kia/S11_v08.mp3",
-          "size_bytes": 37633
-        },
-        "v09": {
-          "path": "assets/audio/kia/S11_v09.mp3",
-          "size_bytes": 40977
-        },
-        "v10": {
-          "path": "assets/audio/kia/S11_v10.mp3",
-          "size_bytes": 31781
-        },
-        "v11": {
-          "path": "assets/audio/kia/S11_v11.mp3",
-          "size_bytes": 49963
-        },
-        "v12": {
-          "path": "assets/audio/kia/S11_v12.mp3",
-          "size_bytes": 44738
-        },
-        "v13": {
-          "path": "assets/audio/kia/S11_v13.mp3",
-          "size_bytes": 45574
-        },
-        "v14": {
-          "path": "assets/audio/kia/S11_v14.mp3",
-          "size_bytes": 48082
-        },
-        "v15": {
-          "path": "assets/audio/kia/S11_v15.mp3",
-          "size_bytes": 39932
-        }
-      },
-      "S12": {
-        "v01": {
-          "path": "assets/audio/kia/S12_v01.mp3",
-          "size_bytes": 28020
-        },
-        "v02": {
-          "path": "assets/audio/kia/S12_v02.mp3",
-          "size_bytes": 35543
-        },
-        "v03": {
-          "path": "assets/audio/kia/S12_v03.mp3",
-          "size_bytes": 28438
-        },
-        "v04": {
-          "path": "assets/audio/kia/S12_v04.mp3",
-          "size_bytes": 32199
-        },
-        "v05": {
-          "path": "assets/audio/kia/S12_v05.mp3",
-          "size_bytes": 20288
-        },
-        "v06": {
-          "path": "assets/audio/kia/S12_v06.mp3",
-          "size_bytes": 23213
-        },
-        "v07": {
-          "path": "assets/audio/kia/S12_v07.mp3",
-          "size_bytes": 25094
-        },
-        "v08": {
-          "path": "assets/audio/kia/S12_v08.mp3",
-          "size_bytes": 22168
-        },
-        "v09": {
-          "path": "assets/audio/kia/S12_v09.mp3",
-          "size_bytes": 22168
-        },
-        "v10": {
-          "path": "assets/audio/kia/S12_v10.mp3",
-          "size_bytes": 20497
-        },
-        "v11": {
-          "path": "assets/audio/kia/S12_v11.mp3",
-          "size_bytes": 27602
-        },
-        "v12": {
-          "path": "assets/audio/kia/S12_v12.mp3",
-          "size_bytes": 16944
-        },
-        "v13": {
-          "path": "assets/audio/kia/S12_v13.mp3",
-          "size_bytes": 13809
-        },
-        "v14": {
-          "path": "assets/audio/kia/S12_v14.mp3",
-          "size_bytes": 14645
-        },
-        "v15": {
-          "path": "assets/audio/kia/S12_v15.mp3",
-          "size_bytes": 18825
-        }
-      },
-      "S13": {
-        "v01": {
-          "path": "assets/audio/kia/S13_v01.mp3",
-          "size_bytes": 88206
-        },
-        "v02": {
-          "path": "assets/audio/kia/S13_v02.mp3",
-          "size_bytes": 70652
-        },
-        "v03": {
-          "path": "assets/audio/kia/S13_v03.mp3",
-          "size_bytes": 67726
-        },
-        "v04": {
-          "path": "assets/audio/kia/S13_v04.mp3",
-          "size_bytes": 82354
-        },
-        "v05": {
-          "path": "assets/audio/kia/S13_v05.mp3",
-          "size_bytes": 58531
-        },
-        "v06": {
-          "path": "assets/audio/kia/S13_v06.mp3",
-          "size_bytes": 45574
-        },
-        "v07": {
-          "path": "assets/audio/kia/S13_v07.mp3",
-          "size_bytes": 49127
-        },
-        "v08": {
-          "path": "assets/audio/kia/S13_v08.mp3",
-          "size_bytes": 55187
-        },
-        "v09": {
-          "path": "assets/audio/kia/S13_v09.mp3",
-          "size_bytes": 49127
-        },
-        "v10": {
-          "path": "assets/audio/kia/S13_v10.mp3",
-          "size_bytes": 35752
-        },
-        "v11": {
-          "path": "assets/audio/kia/S13_v11.mp3",
-          "size_bytes": 45574
-        },
-        "v12": {
-          "path": "assets/audio/kia/S13_v12.mp3",
-          "size_bytes": 32408
-        },
-        "v13": {
-          "path": "assets/audio/kia/S13_v13.mp3",
-          "size_bytes": 52261
-        },
-        "v14": {
-          "path": "assets/audio/kia/S13_v14.mp3",
-          "size_bytes": 35543
-        },
-        "v15": {
-          "path": "assets/audio/kia/S13_v15.mp3",
-          "size_bytes": 46619
-        }
-      },
-      "S14": {
-        "v01": {
-          "path": "assets/audio/kia/S14_v01.mp3",
-          "size_bytes": 63755
-        },
-        "v02": {
-          "path": "assets/audio/kia/S14_v02.mp3",
-          "size_bytes": 67726
-        },
-        "v03": {
-          "path": "assets/audio/kia/S14_v03.mp3",
-          "size_bytes": 54351
-        },
-        "v04": {
-          "path": "assets/audio/kia/S14_v04.mp3",
-          "size_bytes": 46619
-        },
-        "v05": {
-          "path": "assets/audio/kia/S14_v05.mp3",
-          "size_bytes": 86743
-        },
-        "v06": {
-          "path": "assets/audio/kia/S14_v06.mp3",
-          "size_bytes": 32199
-        },
-        "v07": {
-          "path": "assets/audio/kia/S14_v07.mp3",
-          "size_bytes": 44738
-        },
-        "v08": {
-          "path": "assets/audio/kia/S14_v08.mp3",
-          "size_bytes": 47246
-        },
-        "v09": {
-          "path": "assets/audio/kia/S14_v09.mp3",
-          "size_bytes": 36170
-        },
-        "v10": {
-          "path": "assets/audio/kia/S14_v10.mp3",
-          "size_bytes": 34707
-        },
-        "v11": {
-          "path": "assets/audio/kia/S14_v11.mp3",
-          "size_bytes": 46619
-        },
-        "v12": {
-          "path": "assets/audio/kia/S14_v12.mp3",
-          "size_bytes": 30319
-        },
-        "v13": {
-          "path": "assets/audio/kia/S14_v13.mp3",
-          "size_bytes": 40350
-        },
-        "v14": {
-          "path": "assets/audio/kia/S14_v14.mp3",
-          "size_bytes": 25512
-        },
-        "v15": {
-          "path": "assets/audio/kia/S14_v15.mp3",
-          "size_bytes": 36170
-        }
-      },
-      "S15": {
-        "v01": {
-          "path": "assets/audio/kia/S15_v01.mp3",
-          "size_bytes": 86743
-        },
-        "v02": {
-          "path": "assets/audio/kia/S15_v02.mp3",
-          "size_bytes": 60412
-        },
-        "v03": {
-          "path": "assets/audio/kia/S15_v03.mp3",
-          "size_bytes": 50590
-        },
-        "v04": {
-          "path": "assets/audio/kia/S15_v04.mp3",
-          "size_bytes": 74413
-        },
-        "v05": {
-          "path": "assets/audio/kia/S15_v05.mp3",
-          "size_bytes": 47037
-        },
-        "v06": {
-          "path": "assets/audio/kia/S15_v06.mp3",
-          "size_bytes": 71070
-        },
-        "v07": {
-          "path": "assets/audio/kia/S15_v07.mp3",
-          "size_bytes": 61874
-        },
-        "v08": {
-          "path": "assets/audio/kia/S15_v08.mp3",
-          "size_bytes": 43693
-        },
-        "v09": {
-          "path": "assets/audio/kia/S15_v09.mp3",
-          "size_bytes": 52470
-        },
-        "v10": {
-          "path": "assets/audio/kia/S15_v10.mp3",
-          "size_bytes": 38051
-        },
-        "v11": {
-          "path": "assets/audio/kia/S15_v11.mp3",
-          "size_bytes": 47246
-        },
-        "v12": {
-          "path": "assets/audio/kia/S15_v12.mp3",
-          "size_bytes": 41394
-        },
-        "v13": {
-          "path": "assets/audio/kia/S15_v13.mp3",
-          "size_bytes": 58531
-        },
-        "v14": {
-          "path": "assets/audio/kia/S15_v14.mp3",
-          "size_bytes": 38887
-        },
-        "v15": {
-          "path": "assets/audio/kia/S15_v15.mp3",
-          "size_bytes": 39514
-        }
-      },
-      "S16": {
-        "v01": {
-          "path": "assets/audio/kia/S16_v01.mp3",
-          "size_bytes": 35543
-        },
-        "v02": {
-          "path": "assets/audio/kia/S16_v02.mp3",
-          "size_bytes": 30528
-        },
-        "v03": {
-          "path": "assets/audio/kia/S16_v03.mp3",
-          "size_bytes": 16526
-        },
-        "v04": {
-          "path": "assets/audio/kia/S16_v04.mp3",
-          "size_bytes": 45574
-        },
-        "v05": {
-          "path": "assets/audio/kia/S16_v05.mp3",
-          "size_bytes": 29901
-        },
-        "v06": {
-          "path": "assets/audio/kia/S16_v06.mp3",
-          "size_bytes": 29483
-        },
-        "v07": {
-          "path": "assets/audio/kia/S16_v07.mp3",
-          "size_bytes": 46201
-        },
-        "v08": {
-          "path": "assets/audio/kia/S16_v08.mp3",
-          "size_bytes": 22377
-        },
-        "v09": {
-          "path": "assets/audio/kia/S16_v09.mp3",
-          "size_bytes": 49963
-        },
-        "v10": {
-          "path": "assets/audio/kia/S16_v10.mp3",
-          "size_bytes": 17989
-        },
-        "v11": {
-          "path": "assets/audio/kia/S16_v11.mp3",
-          "size_bytes": 44320
-        },
-        "v12": {
-          "path": "assets/audio/kia/S16_v12.mp3",
-          "size_bytes": 22377
-        },
-        "v13": {
-          "path": "assets/audio/kia/S16_v13.mp3",
-          "size_bytes": 60412
-        },
-        "v14": {
-          "path": "assets/audio/kia/S16_v14.mp3",
-          "size_bytes": 21750
-        },
-        "v15": {
-          "path": "assets/audio/kia/S16_v15.mp3",
-          "size_bytes": 30528
-        }
-      }
-    },
-    "grace": {
-      "S03": {
-        "v01": {
-          "path": "assets/audio/grace/S03_v01.mp3",
-          "size_bytes": 100536
-        },
-        "v02": {
-          "path": "assets/audio/grace/S03_v02.mp3",
-          "size_bytes": 123523
-        },
-        "v03": {
-          "path": "assets/audio/grace/S03_v03.mp3",
-          "size_bytes": 109104
-        },
-        "v04": {
-          "path": "assets/audio/grace/S03_v04.mp3",
-          "size_bytes": 67308
-        },
-        "v05": {
-          "path": "assets/audio/grace/S03_v05.mp3",
-          "size_bytes": 89251
-        },
-        "v06": {
-          "path": "assets/audio/grace/S03_v06.mp3",
-          "size_bytes": 86743
-        },
-        "v07": {
-          "path": "assets/audio/grace/S03_v07.mp3",
-          "size_bytes": 129375
-        },
-        "v08": {
-          "path": "assets/audio/grace/S03_v08.mp3",
-          "size_bytes": 88206
-        },
-        "v09": {
-          "path": "assets/audio/grace/S03_v09.mp3",
-          "size_bytes": 74413
-        },
-        "v10": {
-          "path": "assets/audio/grace/S03_v10.mp3",
-          "size_bytes": 93012
-        },
-        "v11": {
-          "path": "assets/audio/grace/S03_v11.mp3",
-          "size_bytes": 77757
-        },
-        "v12": {
-          "path": "assets/audio/grace/S03_v12.mp3",
-          "size_bytes": 81519
-        },
-        "v13": {
-          "path": "assets/audio/grace/S03_v13.mp3",
-          "size_bytes": 80474
-        },
-        "v14": {
-          "path": "assets/audio/grace/S03_v14.mp3",
-          "size_bytes": 62501
-        },
-        "v15": {
-          "path": "assets/audio/grace/S03_v15.mp3",
-          "size_bytes": 60412
-        }
-      },
-      "S02": {
-        "v01": {
-          "path": "assets/audio/grace/S02_v01.mp3",
-          "size_bytes": 127494
-        },
-        "v02": {
-          "path": "assets/audio/grace/S02_v02.mp3",
-          "size_bytes": 148392
-        },
-        "v03": {
-          "path": "assets/audio/grace/S02_v03.mp3",
-          "size_bytes": 104088
-        },
-        "v04": {
-          "path": "assets/audio/grace/S02_v04.mp3",
-          "size_bytes": 79011
-        },
-        "v05": {
-          "path": "assets/audio/grace/S02_v05.mp3",
-          "size_bytes": 79220
-        },
-        "v06": {
-          "path": "assets/audio/grace/S02_v06.mp3",
-          "size_bytes": 81101
-        },
-        "v07": {
-          "path": "assets/audio/grace/S02_v07.mp3",
-          "size_bytes": 81101
-        },
-        "v08": {
-          "path": "assets/audio/grace/S02_v08.mp3",
-          "size_bytes": 87370
-        },
-        "v09": {
-          "path": "assets/audio/grace/S02_v09.mp3",
-          "size_bytes": 91550
-        },
-        "v10": {
-          "path": "assets/audio/grace/S02_v10.mp3",
-          "size_bytes": 79011
-        },
-        "v11": {
-          "path": "assets/audio/grace/S02_v11.mp3",
-          "size_bytes": 77130
-        },
-        "v12": {
-          "path": "assets/audio/grace/S02_v12.mp3",
-          "size_bytes": 70652
-        },
-        "v13": {
-          "path": "assets/audio/grace/S02_v13.mp3",
-          "size_bytes": 65636
-        },
-        "v14": {
-          "path": "assets/audio/grace/S02_v14.mp3",
-          "size_bytes": 73995
-        },
-        "v15": {
-          "path": "assets/audio/grace/S02_v15.mp3",
-          "size_bytes": 82563
-        }
-      },
-      "S01": {
-        "v01": {
-          "path": "assets/audio/grace/S01_v01.mp3",
-          "size_bytes": 138779
-        },
-        "v02": {
-          "path": "assets/audio/grace/S01_v02.mp3",
-          "size_bytes": 111194
-        },
-        "v03": {
-          "path": "assets/audio/grace/S01_v03.mp3",
-          "size_bytes": 120180
-        },
-        "v04": {
-          "path": "assets/audio/grace/S01_v04.mp3",
-          "size_bytes": 100118
-        },
-        "v05": {
-          "path": "assets/audio/grace/S01_v05.mp3",
-          "size_bytes": 113074
-        },
-        "v06": {
-          "path": "assets/audio/grace/S01_v06.mp3",
-          "size_bytes": 90505
-        },
-        "v07": {
-          "path": "assets/audio/grace/S01_v07.mp3",
-          "size_bytes": 91550
-        },
-        "v08": {
-          "path": "assets/audio/grace/S01_v08.mp3",
-          "size_bytes": 106805
-        },
-        "v09": {
-          "path": "assets/audio/grace/S01_v09.mp3",
-          "size_bytes": 126867
-        },
-        "v10": {
-          "path": "assets/audio/grace/S01_v10.mp3",
-          "size_bytes": 109313
-        },
-        "v11": {
-          "path": "assets/audio/grace/S01_v11.mp3",
-          "size_bytes": 77130
-        },
-        "v12": {
-          "path": "assets/audio/grace/S01_v12.mp3",
-          "size_bytes": 89251
-        },
-        "v13": {
-          "path": "assets/audio/grace/S01_v13.mp3",
-          "size_bytes": 91550
-        },
-        "v14": {
-          "path": "assets/audio/grace/S01_v14.mp3",
-          "size_bytes": 93848
-        },
-        "v15": {
-          "path": "assets/audio/grace/S01_v15.mp3",
-          "size_bytes": 65845
-        }
-      },
-      "S04": {
-        "v01": {
-          "path": "assets/audio/grace/S04_v01.mp3",
-          "size_bytes": 111194
-        },
-        "v02": {
-          "path": "assets/audio/grace/S04_v02.mp3",
-          "size_bytes": 104088
-        },
-        "v03": {
-          "path": "assets/audio/grace/S04_v03.mp3",
-          "size_bytes": 117254
-        },
-        "v04": {
-          "path": "assets/audio/grace/S04_v04.mp3",
-          "size_bytes": 72532
-        },
-        "v05": {
-          "path": "assets/audio/grace/S04_v05.mp3",
-          "size_bytes": 66263
-        },
-        "v06": {
-          "path": "assets/audio/grace/S04_v06.mp3",
-          "size_bytes": 83817
-        },
-        "v07": {
-          "path": "assets/audio/grace/S04_v07.mp3",
-          "size_bytes": 80683
-        },
-        "v08": {
-          "path": "assets/audio/grace/S04_v08.mp3",
-          "size_bytes": 84026
-        },
-        "v09": {
-          "path": "assets/audio/grace/S04_v09.mp3",
-          "size_bytes": 76712
-        },
-        "v10": {
-          "path": "assets/audio/grace/S04_v10.mp3",
-          "size_bytes": 89251
-        },
-        "v11": {
-          "path": "assets/audio/grace/S04_v11.mp3",
-          "size_bytes": 84444
-        },
-        "v12": {
-          "path": "assets/audio/grace/S04_v12.mp3",
-          "size_bytes": 74831
-        },
-        "v13": {
-          "path": "assets/audio/grace/S04_v13.mp3",
-          "size_bytes": 79011
-        },
-        "v14": {
-          "path": "assets/audio/grace/S04_v14.mp3",
-          "size_bytes": 73368
-        },
-        "v15": {
-          "path": "assets/audio/grace/S04_v15.mp3",
-          "size_bytes": 70443
-        }
-      },
-      "S05": {
-        "v01": {
-          "path": "assets/audio/grace/S05_v01.mp3",
-          "size_bytes": 104924
-        },
-        "v02": {
-          "path": "assets/audio/grace/S05_v02.mp3",
-          "size_bytes": 84026
-        },
-        "v03": {
-          "path": "assets/audio/grace/S05_v03.mp3",
-          "size_bytes": 85907
-        },
-        "v04": {
-          "path": "assets/audio/grace/S05_v04.mp3",
-          "size_bytes": 91968
-        },
-        "v05": {
-          "path": "assets/audio/grace/S05_v05.mp3",
-          "size_bytes": 128330
-        },
-        "v06": {
-          "path": "assets/audio/grace/S05_v06.mp3",
-          "size_bytes": 54769
-        },
-        "v07": {
-          "path": "assets/audio/grace/S05_v07.mp3",
-          "size_bytes": 67099
-        },
-        "v08": {
-          "path": "assets/audio/grace/S05_v08.mp3",
-          "size_bytes": 73786
-        },
-        "v09": {
-          "path": "assets/audio/grace/S05_v09.mp3",
-          "size_bytes": 72323
-        },
-        "v10": {
-          "path": "assets/audio/grace/S05_v10.mp3",
-          "size_bytes": 74831
-        },
-        "v11": {
-          "path": "assets/audio/grace/S05_v11.mp3",
-          "size_bytes": 80056
-        },
-        "v12": {
-          "path": "assets/audio/grace/S05_v12.mp3",
-          "size_bytes": 59576
-        },
-        "v13": {
-          "path": "assets/audio/grace/S05_v13.mp3",
-          "size_bytes": 67308
-        },
-        "v14": {
-          "path": "assets/audio/grace/S05_v14.mp3",
-          "size_bytes": 55605
-        },
-        "v15": {
-          "path": "assets/audio/grace/S05_v15.mp3",
-          "size_bytes": 67726
-        }
-      },
-      "S06": {
-        "v01": {
-          "path": "assets/audio/grace/S06_v01.mp3",
-          "size_bytes": 78593
-        },
-        "v02": {
-          "path": "assets/audio/grace/S06_v02.mp3",
-          "size_bytes": 77339
-        },
-        "v03": {
-          "path": "assets/audio/grace/S06_v03.mp3",
-          "size_bytes": 77339
-        },
-        "v04": {
-          "path": "assets/audio/grace/S06_v04.mp3",
-          "size_bytes": 77339
-        },
-        "v05": {
-          "path": "assets/audio/grace/S06_v05.mp3",
-          "size_bytes": 97401
-        },
-        "v06": {
-          "path": "assets/audio/grace/S06_v06.mp3",
-          "size_bytes": 106805
-        },
-        "v07": {
-          "path": "assets/audio/grace/S06_v07.mp3",
-          "size_bytes": 67726
-        },
-        "v08": {
-          "path": "assets/audio/grace/S06_v08.mp3",
-          "size_bytes": 89042
-        },
-        "v09": {
-          "path": "assets/audio/grace/S06_v09.mp3",
-          "size_bytes": 83817
-        },
-        "v10": {
-          "path": "assets/audio/grace/S06_v10.mp3",
-          "size_bytes": 83817
-        },
-        "v11": {
-          "path": "assets/audio/grace/S06_v11.mp3",
-          "size_bytes": 58113
-        },
-        "v12": {
-          "path": "assets/audio/grace/S06_v12.mp3",
-          "size_bytes": 78175
-        },
-        "v13": {
-          "path": "assets/audio/grace/S06_v13.mp3",
-          "size_bytes": 80056
-        },
-        "v14": {
-          "path": "assets/audio/grace/S06_v14.mp3",
-          "size_bytes": 76712
-        },
-        "v15": {
-          "path": "assets/audio/grace/S06_v15.mp3",
-          "size_bytes": 80474
-        }
-      },
-      "S07": {
-        "v01": {
-          "path": "assets/audio/grace/S07_v01.mp3",
-          "size_bytes": 87788
-        },
-        "v02": {
-          "path": "assets/audio/grace/S07_v02.mp3",
-          "size_bytes": 79220
-        },
-        "v03": {
-          "path": "assets/audio/grace/S07_v03.mp3",
-          "size_bytes": 86743
-        },
-        "v04": {
-          "path": "assets/audio/grace/S07_v04.mp3",
-          "size_bytes": 67726
-        },
-        "v05": {
-          "path": "assets/audio/grace/S07_v05.mp3",
-          "size_bytes": 70025
-        },
-        "v06": {
-          "path": "assets/audio/grace/S07_v06.mp3",
-          "size_bytes": 73786
-        },
-        "v07": {
-          "path": "assets/audio/grace/S07_v07.mp3",
-          "size_bytes": 63755
-        },
-        "v08": {
-          "path": "assets/audio/grace/S07_v08.mp3",
-          "size_bytes": 80474
-        },
-        "v09": {
-          "path": "assets/audio/grace/S07_v09.mp3",
-          "size_bytes": 51008
-        },
-        "v10": {
-          "path": "assets/audio/grace/S07_v10.mp3",
-          "size_bytes": 73786
-        },
-        "v11": {
-          "path": "assets/audio/grace/S07_v11.mp3",
-          "size_bytes": 67308
-        },
-        "v12": {
-          "path": "assets/audio/grace/S07_v12.mp3",
-          "size_bytes": 50381
-        },
-        "v13": {
-          "path": "assets/audio/grace/S07_v13.mp3",
-          "size_bytes": 71488
-        },
-        "v14": {
-          "path": "assets/audio/grace/S07_v14.mp3",
-          "size_bytes": 72532
-        },
-        "v15": {
-          "path": "assets/audio/grace/S07_v15.mp3",
-          "size_bytes": 51843
-        }
-      },
-      "S08": {
-        "v01": {
-          "path": "assets/audio/grace/S08_v01.mp3",
-          "size_bytes": 79638
-        },
-        "v02": {
-          "path": "assets/audio/grace/S08_v02.mp3",
-          "size_bytes": 97192
-        },
-        "v03": {
-          "path": "assets/audio/grace/S08_v03.mp3",
-          "size_bytes": 101999
-        },
-        "v04": {
-          "path": "assets/audio/grace/S08_v04.mp3",
-          "size_bytes": 65636
-        },
-        "v05": {
-          "path": "assets/audio/grace/S08_v05.mp3",
-          "size_bytes": 54769
-        },
-        "v06": {
-          "path": "assets/audio/grace/S08_v06.mp3",
-          "size_bytes": 85280
-        },
-        "v07": {
-          "path": "assets/audio/grace/S08_v07.mp3",
-          "size_bytes": 64800
-        },
-        "v08": {
-          "path": "assets/audio/grace/S08_v08.mp3",
-          "size_bytes": 79220
-        },
-        "v09": {
-          "path": "assets/audio/grace/S08_v09.mp3",
-          "size_bytes": 46201
-        },
-        "v10": {
-          "path": "assets/audio/grace/S08_v10.mp3",
-          "size_bytes": 48500
-        },
-        "v11": {
-          "path": "assets/audio/grace/S08_v11.mp3",
-          "size_bytes": 53306
-        },
-        "v12": {
-          "path": "assets/audio/grace/S08_v12.mp3",
-          "size_bytes": 36588
-        },
-        "v13": {
-          "path": "assets/audio/grace/S08_v13.mp3",
-          "size_bytes": 41394
-        },
-        "v14": {
-          "path": "assets/audio/grace/S08_v14.mp3",
-          "size_bytes": 39932
-        },
-        "v15": {
-          "path": "assets/audio/grace/S08_v15.mp3",
-          "size_bytes": 30319
-        }
-      },
-      "S09": {
-        "v01": {
-          "path": "assets/audio/grace/S09_v01.mp3",
-          "size_bytes": 121225
-        },
-        "v02": {
-          "path": "assets/audio/grace/S09_v02.mp3",
-          "size_bytes": 85698
-        },
-        "v03": {
-          "path": "assets/audio/grace/S09_v03.mp3",
-          "size_bytes": 72950
-        },
-        "v04": {
-          "path": "assets/audio/grace/S09_v04.mp3",
-          "size_bytes": 89669
-        },
-        "v05": {
-          "path": "assets/audio/grace/S09_v05.mp3",
-          "size_bytes": 80474
-        },
-        "v06": {
-          "path": "assets/audio/grace/S09_v06.mp3",
-          "size_bytes": 78175
-        },
-        "v07": {
-          "path": "assets/audio/grace/S09_v07.mp3",
-          "size_bytes": 90087
-        },
-        "v08": {
-          "path": "assets/audio/grace/S09_v08.mp3",
-          "size_bytes": 77130
-        },
-        "v09": {
-          "path": "assets/audio/grace/S09_v09.mp3",
-          "size_bytes": 73995
-        },
-        "v10": {
-          "path": "assets/audio/grace/S09_v10.mp3",
-          "size_bytes": 79220
-        },
-        "v11": {
-          "path": "assets/audio/grace/S09_v11.mp3",
-          "size_bytes": 57695
-        },
-        "v12": {
-          "path": "assets/audio/grace/S09_v12.mp3",
-          "size_bytes": 46619
-        },
-        "v13": {
-          "path": "assets/audio/grace/S09_v13.mp3",
-          "size_bytes": 70652
-        },
-        "v14": {
-          "path": "assets/audio/grace/S09_v14.mp3",
-          "size_bytes": 55187
-        },
-        "v15": {
-          "path": "assets/audio/grace/S09_v15.mp3",
-          "size_bytes": 81519
-        }
-      },
-      "S10": {
-        "v01": {
-          "path": "assets/audio/grace/S10_v01.mp3",
-          "size_bytes": 102626
-        },
-        "v02": {
-          "path": "assets/audio/grace/S10_v02.mp3",
-          "size_bytes": 75249
-        },
-        "v03": {
-          "path": "assets/audio/grace/S10_v03.mp3",
-          "size_bytes": 112448
-        },
-        "v04": {
-          "path": "assets/audio/grace/S10_v04.mp3",
-          "size_bytes": 78593
-        },
-        "v05": {
-          "path": "assets/audio/grace/S10_v05.mp3",
-          "size_bytes": 88624
-        },
-        "v06": {
-          "path": "assets/audio/grace/S10_v06.mp3",
-          "size_bytes": 63964
-        },
-        "v07": {
-          "path": "assets/audio/grace/S10_v07.mp3",
-          "size_bytes": 57695
-        },
-        "v08": {
-          "path": "assets/audio/grace/S10_v08.mp3",
-          "size_bytes": 57068
-        },
-        "v09": {
-          "path": "assets/audio/grace/S10_v09.mp3",
-          "size_bytes": 45783
-        },
-        "v10": {
-          "path": "assets/audio/grace/S10_v10.mp3",
-          "size_bytes": 38469
-        },
-        "v11": {
-          "path": "assets/audio/grace/S10_v11.mp3",
-          "size_bytes": 53306
-        },
-        "v12": {
-          "path": "assets/audio/grace/S10_v12.mp3",
-          "size_bytes": 39096
-        },
-        "v13": {
-          "path": "assets/audio/grace/S10_v13.mp3",
-          "size_bytes": 57068
-        },
-        "v14": {
-          "path": "assets/audio/grace/S10_v14.mp3",
-          "size_bytes": 34707
-        },
-        "v15": {
-          "path": "assets/audio/grace/S10_v15.mp3",
-          "size_bytes": 42857
-        }
-      },
-      "S11": {
-        "v01": {
-          "path": "assets/audio/grace/S11_v01.mp3",
-          "size_bytes": 82354
-        },
-        "v02": {
-          "path": "assets/audio/grace/S11_v02.mp3",
-          "size_bytes": 102626
-        },
-        "v03": {
-          "path": "assets/audio/grace/S11_v03.mp3",
-          "size_bytes": 84444
-        },
-        "v04": {
-          "path": "assets/audio/grace/S11_v04.mp3",
-          "size_bytes": 73786
-        },
-        "v05": {
-          "path": "assets/audio/grace/S11_v05.mp3",
-          "size_bytes": 74831
-        },
-        "v06": {
-          "path": "assets/audio/grace/S11_v06.mp3",
-          "size_bytes": 37633
-        },
-        "v07": {
-          "path": "assets/audio/grace/S11_v07.mp3",
-          "size_bytes": 63964
-        },
-        "v08": {
-          "path": "assets/audio/grace/S11_v08.mp3",
-          "size_bytes": 47037
-        },
-        "v09": {
-          "path": "assets/audio/grace/S11_v09.mp3",
-          "size_bytes": 51843
-        },
-        "v10": {
-          "path": "assets/audio/grace/S11_v10.mp3",
-          "size_bytes": 37633
-        },
-        "v11": {
-          "path": "assets/audio/grace/S11_v11.mp3",
-          "size_bytes": 39096
-        },
-        "v12": {
-          "path": "assets/audio/grace/S11_v12.mp3",
-          "size_bytes": 55814
-        },
-        "v13": {
-          "path": "assets/audio/grace/S11_v13.mp3",
-          "size_bytes": 48918
-        },
-        "v14": {
-          "path": "assets/audio/grace/S11_v14.mp3",
-          "size_bytes": 45156
-        },
-        "v15": {
-          "path": "assets/audio/grace/S11_v15.mp3",
-          "size_bytes": 30528
-        }
-      },
-      "S12": {
-        "v01": {
-          "path": "assets/audio/grace/S12_v01.mp3",
-          "size_bytes": 30528
-        },
-        "v02": {
-          "path": "assets/audio/grace/S12_v02.mp3",
-          "size_bytes": 35543
-        },
-        "v03": {
-          "path": "assets/audio/grace/S12_v03.mp3",
-          "size_bytes": 30319
-        },
-        "v04": {
-          "path": "assets/audio/grace/S12_v04.mp3",
-          "size_bytes": 38887
-        },
-        "v05": {
-          "path": "assets/audio/grace/S12_v05.mp3",
-          "size_bytes": 23631
-        },
-        "v06": {
-          "path": "assets/audio/grace/S12_v06.mp3",
-          "size_bytes": 19034
-        },
-        "v07": {
-          "path": "assets/audio/grace/S12_v07.mp3",
-          "size_bytes": 30946
-        },
-        "v08": {
-          "path": "assets/audio/grace/S12_v08.mp3",
-          "size_bytes": 23840
-        },
-        "v09": {
-          "path": "assets/audio/grace/S12_v09.mp3",
-          "size_bytes": 24258
-        },
-        "v10": {
-          "path": "assets/audio/grace/S12_v10.mp3",
-          "size_bytes": 21332
-        },
-        "v11": {
-          "path": "assets/audio/grace/S12_v11.mp3",
-          "size_bytes": 34707
-        },
-        "v12": {
-          "path": "assets/audio/grace/S12_v12.mp3",
-          "size_bytes": 16944
-        },
-        "v13": {
-          "path": "assets/audio/grace/S12_v13.mp3",
-          "size_bytes": 12346
-        },
-        "v14": {
-          "path": "assets/audio/grace/S12_v14.mp3",
-          "size_bytes": 17571
-        },
-        "v15": {
-          "path": "assets/audio/grace/S12_v15.mp3",
-          "size_bytes": 20497
-        }
-      },
-      "S13": {
-        "v01": {
-          "path": "assets/audio/grace/S13_v01.mp3",
-          "size_bytes": 86743
-        },
-        "v02": {
-          "path": "assets/audio/grace/S13_v02.mp3",
-          "size_bytes": 93430
-        },
-        "v03": {
-          "path": "assets/audio/grace/S13_v03.mp3",
-          "size_bytes": 89251
-        },
-        "v04": {
-          "path": "assets/audio/grace/S13_v04.mp3",
-          "size_bytes": 76294
-        },
-        "v05": {
-          "path": "assets/audio/grace/S13_v05.mp3",
-          "size_bytes": 61874
-        },
-        "v06": {
-          "path": "assets/audio/grace/S13_v06.mp3",
-          "size_bytes": 57695
-        },
-        "v07": {
-          "path": "assets/audio/grace/S13_v07.mp3",
-          "size_bytes": 52470
-        },
-        "v08": {
-          "path": "assets/audio/grace/S13_v08.mp3",
-          "size_bytes": 54769
-        },
-        "v09": {
-          "path": "assets/audio/grace/S13_v09.mp3",
-          "size_bytes": 62501
-        },
-        "v10": {
-          "path": "assets/audio/grace/S13_v10.mp3",
-          "size_bytes": 43902
-        },
-        "v11": {
-          "path": "assets/audio/grace/S13_v11.mp3",
-          "size_bytes": 58949
-        },
-        "v12": {
-          "path": "assets/audio/grace/S13_v12.mp3",
-          "size_bytes": 47246
-        },
-        "v13": {
-          "path": "assets/audio/grace/S13_v13.mp3",
-          "size_bytes": 47037
-        },
-        "v14": {
-          "path": "assets/audio/grace/S13_v14.mp3",
-          "size_bytes": 35125
-        },
-        "v15": {
-          "path": "assets/audio/grace/S13_v15.mp3",
-          "size_bytes": 46201
-        }
-      },
-      "S14": {
-        "v01": {
-          "path": "assets/audio/grace/S14_v01.mp3",
-          "size_bytes": 66681
-        },
-        "v02": {
-          "path": "assets/audio/grace/S14_v02.mp3",
-          "size_bytes": 65636
-        },
-        "v03": {
-          "path": "assets/audio/grace/S14_v03.mp3",
-          "size_bytes": 63964
-        },
-        "v04": {
-          "path": "assets/audio/grace/S14_v04.mp3",
-          "size_bytes": 57277
-        },
-        "v05": {
-          "path": "assets/audio/grace/S14_v05.mp3",
-          "size_bytes": 91550
-        },
-        "v06": {
-          "path": "assets/audio/grace/S14_v06.mp3",
-          "size_bytes": 37633
-        },
-        "v07": {
-          "path": "assets/audio/grace/S14_v07.mp3",
-          "size_bytes": 52888
-        },
-        "v08": {
-          "path": "assets/audio/grace/S14_v08.mp3",
-          "size_bytes": 51426
-        },
-        "v09": {
-          "path": "assets/audio/grace/S14_v09.mp3",
-          "size_bytes": 41394
-        },
-        "v10": {
-          "path": "assets/audio/grace/S14_v10.mp3",
-          "size_bytes": 37633
-        },
-        "v11": {
-          "path": "assets/audio/grace/S14_v11.mp3",
-          "size_bytes": 60412
-        },
-        "v12": {
-          "path": "assets/audio/grace/S14_v12.mp3",
-          "size_bytes": 33662
-        },
-        "v13": {
-          "path": "assets/audio/grace/S14_v13.mp3",
-          "size_bytes": 42230
-        },
-        "v14": {
-          "path": "assets/audio/grace/S14_v14.mp3",
-          "size_bytes": 26139
-        },
-        "v15": {
-          "path": "assets/audio/grace/S14_v15.mp3",
-          "size_bytes": 41812
-        }
-      },
-      "S15": {
-        "v01": {
-          "path": "assets/audio/grace/S15_v01.mp3",
-          "size_bytes": 89669
-        },
-        "v02": {
-          "path": "assets/audio/grace/S15_v02.mp3",
-          "size_bytes": 74831
-        },
-        "v03": {
-          "path": "assets/audio/grace/S15_v03.mp3",
-          "size_bytes": 62919
-        },
-        "v04": {
-          "path": "assets/audio/grace/S15_v04.mp3",
-          "size_bytes": 75667
-        },
-        "v05": {
-          "path": "assets/audio/grace/S15_v05.mp3",
-          "size_bytes": 49545
-        },
-        "v06": {
-          "path": "assets/audio/grace/S15_v06.mp3",
-          "size_bytes": 81101
-        },
-        "v07": {
-          "path": "assets/audio/grace/S15_v07.mp3",
-          "size_bytes": 61039
-        },
-        "v08": {
-          "path": "assets/audio/grace/S15_v08.mp3",
-          "size_bytes": 43693
-        },
-        "v09": {
-          "path": "assets/audio/grace/S15_v09.mp3",
-          "size_bytes": 55814
-        },
-        "v10": {
-          "path": "assets/audio/grace/S15_v10.mp3",
-          "size_bytes": 42230
-        },
-        "v11": {
-          "path": "assets/audio/grace/S15_v11.mp3",
-          "size_bytes": 53933
-        },
-        "v12": {
-          "path": "assets/audio/grace/S15_v12.mp3",
-          "size_bytes": 51008
-        },
-        "v13": {
-          "path": "assets/audio/grace/S15_v13.mp3",
-          "size_bytes": 51008
-        },
-        "v14": {
-          "path": "assets/audio/grace/S15_v14.mp3",
-          "size_bytes": 32199
-        },
-        "v15": {
-          "path": "assets/audio/grace/S15_v15.mp3",
-          "size_bytes": 39514
-        }
-      },
-      "S16": {
-        "v01": {
-          "path": "assets/audio/grace/S16_v01.mp3",
-          "size_bytes": 52261
-        },
-        "v02": {
-          "path": "assets/audio/grace/S16_v02.mp3",
-          "size_bytes": 29065
-        },
-        "v03": {
-          "path": "assets/audio/grace/S16_v03.mp3",
-          "size_bytes": 19870
-        },
-        "v04": {
-          "path": "assets/audio/grace/S16_v04.mp3",
-          "size_bytes": 53306
-        },
-        "v05": {
-          "path": "assets/audio/grace/S16_v05.mp3",
-          "size_bytes": 31781
-        },
-        "v06": {
-          "path": "assets/audio/grace/S16_v06.mp3",
-          "size_bytes": 30946
-        },
-        "v07": {
-          "path": "assets/audio/grace/S16_v07.mp3",
-          "size_bytes": 54769
-        },
-        "v08": {
-          "path": "assets/audio/grace/S16_v08.mp3",
-          "size_bytes": 24258
-        },
-        "v09": {
-          "path": "assets/audio/grace/S16_v09.mp3",
-          "size_bytes": 56232
-        },
-        "v10": {
-          "path": "assets/audio/grace/S16_v10.mp3",
-          "size_bytes": 19452
-        },
-        "v11": {
-          "path": "assets/audio/grace/S16_v11.mp3",
-          "size_bytes": 42857
-        },
-        "v12": {
-          "path": "assets/audio/grace/S16_v12.mp3",
-          "size_bytes": 17989
-        },
-        "v13": {
-          "path": "assets/audio/grace/S16_v13.mp3",
-          "size_bytes": 56650
-        },
-        "v14": {
-          "path": "assets/audio/grace/S16_v14.mp3",
-          "size_bytes": 19452
-        },
-        "v15": {
-          "path": "assets/audio/grace/S16_v15.mp3",
-          "size_bytes": 42230
-        }
-      }
-    }
   }
 }

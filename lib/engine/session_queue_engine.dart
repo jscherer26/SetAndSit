@@ -193,13 +193,15 @@ class SessionQueueEngine {
         variantId: variant.variantId,
       );
 
+      final varNum = _extractVariantNumber(variant.variantId, variant.variantName);
       queue.add(PlayAudioItem(
         id: '${seg.code}_${variant.variantId}',
-        displayTitle: '${seg.title} (${variant.variantName})',
+        displayTitle: '${seg.title} ($varNum)',
         phaseName: seg.phase,
         audioAssetPath: assetPath,
         durationSeconds: dur,
         segment: seg,
+        text: variant.cleanText,
       ));
 
       preClosingCount++;
@@ -241,13 +243,15 @@ class SessionQueueEngine {
       segmentCode: 'S16',
       variantId: s16Variant.variantId,
     );
+    final s16VarNum = _extractVariantNumber(s16Variant.variantId, s16Variant.variantName);
     queue.add(PlayAudioItem(
       id: 'S16_${s16Variant.variantId}',
-      displayTitle: 'Closing Guidance (${s16Variant.variantName})',
+      displayTitle: 'Closing Guidance ($s16VarNum)',
       phaseName: 'Re-Orientation & Close',
       audioAssetPath: s16Path,
       durationSeconds: s16Sec,
       segment: ClinicalSegment.S16,
+      text: s16Variant.cleanText,
     ));
 
     // 3.0s buffer of silence at the very end so S16 vocal outro completes without being cut off
@@ -258,5 +262,18 @@ class SessionQueueEngine {
     ));
 
     return queue;
+  }
+
+  /// Extracts clean variation number (e.g. "10" from "10. Simple Concludes" or "v10")
+  static String _extractVariantNumber(String variantId, String variantName) {
+    final match = RegExp(r'^(\d+)').firstMatch(variantName.trim());
+    if (match != null) {
+      return match.group(1)!;
+    }
+    final numOnly = int.tryParse(variantId.replaceFirst(RegExp(r'^[vV]'), ''));
+    if (numOnly != null) {
+      return numOnly.toString();
+    }
+    return variantId;
   }
 }

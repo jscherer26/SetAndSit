@@ -134,6 +134,41 @@ enum ClinicalArchetype {
   }
 }
 
+// Master Session Manifest model
+class SessionManifest {
+  final String app;
+  final String schemaVersion;
+  final String description;
+  final Map<String, List<ScriptVariant>> scriptBank;
+
+  SessionManifest({
+    required this.app,
+    required this.schemaVersion,
+    required this.description,
+    required this.scriptBank,
+  });
+
+  factory SessionManifest.fromJson(Map<String, dynamic> json) {
+    final bankMap = json['script_bank'] as Map<String, dynamic>? ?? {};
+    final parsedBank = <String, List<ScriptVariant>>{};
+
+    bankMap.forEach((segKey, listRaw) {
+      if (listRaw is List) {
+        parsedBank[segKey] = listRaw
+            .map((item) => ScriptVariant.fromJson(item as Map<String, dynamic>))
+            .toList();
+      }
+    });
+
+    return SessionManifest(
+      app: json['app'] as String? ?? '',
+      schemaVersion: json['schema_version'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      scriptBank: parsedBank,
+    );
+  }
+}
+
 // Script variant from manifest
 class ScriptVariant {
   final String variantId;
@@ -149,6 +184,22 @@ class ScriptVariant {
     required this.text,
     required this.wordCount,
   });
+
+  /// Returns cleaned, readable text removing any `[...]` brackets,
+  /// formatting ellipses `...` into natural punctuation, and cleaning extra whitespace.
+  String get cleanText {
+    if (text.isEmpty) return '';
+    var cleaned = text.replaceAll(RegExp(r'\[.*?\]'), '');
+    cleaned = cleaned.replaceAll(RegExp(r'\.{2,}|\u2026'), ',');
+    cleaned = cleaned.replaceAll(RegExp(r',\s*,'), ',');
+    cleaned = cleaned.replaceAll(RegExp(r',\s*\.'), '.');
+    cleaned = cleaned.replaceAll(RegExp(r'\.\s*,'), '.');
+    cleaned = cleaned.replaceAll(RegExp(r'\s+'), ' ').trim();
+    if (cleaned.endsWith(',')) {
+      cleaned = '${cleaned.substring(0, cleaned.length - 1)}.';
+    }
+    return cleaned;
+  }
 
   factory ScriptVariant.fromJson(Map<String, dynamic> json) => ScriptVariant(
         variantId: json['variant_id'] as String? ?? 'v01',
@@ -224,6 +275,7 @@ class AudioSegment {
 abstract class SessionItem {
   String get displayTitle;
   String get phaseName;
+  String get text;
 }
 
 class PlayAudioItem extends SessionItem {
@@ -236,6 +288,8 @@ class PlayAudioItem extends SessionItem {
   final double durationSeconds;
   final ClinicalSegment? segment;
   final bool isBell;
+  @override
+  final String text;
 
   PlayAudioItem({
     required this.id,
@@ -245,6 +299,7 @@ class PlayAudioItem extends SessionItem {
     required this.durationSeconds,
     this.segment,
     this.isBell = false,
+    this.text = '',
   });
 }
 
@@ -254,10 +309,13 @@ class PauseSilenceItem extends SessionItem {
   final String displayTitle;
   @override
   final String phaseName;
+  @override
+  final String text;
 
   PauseSilenceItem(
     this.durationSeconds, {
     this.displayTitle = 'Deep Integration Silence',
     this.phaseName = 'Deep Silence',
+    this.text = '',
   });
 }

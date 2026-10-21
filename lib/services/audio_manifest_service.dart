@@ -13,18 +13,8 @@ class AudioManifestService {
     try {
       final manifestJson = await rootBundle.loadString('assets/raw/session_manifest.json');
       final Map<String, dynamic> manifestMap = jsonDecode(manifestJson);
-
-      final bankMap = manifestMap['script_bank'] as Map<String, dynamic>? ?? {};
-      final parsedBank = <String, List<ScriptVariant>>{};
-
-      bankMap.forEach((segKey, listRaw) {
-        if (listRaw is List) {
-          parsedBank[segKey] = listRaw
-              .map((item) => ScriptVariant.fromJson(item as Map<String, dynamic>))
-              .toList();
-        }
-      });
-      _cachedScriptBank = parsedBank;
+      final manifest = SessionManifest.fromJson(manifestMap);
+      _cachedScriptBank = manifest.scriptBank;
 
       final durationsJson = await rootBundle.loadString('assets/raw/audio_durations.json');
       final Map<String, dynamic> durMap = jsonDecode(durationsJson);
@@ -75,8 +65,7 @@ class AudioManifestService {
     required String segmentCode,
     required String variantId,
   }) {
-    // Files are located in assets/audio/Kia/ or assets/audio/Grace/
-    final voiceCapitalized = voice.toLowerCase() == 'kia' ? 'Kia' : 'Grace';
-    return 'assets/audio/$voiceCapitalized/${segmentCode}_$variantId.mp3';
+    final vNorm = voice.toLowerCase();
+    return 'assets/audio/$vNorm/${segmentCode}_$variantId.mp3';
   }
 }
