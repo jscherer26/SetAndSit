@@ -264,10 +264,18 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           clockMinute: _clockMinute,
           isAm: _isAm,
           onClockTimeChanged: (h, m, am) {
+            final now = DateTime.now();
+            final h24 = am ? (h == 12 ? 0 : h) : (h == 12 ? 12 : h + 12);
+            var target = DateTime(now.year, now.month, now.day, h24, m);
+            if (!target.isAfter(now)) {
+              target = target.add(const Duration(days: 1));
+            }
+            final diffMins = (target.difference(now).inSeconds / 60.0).round().clamp(1, 90);
             setState(() {
               _clockHour = h;
               _clockMinute = m;
               _isAm = am;
+              _practiceDurationMinutes = diffMins;
             });
             _persistState();
           },
@@ -286,7 +294,14 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           instructionDensity: _instructionDensity,
           redirectionDensity: _redirectionDensity,
           onPracticeDurationChanged: (val) {
-            setState(() => _practiceDurationMinutes = val);
+            final now = DateTime.now();
+            final newTarget = now.add(Duration(minutes: val));
+            setState(() {
+              _practiceDurationMinutes = val;
+              _clockHour = newTarget.hour % 12 == 0 ? 12 : newTarget.hour % 12;
+              _clockMinute = newTarget.minute;
+              _isAm = newTarget.hour < 12;
+            });
             _persistState();
           },
           onInstructionDensityChanged: (val) {
@@ -298,8 +313,15 @@ class _RootControllerScreenState extends State<RootControllerScreen>
             _persistState();
           },
           onBack: () {
-            _ensureFutureTargetTime();
-            setState(() => _currentScreen = AppScreen.configuration);
+            final now = DateTime.now();
+            final newTarget = now.add(Duration(minutes: _practiceDurationMinutes));
+            setState(() {
+              _clockHour = newTarget.hour % 12 == 0 ? 12 : newTarget.hour % 12;
+              _clockMinute = newTarget.minute;
+              _isAm = newTarget.hour < 12;
+              _currentScreen = AppScreen.configuration;
+            });
+            _persistState();
           },
         );
 

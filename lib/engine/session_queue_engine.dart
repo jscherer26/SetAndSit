@@ -1,9 +1,95 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import '../models/audio_models.dart';
 import '../services/audio_manifest_service.dart';
 
 class SessionQueueEngine {
   static final Random _random = Random();
+
+  /// Protected frame segments never pruned in sessions >= 5 minutes.
+  static const List<String> protectedFrame = [
+    'S01',
+    'S02',
+    'S12',
+    'S13',
+    'S15',
+    'S16',
+  ];
+
+  /// Pruning priority order (dropped one-by-one in this exact order when silence gaps are too tight).
+  static const List<String> pruningPriorityOrder = [
+    'S14',
+    'S06',
+    'S04',
+    'S03',
+    'S07',
+    'S10',
+    'S08',
+  ];
+
+  /// Returns the protected signature pair for a clinical archetype.
+  static List<String> getProtectedSignaturePair(ClinicalArchetype archetype) {
+    switch (archetype) {
+      case ClinicalArchetype.focusedCalm:
+        return const ['S03', 'S08'];
+      case ClinicalArchetype.traumaInformed:
+        return const ['S04', 'S05'];
+      case ClinicalArchetype.openAwareness:
+        return const ['S08', 'S09'];
+      case ClinicalArchetype.mettaCompassion:
+        return const ['S04', 'S11'];
+    }
+  }
+
+  /// Returns the primary signature segment for ultra-short test mode (<= 120s).
+  static ClinicalSegment getPrimarySignatureSegment(ClinicalArchetype archetype) {
+    switch (archetype) {
+      case ClinicalArchetype.focusedCalm:
+        return ClinicalSegment.S08;
+      case ClinicalArchetype.traumaInformed:
+        return ClinicalSegment.S04;
+      case ClinicalArchetype.openAwareness:
+        return ClinicalSegment.S09;
+      case ClinicalArchetype.mettaCompassion:
+        return ClinicalSegment.S11;
+    }
+  }
+
+  /// Returns whether a segment belongs to Zone 2 (S03 through S11).
+  static bool isZone2(ClinicalSegment seg) {
+    return seg.code.compareTo('S03') >= 0 && seg.code.compareTo('S11') <= 0;
+  }
+
+  /// Returns the relative weight for a Zone 2 segment.
+  /// Settling segments (S03-S07): 1.0; Core Practice segments (S08-S11): 1.5.
+  static double getZone2Weight(ClinicalSegment seg) {
+    switch (seg) {
+      case ClinicalSegment.S03:
+      case ClinicalSegment.S04:
+      case ClinicalSegment.S05:
+      case ClinicalSegment.S06:
+      case ClinicalSegment.S07:
+        return 1.0;
+      case ClinicalSegment.S08:
+      case ClinicalSegment.S09:
+      case ClinicalSegment.S10:
+      case ClinicalSegment.S11:
+        return 1.5;
+      default:
+        return 0.0;
+    }
+  }
+
+  /// Returns the Zone label for debug logging.
+  static String getZoneLabel(ClinicalSegment seg) {
+    if (seg == ClinicalSegment.S12) {
+      return 'Zone 3';
+    } else if (isZone2(seg)) {
+      return 'Zone 2';
+    } else {
+      return 'Zone 1';
+    }
+  }
 
   /// Generates a silent session with only an ending bell.
   /// (Opening bell removed as meditations do not start with a bell).
@@ -41,9 +127,8 @@ class SessionQueueEngine {
   }
 
   /// Generates a clinical guided session queue based on the selected Archetype,
-  /// voice persona, exact end-time duration, and S13 silence partitioning.
-  /// Does NOT start with a bell.
-  /// Randomly selects from the 15 variations available for each segment.
+  /// voice persona, exact end-time duration, and 3-Zone Silence & Pruning Engine.
+  /// Dual-player overlap is used for S16 (bell strikes first, voice triggers at +2.5s).
   static List<SessionItem> generateGuidedSessionQueue({
     required int targetDurationSeconds,
     required ClinicalArchetype archetype,
@@ -51,192 +136,306 @@ class SessionQueueEngine {
     required AudioSegment selectedBell,
   }) {
     final vNorm = voicePersona.toLowerCase() == 'grace' ? 'grace' : 'kia';
+    const s16OverlapDelaySec = 2.5;
 
-    // For short testing durations (< 180s / 3 minutes):
-    // The complete 10-segment clinical pipeline has ~135 seconds of spoken voice and bells alone,
-    // which cannot physically fit into under 3 minutes without overflowing or eliminating all silence.
-    // An abbreviated pipeline (S01 Arrival, S04 Grounding, S13 Integration Silence, S16 Outro)
-    // provides an authentic practice experience that fits test windows cleanly.
-    final List<ClinicalSegment> pipeline = targetDurationSeconds < 180
-        ? const [
-            ClinicalSegment.S01,
-            ClinicalSegment.S04,
-            ClinicalSegment.S13,
-            ClinicalSegment.S16,
-          ]
-        : archetype.pipeline;
-
-    // 1. Randomly select from the 15 variants for each segment in the pipeline
+    final sigPair = getProtectedSignaturePair(archetype);
+    final prunedSegments = <String>[];
     final selectedVariants = <ClinicalSegment, ScriptVariant>{};
-    for (final seg in pipeline) {
-      if (seg == ClinicalSegment.S13) continue; // S13 is integration silence
+    final postSilenceMap = <ClinicalSegment, int>{};
+    List<ClinicalSegment> activeSegments;
 
-      final variants = AudioManifestService.getVariantsForSegment(seg.code);
-      if (variants.isEmpty) {
-        selectedVariants[seg] = ScriptVariant(
-          variantId: 'v01',
-          variantName: '${seg.code} Standard',
-          active: true,
-          text: '',
-          wordCount: 15,
+    double calcTotalAudio(List<ClinicalSegment> segs) {
+      var total = 0.0;
+      for (final seg in segs) {
+        final variant = selectedVariants[seg]!;
+        final dur = AudioManifestService.getAudioDuration(
+          voice: vNorm,
+          segmentCode: seg.code,
+          variantId: variant.variantId,
         );
-        continue;
+        total += dur;
       }
-
-      // Randomly select one of the variations for this segment
-      selectedVariants[seg] = variants[_random.nextInt(variants.length)];
+      if (segs.contains(ClinicalSegment.S16)) {
+        total += s16OverlapDelaySec;
+      }
+      return total;
     }
 
-    // 2. Pre-closing guidance duration (all segments except S13 and S16)
-    var preClosingGuidanceSec = 0.0;
-    final preClosingSegments = pipeline.where(
-      (s) => s != ClinicalSegment.S13 && s != ClinicalSegment.S16,
-    ).toList();
+    double calcTotalZone1(List<ClinicalSegment> segs) {
+      var total = 0.0;
+      for (final seg in segs) {
+        if (seg.code == 'S01' || seg.code == 'S02' || seg.code == 'S13' || seg.code == 'S14') {
+          total += 8.0;
+        } else if (seg.code == 'S15') {
+          total += 5.0;
+        }
+      }
+      return total;
+    }
 
-    for (final seg in preClosingSegments) {
+    if (targetDurationSeconds < 300) {
+      // --- Section 4: Test Mode Bypass for Ultra-Short Sessions (< 300s) ---
+      if (targetDurationSeconds <= 120) {
+        final primarySig = getPrimarySignatureSegment(archetype);
+        activeSegments = [
+          ClinicalSegment.S01,
+          primarySig,
+          ClinicalSegment.S12,
+          ClinicalSegment.S16,
+        ];
+      } else {
+        activeSegments = archetype.pipeline
+            .where((s) => protectedFrame.contains(s.code) || sigPair.contains(s.code))
+            .toList();
+      }
+
+      for (final seg in activeSegments) {
+        final variants = AudioManifestService.getVariantsForSegment(seg.code);
+        if (variants.isEmpty) {
+          selectedVariants[seg] = ScriptVariant(
+            variantId: 'v01',
+            variantName: '${seg.code} Standard',
+            active: true,
+            text: '',
+            wordCount: 15,
+          );
+        } else {
+          selectedVariants[seg] = variants[_random.nextInt(variants.length)];
+        }
+      }
+
+      final totalAudioSeconds = calcTotalAudio(activeSegments);
+      final silencePool = max(0.0, targetDurationSeconds - totalAudioSeconds);
+
+      double getShortSessionWeight(ClinicalSegment seg) {
+        if (seg == ClinicalSegment.S16) return 0.0;
+        if (seg == ClinicalSegment.S12) return 3.0;
+        if (sigPair.contains(seg.code)) return 2.0;
+        return 1.0; // Framing segments: S01, S02, S13, S14, S15
+      }
+
+      final totalWeight = activeSegments.fold<double>(
+        0.0,
+        (sum, seg) => sum + getShortSessionWeight(seg),
+      );
+
+      var assignedOtherSilence = 0;
+      for (final seg in activeSegments) {
+        if (seg == ClinicalSegment.S12) continue;
+        if (seg == ClinicalSegment.S16) {
+          postSilenceMap[seg] = 0;
+          continue;
+        }
+        final w = getShortSessionWeight(seg);
+        final silence = totalWeight > 0 ? (silencePool * (w / totalWeight)).round() : 0;
+        postSilenceMap[seg] = silence;
+        assignedOtherSilence += silence;
+      }
+
+      if (activeSegments.contains(ClinicalSegment.S12)) {
+        final s12Silence = max(
+          0,
+          (targetDurationSeconds - totalAudioSeconds - assignedOtherSilence).round(),
+        );
+        postSilenceMap[ClinicalSegment.S12] = s12Silence;
+      }
+    } else {
+      // --- Sessions >= 5 Minutes (>= 300s) ---
+      activeSegments = List<ClinicalSegment>.from(archetype.pipeline);
+
+      for (final seg in activeSegments) {
+        final variants = AudioManifestService.getVariantsForSegment(seg.code);
+        if (variants.isEmpty) {
+          selectedVariants[seg] = ScriptVariant(
+            variantId: 'v01',
+            variantName: '${seg.code} Standard',
+            active: true,
+            text: '',
+            wordCount: 15,
+          );
+        } else {
+          selectedVariants[seg] = variants[_random.nextInt(variants.length)];
+        }
+      }
+
+      var totalAudioSeconds = calcTotalAudio(activeSegments);
+      var totalZone1Seconds = calcTotalZone1(activeSegments);
+      var dynamicSilencePool = targetDurationSeconds - totalAudioSeconds - totalZone1Seconds;
+      var zone2Pool = dynamicSilencePool * 0.68;
+      var activeZone2 = activeSegments.where((s) => isZone2(s)).toList();
+
+      // Pruning Loop Check
+      while (activeZone2.isNotEmpty && (zone2Pool / activeZone2.length) < 60.0) {
+        ClinicalSegment? toPrune;
+        for (final code in pruningPriorityOrder) {
+          if (protectedFrame.contains(code) || sigPair.contains(code)) continue;
+          final candidate = activeSegments.cast<ClinicalSegment?>().firstWhere(
+            (s) => s?.code == code,
+            orElse: () => null,
+          );
+          if (candidate != null) {
+            toPrune = candidate;
+            break;
+          }
+        }
+
+        if (toPrune == null) {
+          break; // No more prunable segments available
+        }
+
+        activeSegments.remove(toPrune);
+        prunedSegments.add(toPrune.code);
+
+        totalAudioSeconds = calcTotalAudio(activeSegments);
+        totalZone1Seconds = calcTotalZone1(activeSegments);
+        dynamicSilencePool = targetDurationSeconds - totalAudioSeconds - totalZone1Seconds;
+        zone2Pool = dynamicSilencePool * 0.68;
+        activeZone2 = activeSegments.where((s) => isZone2(s)).toList();
+      }
+
+      // Final Silence Assignment
+      dynamicSilencePool = max(0.0, targetDurationSeconds - totalAudioSeconds - totalZone1Seconds);
+      zone2Pool = dynamicSilencePool * 0.68;
+      final sumOfActiveZone2Weights = activeZone2.fold<double>(
+        0.0,
+        (sum, s) => sum + getZone2Weight(s),
+      );
+
+      var assignedOtherSilence = 0;
+      for (final seg in activeSegments) {
+        if (seg == ClinicalSegment.S12) continue;
+        if (seg == ClinicalSegment.S16) {
+          postSilenceMap[seg] = 0;
+          continue;
+        }
+
+        int silence;
+        if (seg.code == 'S01' || seg.code == 'S02' || seg.code == 'S13' || seg.code == 'S14') {
+          silence = 8;
+        } else if (seg.code == 'S15') {
+          silence = 5;
+        } else if (isZone2(seg)) {
+          final segWeight = getZone2Weight(seg);
+          silence = sumOfActiveZone2Weights > 0
+              ? (zone2Pool * (segWeight / sumOfActiveZone2Weights)).round()
+              : 0;
+        } else {
+          silence = 0;
+        }
+        postSilenceMap[seg] = silence;
+        assignedOtherSilence += silence;
+      }
+
+      // Zone 3: S12 absorbs remaining dynamic silence pool to guarantee exact duration match
+      if (activeSegments.contains(ClinicalSegment.S12)) {
+        final s12Silence = max(
+          0,
+          (targetDurationSeconds - totalAudioSeconds - assignedOtherSilence).round(),
+        );
+        postSilenceMap[ClinicalSegment.S12] = s12Silence;
+      }
+    }
+
+    // --- Section 5: Debug Logging ---
+    var totalCalculatedSec = 0.0;
+    for (final seg in activeSegments) {
       final variant = selectedVariants[seg]!;
-      final dur = AudioManifestService.getAudioDuration(
+      final voiceDur = AudioManifestService.getAudioDuration(
         voice: vNorm,
         segmentCode: seg.code,
         variantId: variant.variantId,
       );
-      preClosingGuidanceSec += dur;
+      final dur = seg == ClinicalSegment.S16 ? s16OverlapDelaySec + voiceDur : voiceDur;
+      final silence = postSilenceMap[seg] ?? 0;
+      totalCalculatedSec += dur + silence;
     }
 
-    // 3. Closing unit: 4.0s Pre-Bell Silence + S16 Overlap (Bell strike + 2.5s timer + voice outro) + 3.0s Closing Stillness
-    const s16OverlapDelaySec = 2.5;
-
-    final s16Variant = selectedVariants[ClinicalSegment.S16] ??
-        ScriptVariant(
-          variantId: 'v01',
-          variantName: 'Closing',
-          active: true,
-          text: '',
-          wordCount: 10,
-        );
-    final s16Sec = AudioManifestService.getAudioDuration(
-      voice: vNorm,
-      segmentCode: 'S16',
-      variantId: s16Variant.variantId,
-    );
-
-    const preClosingBellSilenceSec = 4;
-    final closingUnitSec = preClosingBellSilenceSec +
-        s16OverlapDelaySec +
-        s16Sec;
-
-    // Intentional 4-second settling pause before S01 begins
-    const settlePauseSec = 4;
-
-    // 4. Calculate micro-pauses between guidance segments
-    // Micro-pauses occur between pre-closing guidance segments
-    final numTransitions = max(0, preClosingSegments.length - 1);
-    int pSegment;
-    if (targetDurationSeconds <= 300) {
-      pSegment = 2;
-    } else if (targetDurationSeconds <= 900) {
-      pSegment = 6;
-    } else {
-      pSegment = 14;
+    debugPrint('=== SessionQueueEngine Queue Generated ===');
+    debugPrint('Selected Archetype: ${archetype.title} | Target Duration: ${targetDurationSeconds}s');
+    debugPrint('Pruned Segments: ${prunedSegments.isEmpty ? 'None' : prunedSegments.join(', ')}');
+    debugPrint('Final Ordered Segment List:');
+    for (final seg in activeSegments) {
+      final variant = selectedVariants[seg]!;
+      final voiceDur = AudioManifestService.getAudioDuration(
+        voice: vNorm,
+        segmentCode: seg.code,
+        variantId: variant.variantId,
+      );
+      final dur = seg == ClinicalSegment.S16 ? s16OverlapDelaySec + voiceDur : voiceDur;
+      final silence = (postSilenceMap[seg] ?? 0).toDouble();
+      final zone = getZoneLabel(seg);
+      debugPrint('  [${seg.code}_${variant.variantId}] Audio: ${dur.toStringAsFixed(1)}s | Post-SilenceGap: ${silence.toStringAsFixed(1)}s ($zone)');
     }
+    debugPrint('Total Calculated Duration: ${totalCalculatedSec.toStringAsFixed(1)}s vs. Target Duration: ${targetDurationSeconds}s');
 
-    // 5. Dynamic S13 silence calculation:
-    // S13 absorbs the remaining budget so total queue duration precisely matches targetDurationSeconds
-    final fixedWithoutS13 = settlePauseSec +
-        preClosingGuidanceSec +
-        (numTransitions * pSegment) +
-        closingUnitSec;
-    final s13SilenceSec = max(0, (targetDurationSeconds - fixedWithoutS13).round());
-
-    // 6. Construct Final Queue
+    // --- Construct Final Playback Queue ---
     final queue = <SessionItem>[];
-
-    // Enforce intentional 4.0s silent settling pause before S01
-    queue.add(PauseSilenceItem(
-      settlePauseSec,
-      displayTitle: 'Settling into Practice',
-      phaseName: 'Arrival & Agency',
-    ));
-    var preClosingCount = 0;
-    for (var i = 0; i < pipeline.length; i++) {
-      final seg = pipeline[i];
-
-      if (seg == ClinicalSegment.S13) {
-        if (s13SilenceSec > 0) {
-          queue.add(PauseSilenceItem(
-            s13SilenceSec,
-            displayTitle: 'Deep Integration Silence',
-            phaseName: 'Deep Silence',
-          ));
-        }
-        continue;
-      }
-
-      if (seg == ClinicalSegment.S16) {
-        // Handled in closing sequence
-        continue;
-      }
-
+    for (final seg in activeSegments) {
       final variant = selectedVariants[seg]!;
       final assetPath = AudioManifestService.getAudioAssetPath(
         voice: vNorm,
         segmentCode: seg.code,
         variantId: variant.variantId,
       );
-      final dur = AudioManifestService.getAudioDuration(
+      final voiceDur = AudioManifestService.getAudioDuration(
         voice: vNorm,
         segmentCode: seg.code,
         variantId: variant.variantId,
       );
-
       final varNum = _extractVariantNumber(variant.variantId, variant.variantName);
-      queue.add(PlayAudioItem(
-        id: '${seg.code}_${variant.variantId}',
-        displayTitle: '${seg.title} ($varNum)',
-        phaseName: seg.phase,
-        audioAssetPath: assetPath,
-        durationSeconds: dur,
-        segment: seg,
-        text: variant.cleanText,
-      ));
 
-      preClosingCount++;
-      // Add micro-pause between guidance segments (after every segment except the last one before S13/closing)
-      if (preClosingCount < preClosingSegments.length) {
-        queue.add(PauseSilenceItem(
-          pSegment,
-          displayTitle: 'Settling with Guidance',
+      if (seg == ClinicalSegment.S16) {
+        queue.add(PlayAudioItem(
+          id: 'S16_${variant.variantId}',
+          displayTitle: 'Closing Guidance ($varNum)',
+          phaseName: 'Re-Orientation & Close',
+          audioAssetPath: assetPath,
+          durationSeconds: s16OverlapDelaySec + voiceDur,
+          segment: ClinicalSegment.S16,
+          text: variant.cleanText,
+          bellAssetPath: selectedBell.filePath,
+        ));
+      } else {
+        queue.add(PlayAudioItem(
+          id: '${seg.code}_${variant.variantId}',
+          displayTitle: '${seg.title} ($varNum)',
           phaseName: seg.phase,
+          audioAssetPath: assetPath,
+          durationSeconds: voiceDur,
+          segment: seg,
+          text: variant.cleanText,
+        ));
+      }
+
+      final postSilence = postSilenceMap[seg] ?? 0;
+      if (postSilence > 0) {
+        queue.add(PauseSilenceItem(
+          postSilence,
+          displayTitle: _getSilenceTitle(seg),
+          phaseName: _getSilencePhase(seg),
         ));
       }
     }
 
-    // 4.0s silence immediately before the closing sequence
-    queue.add(PauseSilenceItem(
-      preClosingBellSilenceSec,
-      displayTitle: 'Pre-Bell Silence',
-      phaseName: 'Re-Orientation & Close',
-    ));
-
-    // S16 Closing Sequence: Dual-player overlap (Acoustic bell strikes immediately; voice begins at +2.5s over bell decay)
-    final s16Path = AudioManifestService.getAudioAssetPath(
-      voice: vNorm,
-      segmentCode: 'S16',
-      variantId: s16Variant.variantId,
-    );
-    final s16VarNum = _extractVariantNumber(s16Variant.variantId, s16Variant.variantName);
-    queue.add(PlayAudioItem(
-      id: 'S16_${s16Variant.variantId}',
-      displayTitle: 'Closing Guidance ($s16VarNum)',
-      phaseName: 'Re-Orientation & Close',
-      audioAssetPath: s16Path,
-      durationSeconds: s16OverlapDelaySec + s16Sec,
-      segment: ClinicalSegment.S16,
-      text: s16Variant.cleanText,
-      bellAssetPath: selectedBell.filePath,
-    ));
-
     return queue;
+  }
+
+  static String _getSilenceTitle(ClinicalSegment seg) {
+    if (seg == ClinicalSegment.S12) {
+      return 'Deep Integration Silence';
+    } else if (seg == ClinicalSegment.S15) {
+      return 'Pre-Bell Silence';
+    }
+    return 'Settling with Guidance';
+  }
+
+  static String _getSilencePhase(ClinicalSegment seg) {
+    if (seg == ClinicalSegment.S12) {
+      return 'Deep Silence';
+    } else if (seg == ClinicalSegment.S15) {
+      return 'Re-Orientation & Close';
+    }
+    return seg.phase;
   }
 
   /// Extracts clean variation number (e.g. "10" from "10. Simple Concludes" or "v10")

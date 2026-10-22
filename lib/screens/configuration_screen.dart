@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/audio_models.dart';
 import '../theme/app_theme.dart';
+import 'clock_time_picker_dialog.dart';
 
 class ConfigurationScreen extends StatefulWidget {
   final VoidCallback onOpenSettings;
@@ -109,67 +110,14 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   }
 
   void _showTimeAdjustmentDialog(BuildContext context) async {
-    final initialTime = TimeOfDay(
-      hour: widget.isAm
-          ? (widget.clockHour % 12)
-          : (widget.clockHour % 12 + 12),
-      minute: widget.clockMinute,
-    );
-
-    final picked = await showTimePicker(
+    final picked = await ClockTimePickerDialog.show(
       context: context,
-      initialTime: initialTime,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.darkOlive,
-              onPrimary: AppColors.buttonTextLight,
-              surface: AppColors.white,
-              onSurface: AppColors.textBlack,
-            ),
-          ),
-          child: child!,
-        );
-      },
+      initialHour12: widget.clockHour,
+      initialMinute: widget.clockMinute,
+      initialIsAm: widget.isAm,
     );
 
     if (picked != null) {
-      final now = DateTime.now();
-      var pickedDateTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        picked.hour,
-        picked.minute,
-      );
-
-      // If picked time is earlier today, consider if it's tomorrow or overdue
-      if (pickedDateTime.isBefore(now)) {
-        pickedDateTime = pickedDateTime.add(const Duration(days: 1));
-      }
-
-      final diffMinutes = pickedDateTime.difference(now).inSeconds / 60.0;
-      if (diffMinutes < 1.0 || diffMinutes > 90.0) {
-        if (!context.mounted) return;
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Invalid Duration'),
-            content: const Text(
-              'Meditation duration must be between 1 and 90 minutes. Please pick a time within this window.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-        return;
-      }
-
       final hour12 = picked.hourOfPeriod == 0 ? 12 : picked.hourOfPeriod;
       final pickedIsAm = picked.period == DayPeriod.am;
       widget.onClockTimeChanged(hour12, picked.minute, pickedIsAm);
@@ -292,13 +240,13 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     );
   }
 
-  int _calculateTargetSeconds() {
+  int get currentDurationMinutes {
     final now = DateTime.now();
     final hour24 = widget.isAm
         ? (widget.clockHour == 12 ? 0 : widget.clockHour)
         : (widget.clockHour == 12 ? 12 : widget.clockHour + 12);
 
-    final targetDateTime = DateTime(
+    var targetDateTime = DateTime(
       now.year,
       now.month,
       now.day,
@@ -307,11 +255,39 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     );
 
     if (!targetDateTime.isAfter(now)) {
-      widget.onEnsureFutureTime();
-      return widget.practiceDurationMinutes * 60;
+      targetDateTime = targetDateTime.add(const Duration(days: 1));
     }
 
     final diff = targetDateTime.difference(now).inSeconds;
+    if (diff > 90 * 60 || diff < 60) {
+      return widget.practiceDurationMinutes;
+    }
+    return (diff / 60.0).round();
+  }
+
+  int _calculateTargetSeconds() {
+    final now = DateTime.now();
+    final hour24 = widget.isAm
+        ? (widget.clockHour == 12 ? 0 : widget.clockHour)
+        : (widget.clockHour == 12 ? 12 : widget.clockHour + 12);
+
+    var targetDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      hour24,
+      widget.clockMinute,
+    );
+
+    if (!targetDateTime.isAfter(now)) {
+      targetDateTime = targetDateTime.add(const Duration(days: 1));
+    }
+
+    final diff = targetDateTime.difference(now).inSeconds;
+    if (diff > 90 * 60 || diff < 60) {
+      widget.onEnsureFutureTime();
+      return widget.practiceDurationMinutes * 60;
+    }
     return diff;
   }
 
@@ -469,7 +445,17 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 4),
+                              Text(
+                                '$currentDurationMinutes min practice',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.darkOlive,
+                                ),
+                              ),
+
+                              const SizedBox(height: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 18,
