@@ -1,8 +1,8 @@
 # Set&Sit - Comprehensive Architecture & Runtime Specification
 
-- **Last Updated:** 2026-10-22 13:00 EDT
+- **Last Updated:** 2026-10-22 13:45 EDT
 - **Current Version:** 1.0.0+1
-- **Repository State:** main | 86c2cf8
+- **Repository State:** main | 33d385e
 - **Target Audience:** Clinical Reviewers, Somatic Flow Auditors, Lead Mobile Audio Engineers
 
 ---
@@ -20,7 +20,7 @@
 ### 1.2 Local Persistence Layer
 * **Service:** `PreferencesService` ([`lib/services/preferences_service.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/services/preferences_service.dart)) utilizing `shared_preferences: ^2.5.6`.
 * **Stored Payloads:**
-  * `set_and_sit_settings`: Core app preferences, slider positions, selected bell ID, target finish time, and voice index.
+  * `set_and_sit_settings`: Core app preferences, slider positions, settling delay (0–20s, default 10s), selected bell ID, target finish time, and voice index.
   * `set_and_sit_practices`: Custom practice configurations and segment variant overrides serialized via `PracticeConfig.toJson()`.
   * `set_and_sit_voices`: Voice persona order and inclusion status serialized via `VoiceConfig.toJson()`.
 
@@ -28,9 +28,10 @@
 * **Active Audio Library:** `audioplayers: ^6.8.1`.
 * **Execution Mechanism:**
   * Dual-stage session execution is handled directly within `_PracticeScreenState` ([`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart)).
-  * **Spoken Audio Items (`PlayAudioItem`):** Played via `_audioPlayer.play(AssetSource(rawPath))`. Queue advancement is driven by the `_audioPlayer.onPlayerComplete` stream listener.
+  * **Spoken Audio Items (`PlayAudioItem`):** Played via `_voicePlayer.play(AssetSource(rawPath))`. Queue advancement is driven by the `_voicePlayer.onPlayerComplete` stream listener. An explicit `_isVoiceSegmentPlaying` flag ensures looping background silence (`audio/silence.mp3`) stops and resets without emitting false completion triggers.
+  * **Acoustic Bell Player (`_bellPlayer`):** Dedicated player for meditation bells and gongs. Both players configure `AudioContextAndroid` with `AndroidAudioFocus.none` and iOS `mixWithOthers` so vocal guidance and resonant bell decays play concurrently without ducking or cancellation.
   * **Silence Intervals (`PauseSilenceItem`):** Driven by an asynchronous 1-second interval timer `Timer.periodic(const Duration(seconds: 1))` with second-by-second countdown updates.
-  * **Fallback Watchdog:** A secondary fallback timer triggers queue progression if an audio file fails to load or the platform player stream hangs.
+  * **Fallback Watchdog:** A secondary fallback timer triggers queue progression if an audio file fails to load or the platform player stream hangs ($\ge 18\text{s}$ for S16 to accommodate full 15s bell decays).
 * **Screen Stay-Awake:** `wakelock_plus: ^1.8.1` engages screen wake-lock upon session start and releases it on dispose or completion.
 * **Background Audio Status:**
   * Audio currently executes in the foreground.
@@ -107,9 +108,11 @@ The application implements a 16-Segment Clinical Meditation Taxonomy ($S01$–$S
 
 The scheduling engine is implemented in `SessionQueueEngine` ([`lib/engine/session_queue_engine.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/engine/session_queue_engine.dart)).
 
-### 4.1 Total Target Duration ($T_{\text{total}}$)
-Resolved from user configuration (slider or target clock time) within bounds:
-$$60\text{s} \le T_{\text{total}} \le 5400\text{s} \quad (1\text{ to }90\text{ minutes})$$
+### 4.1 Total Target Duration ($T_{\text{total}}$) & Exact-Start Calibration
+- Total duration bounds: $60\text{s} \le T_{\text{total}} \le 5400\text{s}$ (1 to 90 minutes).
+- **Exact-Moment Calculation:** When a practice delay (0–20s) is active, queue generation is held until the countdown reaches 0 or "Begin Now" is pressed. At that precise instant, remaining seconds to the scheduled target clock time are calculated:
+  $$T_{\text{actual}} = \text{TargetDateTime} - \text{DateTime.now()}$$
+  The queue is synthesized for $T_{\text{actual}}$, guaranteeing the session completes on the exact scheduled second without running over by the delay amount.
 
 ### 4.2 Opening Bell Removal
 In adherence to clinical guidelines, **no opening bell is played**. The session opens immediately with quiet verbal guidance.
@@ -187,24 +190,28 @@ The closing sequence guarantees seamless transition without dead air or audio cl
 1. **Exact Timestamp:** The closing bell strikes at $t = T_{\text{total}} - D_{\text{bell}}$.
 2. **Dual-Player Overlap:** At $+2.5\text{s}$ after the bell strikes, the spoken outro ($S16\_vXX$) triggers while the bell's resonance continues decaying in the background.
 3. **Post-Silence Gap:** Set to $0.0\text{s}$, guaranteeing the session completes on the exact target second.
+4. **Independent Playback:** `_bellPlayer` and `_voicePlayer` configure `AndroidAudioFocus.none` and `mixWithOthers`, preventing audio ducking or playback cut-offs.
 
 ---
 
 ## 7. Edge Cases, Interruption Handling & Screen Lifecycle
 
-### 7.1 Early Finish & Truncation Shield
+### 7.1 Practice Delay Buffer & Settling Screen
+* Practitioners can configure a 0–20s settling buffer in Settings.
+* While counting down, the breathing circle pulses gently displaying remaining settling seconds and a "Begin Now" bypass button.
+* Zero audio plays during the countdown; timer and queue generation activate once the delay concludes.
+
+### 7.2 Early Finish & Truncation Shield
 * **User Early Finish Modal:** If the user exits during practice, a confirmation dialog appears. If confirmed, the engine cancels timers and releases the wakelock.
 * **Truncation Shield:** If the closing bell or $S16$ vocal outro is actively playing when an exit or cancel occurs, `_audioPlayer.stop()` is delayed to allow the bell decay and sign-off to conclude cleanly.
 
-### 7.2 Silent Room / Mute Mode
+### 7.3 Silent Room / Mute Mode
 * The mute toggle in `PracticeScreen`:
   * Mutes all spoken voice segments (`volume = 0.0`).
   * **Preserves the closing bell at soft volume (`volume = 0.35`)** so practitioners practicing in silence are alerted when the meditation period ends.
 
-### 7.3 Lifecycle Interruption Recovery
-* Handled via `WidgetsBindingObserver` in `_PracticeScreenState`.
-* If app enters `paused` or `detached` states, timer states and current item indices are tracked.
-* Re-engaging `resumed` state syncs remaining duration against the wall-clock target timestamp.
+### 7.4 Live Debugging
+* The in-practice Debug button invokes `buildDebugScreenWithQueue`, feeding the live `_activeQueue` and `_targetDurationSeconds` to `SessionDebugScreen` so start times accurately reflect the live session.
 
 ---
 
@@ -250,11 +257,14 @@ The closing sequence guarantees seamless transition without dead air or audio cl
 * Located in [`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart).
 * Controls persona availability (Kia, Grace), preview sample playback, and active persona selection.
 
+### 9.3 Settings UI Defaults Bubble
+* The top card of [SettingsScreen](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/settings_screen.dart) consolidates all session defaults into a single unified bubble: Practice Duration (`min`), Practice Delay (0–20s), Instructions Density (0–5), and Mind-Wandering Checks (0–5).
+
 ---
 
 ## 10. Automated Test Verification & Quality Audits
 
-The architecture, timing formulas, and state persistence are verified by 49 automated tests in `test/`:
+The architecture, timing formulas, and state persistence are verified by 50 automated tests in `test/`:
 
 1. **`test/timeline_engine_test.dart` (349 lines):**
    * Validates 3-zone silence distribution math across 5m, 12m, 15m, and 30m sessions.
@@ -267,9 +277,9 @@ The architecture, timing formulas, and state persistence are verified by 49 auto
    * Validates queue generation with custom segment variant overrides.
 3. **`test/manage_voices_test.dart` (551 lines):**
    * Validates `VoiceConfig` persistence and fallback selection when voices are excluded.
-4. **`test/widget_test.dart` (124 lines):**
-   * Smoke tests app bootstrapping, theme consistency, and root screen navigation.
+4. **`test/widget_test.dart` (170 lines):**
+   * Validates app bootstrapping, circular dial taps, time adjustment dialog, and settling delay countdown / practice transitions.
 
 **Audit Status:**
-* `flutter test`: **49/49 tests pass**.
+* `flutter test`: **50/50 tests pass**.
 * `flutter analyze`: **0 issues found**.
