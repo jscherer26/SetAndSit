@@ -30,4 +30,8 @@ class AppColors {
   static const Color darkBackground = Color(0xFF262826);
   static const Color cardSurface = Color(0xFF353935);
   static const Color errorRed = Color(0xFFD32F2F);
+
+  // Practice category colors
+  static const Color systemBlue = Color(0xFF1565C0);
+  static const Color customGreen = Color(0xFF2E7D32);
 }

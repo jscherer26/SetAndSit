@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import '../models/audio_models.dart';
+import '../models/practice_config.dart';
 import '../services/audio_manifest_service.dart';
 
 class SessionQueueEngine {
@@ -41,6 +42,28 @@ class SessionQueueEngine {
     }
   }
 
+  /// Returns the protected signature pair for a PracticeConfig (system or custom).
+  static List<String> getProtectedSignaturePairForPractice(PracticeConfig practice) {
+    if (practice.isSystem) {
+      final arch = ClinicalArchetype.values.cast<ClinicalArchetype?>().firstWhere(
+        (a) => a?.id == practice.id || a?.title == practice.name,
+        orElse: () => null,
+      );
+      if (arch != null) {
+        return getProtectedSignaturePair(arch);
+      }
+    }
+    // For Custom practices: take the LAST 2 active segments (or single if only one)
+    // within the S03-S11 range of that custom practice's segmentIds.
+    final zone2Segments = practice.segmentIds
+        .where((id) => id.compareTo('S03') >= 0 && id.compareTo('S11') <= 0)
+        .toList();
+    if (zone2Segments.length <= 2) {
+      return zone2Segments;
+    }
+    return zone2Segments.sublist(zone2Segments.length - 2);
+  }
+
   /// Returns the primary signature segment for ultra-short test mode (<= 120s).
   static ClinicalSegment getPrimarySignatureSegment(ClinicalArchetype archetype) {
     switch (archetype) {
@@ -53,6 +76,27 @@ class SessionQueueEngine {
       case ClinicalArchetype.mettaCompassion:
         return ClinicalSegment.S11;
     }
+  }
+
+  /// Returns the primary signature segment for a PracticeConfig in ultra-short mode.
+  static ClinicalSegment getPrimarySignatureSegmentForPractice(PracticeConfig practice) {
+    if (practice.isSystem) {
+      final arch = ClinicalArchetype.values.cast<ClinicalArchetype?>().firstWhere(
+        (a) => a?.id == practice.id || a?.title == practice.name,
+        orElse: () => null,
+      );
+      if (arch != null) {
+        return getPrimarySignatureSegment(arch);
+      }
+    }
+    // For Custom practices: use the last active segment in S03-S11
+    final zone2 = practice.segmentIds
+        .where((id) => id.compareTo('S03') >= 0 && id.compareTo('S11') <= 0)
+        .toList();
+    if (zone2.isNotEmpty) {
+      return ClinicalSegment.fromCode(zone2.last);
+    }
+    return ClinicalSegment.S08;
   }
 
   /// Returns whether a segment belongs to Zone 2 (S03 through S11).
@@ -126,19 +170,25 @@ class SessionQueueEngine {
     return queue;
   }
 
-  /// Generates a clinical guided session queue based on the selected Archetype,
+  /// Generates a clinical guided session queue based on the selected Archetype/Practice,
   /// voice persona, exact end-time duration, and 3-Zone Silence & Pruning Engine.
   /// Dual-player overlap is used for S16 (bell strikes first, voice triggers at +2.5s).
   static List<SessionItem> generateGuidedSessionQueue({
     required int targetDurationSeconds,
-    required ClinicalArchetype archetype,
+    PracticeConfig? practice,
+    ClinicalArchetype? archetype,
     required String voicePersona, // 'kia' or 'grace'
     required AudioSegment selectedBell,
   }) {
+    final effectivePractice = practice ??
+        (archetype != null
+            ? PracticeConfig.fromArchetype(archetype)
+            : PracticeConfig.defaultPractices.first);
+
     final vNorm = voicePersona.toLowerCase() == 'grace' ? 'grace' : 'kia';
     const s16OverlapDelaySec = 2.5;
 
-    final sigPair = getProtectedSignaturePair(archetype);
+    final sigPair = getProtectedSignaturePairForPractice(effectivePractice);
     final prunedSegments = <String>[];
     final selectedVariants = <ClinicalSegment, ScriptVariant>{};
     final postSilenceMap = <ClinicalSegment, int>{};
@@ -176,7 +226,7 @@ class SessionQueueEngine {
     if (targetDurationSeconds < 300) {
       // --- Section 4: Test Mode Bypass for Ultra-Short Sessions (< 300s) ---
       if (targetDurationSeconds <= 120) {
-        final primarySig = getPrimarySignatureSegment(archetype);
+        final primarySig = getPrimarySignatureSegmentForPractice(effectivePractice);
         activeSegments = [
           ClinicalSegment.S01,
           primarySig,
@@ -184,7 +234,10 @@ class SessionQueueEngine {
           ClinicalSegment.S16,
         ];
       } else {
-        activeSegments = archetype.pipeline
+        final fullPipeline = effectivePractice.segmentIds
+            .map((c) => ClinicalSegment.fromCode(c))
+            .toList();
+        activeSegments = fullPipeline
             .where((s) => protectedFrame.contains(s.code) || sigPair.contains(s.code))
             .toList();
       }
@@ -241,7 +294,9 @@ class SessionQueueEngine {
       }
     } else {
       // --- Sessions >= 5 Minutes (>= 300s) ---
-      activeSegments = List<ClinicalSegment>.from(archetype.pipeline);
+      activeSegments = effectivePractice.segmentIds
+          .map((c) => ClinicalSegment.fromCode(c))
+          .toList();
 
       for (final seg in activeSegments) {
         final variants = AudioManifestService.getVariantsForSegment(seg.code);
@@ -264,8 +319,8 @@ class SessionQueueEngine {
       var zone2Pool = dynamicSilencePool * 0.68;
       var activeZone2 = activeSegments.where((s) => isZone2(s)).toList();
 
-      // Pruning Loop Check
-      while (activeZone2.isNotEmpty && (zone2Pool / activeZone2.length) < 60.0) {
+      // Pruning Loop Check (halting when activeZone2.length <= 1 prevents division-by-zero)
+      while (activeZone2.length > 1 && (zone2Pool / activeZone2.length) < 60.0) {
         ClinicalSegment? toPrune;
         for (final code in pruningPriorityOrder) {
           if (protectedFrame.contains(code) || sigPair.contains(code)) continue;
@@ -351,7 +406,7 @@ class SessionQueueEngine {
     }
 
     debugPrint('=== SessionQueueEngine Queue Generated ===');
-    debugPrint('Selected Archetype: ${archetype.title} | Target Duration: ${targetDurationSeconds}s');
+    debugPrint('Selected Archetype: ${effectivePractice.name} | Target Duration: ${targetDurationSeconds}s');
     debugPrint('Pruned Segments: ${prunedSegments.isEmpty ? 'None' : prunedSegments.join(', ')}');
     debugPrint('Final Ordered Segment List:');
     for (final seg in activeSegments) {

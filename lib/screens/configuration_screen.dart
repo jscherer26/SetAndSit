@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/audio_models.dart';
+import '../models/practice_config.dart';
 import '../theme/app_theme.dart';
+import '../widgets/practice_stepper_card.dart';
 import 'clock_time_picker_dialog.dart';
 
 class ConfigurationScreen extends StatefulWidget {
@@ -18,6 +20,11 @@ class ConfigurationScreen extends StatefulWidget {
   final String selectedType;
   final ValueChanged<String> onSelectedTypeChanged;
 
+  final List<PracticeConfig> practices;
+  final String selectedPracticeId;
+  final ValueChanged<String> onSelectedPracticeIdChanged;
+  final VoidCallback onOpenManagePractices;
+
   final int voiceIndex;
   final ValueChanged<int> onVoiceIndexChanged;
 
@@ -30,6 +37,7 @@ class ConfigurationScreen extends StatefulWidget {
     int targetSeconds,
     String practiceType,
     AudioSegment bell,
+    PracticeConfig? practiceConfig,
   ) onBeginPractice;
 
   const ConfigurationScreen({
@@ -43,6 +51,10 @@ class ConfigurationScreen extends StatefulWidget {
     required this.onOpenBellSettings,
     required this.selectedType,
     required this.onSelectedTypeChanged,
+    required this.practices,
+    required this.selectedPracticeId,
+    required this.onSelectedPracticeIdChanged,
+    required this.onOpenManagePractices,
     required this.voiceIndex,
     required this.onVoiceIndexChanged,
     required this.clockHour,
@@ -56,8 +68,6 @@ class ConfigurationScreen extends StatefulWidget {
     'Kia (Male)',
     'Grace (Female)',
   ];
-
-  static final List<String> practices = ClinicalArchetype.values.map((a) => a.title).toList();
 
   @override
   State<ConfigurationScreen> createState() => _ConfigurationScreenState();
@@ -124,6 +134,22 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     }
   }
 
+  List<PracticeConfig> get includedPractices {
+    final list = widget.practices.where((p) => p.isIncluded).toList();
+    return list.isNotEmpty ? list : widget.practices;
+  }
+
+  PracticeConfig get currentPractice {
+    final list = includedPractices;
+    return list.firstWhere(
+      (p) => p.id == widget.selectedPracticeId,
+      orElse: () => list.firstWhere(
+        (p) => p.name == widget.selectedType,
+        orElse: () => list.first,
+      ),
+    );
+  }
+
   void _showPracticePicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -139,23 +165,40 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Select Practice',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Select Practice',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
+                      ),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onOpenManagePractices();
+                      },
+                      icon: const Icon(Icons.tune, size: 16, color: AppColors.darkOlive),
+                      label: const Text(
+                        'Manage',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.darkOlive,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
-                ...ConfigurationScreen.practices.map((p) {
-                  final isSel = widget.selectedType == p ||
-                      (widget.selectedType == 'Breath' &&
-                          p == 'Breath Awareness');
+                ...includedPractices.map((p) {
+                  final isSel = currentPractice.id == p.id;
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(
-                      p,
+                      p.name,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight:
@@ -169,11 +212,44 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         ? const Icon(Icons.check, color: AppColors.darkOlive)
                         : null,
                     onTap: () {
-                      widget.onSelectedTypeChanged(p);
+                      widget.onSelectedPracticeIdChanged(p.id);
+                      widget.onSelectedTypeChanged(p.name);
                       Navigator.pop(context);
                     },
                   );
                 }),
+                const SizedBox(height: 10),
+                const Divider(color: AppColors.cardBorder, height: 1),
+                const SizedBox(height: 8),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.darkOlive.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.tune, color: AppColors.darkOlive, size: 20),
+                  ),
+                  title: const Text(
+                    'Manage Practices',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.darkOlive,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    'Customize segments, add or copy practices',
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  ),
+                  trailing: const Icon(Icons.chevron_right, color: AppColors.darkOlive),
+                  onTap: () {
+                    Navigator.pop(context);
+                    widget.onOpenManagePractices();
+                  },
+                ),
               ],
             ),
           ),
@@ -298,7 +374,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
         '${widget.clockHour.toString().padLeft(2, '0')}:${widget.clockMinute.toString().padLeft(2, '0')}';
     final amPmText = widget.isAm ? 'AM' : 'PM';
 
-    final practiceDisplay = widget.selectedType;
     final currentVoice = ConfigurationScreen.voices.length > widget.voiceIndex
         ? ConfigurationScreen.voices[widget.voiceIndex]
         : ConfigurationScreen.voices.first;
@@ -307,10 +382,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     final availableBells = enabledBells.isNotEmpty ? enabledBells : widget.bells;
     final currentBellIndex =
         availableBells.indexWhere((b) => b.id == currentBell.id);
-
-    final currentPracticeIndex = ConfigurationScreen.practices.indexWhere(
-      (p) => p == practiceDisplay,
-    );
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -499,7 +570,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                       child: GestureDetector(
                         onTap: () {
                           if (!isGuided) {
-                            widget.onSelectedTypeChanged(ClinicalArchetype.focusedCalm.title);
+                            widget.onSelectedTypeChanged(currentPractice.name);
                           }
                         },
                         child: Container(
@@ -555,30 +626,28 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
               // Practice Card (Guided mode only)
               if (isGuided) ...[
-                _buildStepperPill(
-                  icon: Icons.self_improvement,
-                  title: practiceDisplay,
-                  onIconTap: () => _showPracticePicker(context),
-                  onPrevious: () {
-                    final validIdx = currentPracticeIndex == -1
-                        ? 0
-                        : currentPracticeIndex;
-                    final nextIdx = (validIdx -
-                            1 +
-                            ConfigurationScreen.practices.length) %
-                        ConfigurationScreen.practices.length;
-                    widget.onSelectedTypeChanged(
-                        ConfigurationScreen.practices[nextIdx]);
-                  },
-                  onNext: () {
-                    final validIdx = currentPracticeIndex == -1
-                        ? 0
-                        : currentPracticeIndex;
-                    final nextIdx = (validIdx + 1) %
-                        ConfigurationScreen.practices.length;
-                    widget.onSelectedTypeChanged(
-                        ConfigurationScreen.practices[nextIdx]);
-                  },
+                PracticeStepperCard(
+                  practice: currentPractice,
+                  onPrevious: includedPractices.length > 1
+                      ? () {
+                          final list = includedPractices;
+                          final idx = list.indexWhere((p) => p.id == currentPractice.id);
+                          final nextIdx = (idx - 1 + list.length) % list.length;
+                          widget.onSelectedPracticeIdChanged(list[nextIdx].id);
+                          widget.onSelectedTypeChanged(list[nextIdx].name);
+                        }
+                      : null,
+                  onNext: includedPractices.length > 1
+                      ? () {
+                          final list = includedPractices;
+                          final idx = list.indexWhere((p) => p.id == currentPractice.id);
+                          final nextIdx = (idx + 1) % list.length;
+                          widget.onSelectedPracticeIdChanged(list[nextIdx].id);
+                          widget.onSelectedTypeChanged(list[nextIdx].name);
+                        }
+                      : null,
+                  onTap: () => _showPracticePicker(context),
+                  onLeadingTap: widget.onOpenManagePractices,
                 ),
                 const SizedBox(height: 14),
 
@@ -647,8 +716,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                     final targetSeconds = _calculateTargetSeconds();
                     widget.onBeginPractice(
                       targetSeconds,
-                      isGuided ? practiceDisplay : 'Silent',
+                      isGuided ? currentPractice.name : 'Silent',
                       currentBell,
+                      isGuided ? currentPractice : null,
                     );
                   },
                   icon: const Icon(Icons.play_arrow, size: 24),

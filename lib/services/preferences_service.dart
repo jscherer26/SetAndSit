@@ -2,9 +2,36 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/bell_data.dart';
 import '../models/audio_models.dart';
+import '../models/practice_config.dart';
 
 class PreferencesService {
   static const String _keySettings = 'set_and_sit_settings';
+  static const String _keyPractices = 'set_and_sit_practices';
+
+  /// Loads practices from local storage, returning defaults if not found.
+  static Future<List<PracticeConfig>> loadPractices() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_keyPractices);
+    if (raw == null) {
+      return PracticeConfig.defaultPractices;
+    }
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      final practices = list
+          .map((e) => PracticeConfig.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return practices.isNotEmpty ? practices : PracticeConfig.defaultPractices;
+    } catch (_) {
+      return PracticeConfig.defaultPractices;
+    }
+  }
+
+  /// Saves the list of practices to local storage.
+  static Future<void> savePractices(List<PracticeConfig> practices) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = practices.map((p) => p.toJson()).toList();
+    await prefs.setString(_keyPractices, jsonEncode(jsonList));
+  }
 
   static Future<SavedState> loadState() async {
     final prefs = await SharedPreferences.getInstance();
@@ -17,6 +44,7 @@ class PreferencesService {
         bells: BellData.defaultBells,
         selectedBellId: 'bell_meditation',
         selectedPractice: 'Guided',
+        selectedPracticeId: 'focused_calm',
         selectedVoiceIndex: 0,
         targetClockTimeHour: 8,
         targetClockTimeMinute: 20,
@@ -58,6 +86,7 @@ class PreferencesService {
         bells: bells.isNotEmpty ? bells : BellData.defaultBells,
         selectedBellId: (map['selectedBellId'] as String?) ?? 'bell_meditation',
         selectedPractice: (map['selectedPractice'] as String?) ?? 'Guided',
+        selectedPracticeId: (map['selectedPracticeId'] as String?) ?? 'focused_calm',
         selectedVoiceIndex: (map['selectedVoiceIndex'] as num?)?.toInt() ?? 0,
         targetClockTimeHour: (map['targetClockTimeHour'] as num?)?.toInt() ?? 8,
         targetClockTimeMinute:
@@ -72,6 +101,7 @@ class PreferencesService {
         bells: BellData.defaultBells,
         selectedBellId: 'bell_meditation',
         selectedPractice: 'Guided',
+        selectedPracticeId: 'focused_calm',
         selectedVoiceIndex: 0,
         targetClockTimeHour: 8,
         targetClockTimeMinute: 20,
@@ -89,6 +119,7 @@ class PreferencesService {
       'bells': state.bells.map((e) => e.toJson()).toList(),
       'selectedBellId': state.selectedBellId,
       'selectedPractice': state.selectedPractice,
+      'selectedPracticeId': state.selectedPracticeId,
       'selectedVoiceIndex': state.selectedVoiceIndex,
       'targetClockTimeHour': state.targetClockTimeHour,
       'targetClockTimeMinute': state.targetClockTimeMinute,
@@ -105,6 +136,7 @@ class SavedState {
   final List<AudioSegment> bells;
   final String selectedBellId;
   final String selectedPractice;
+  final String? selectedPracticeId;
   final int selectedVoiceIndex;
   final int targetClockTimeHour;
   final int targetClockTimeMinute;
@@ -117,6 +149,7 @@ class SavedState {
     required this.bells,
     required this.selectedBellId,
     required this.selectedPractice,
+    this.selectedPracticeId,
     required this.selectedVoiceIndex,
     required this.targetClockTimeHour,
     required this.targetClockTimeMinute,
@@ -130,6 +163,7 @@ class SavedState {
     List<AudioSegment>? bells,
     String? selectedBellId,
     String? selectedPractice,
+    String? selectedPracticeId,
     int? selectedVoiceIndex,
     int? targetClockTimeHour,
     int? targetClockTimeMinute,
@@ -143,6 +177,7 @@ class SavedState {
       bells: bells ?? this.bells,
       selectedBellId: selectedBellId ?? this.selectedBellId,
       selectedPractice: selectedPractice ?? this.selectedPractice,
+      selectedPracticeId: selectedPracticeId ?? this.selectedPracticeId,
       selectedVoiceIndex: selectedVoiceIndex ?? this.selectedVoiceIndex,
       targetClockTimeHour: targetClockTimeHour ?? this.targetClockTimeHour,
       targetClockTimeMinute:

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'data/bell_data.dart';
 import 'engine/session_queue_engine.dart';
 import 'models/audio_models.dart';
+import 'models/practice_config.dart';
 import 'screens/bell_configuration_screen.dart';
 import 'screens/configuration_screen.dart';
+import 'screens/manage_practices_screen.dart';
 import 'screens/practice_screen.dart';
 import 'screens/session_debug_screen.dart';
 import 'screens/settings_screen.dart';
@@ -42,6 +44,7 @@ enum AppScreen {
   configuration,
   settings,
   bellSettings,
+  managePractices,
   practice,
   sessionDebug,
 }
@@ -56,6 +59,7 @@ class RootControllerScreen extends StatefulWidget {
 class _RootControllerScreenState extends State<RootControllerScreen>
     with WidgetsBindingObserver {
   AppScreen _currentScreen = AppScreen.configuration;
+  AppScreen _previousScreen = AppScreen.configuration;
 
   int _practiceDurationMinutes = 20;
   double _instructionDensity = 3.0;
@@ -64,12 +68,15 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   List<AudioSegment> _bells = BellData.defaultBells;
   String _selectedBellId = 'bell_meditation';
 
+  List<PracticeConfig> _practices = PracticeConfig.defaultPractices;
+  String _selectedPracticeId = 'focused_calm';
   String _selectedPractice = ClinicalArchetype.focusedCalm.title;
   int _voiceIndex = 0; // 0: Kia (Male), 1: Grace (Female)
 
   int _clockHour = 8;
   int _clockMinute = 20;
   bool _isAm = true;
+  bool _isInitialized = false;
 
   List<SessionItem> _activeSessionQueue = [];
   int _activeTargetSeconds = 1200;
@@ -96,6 +103,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
 
   void _loadInitialState() async {
     await AudioManifestService.initialize();
+    final practices = await PreferencesService.loadPractices();
     final saved = await PreferencesService.loadState();
 
     if (mounted) {
@@ -112,18 +120,66 @@ class _RootControllerScreenState extends State<RootControllerScreen>
         practice = ClinicalArchetype.focusedCalm.title;
       }
 
+      // Resolve practice ID & name
+      final savedId = saved.selectedPracticeId;
+      var match = practices.cast<PracticeConfig?>().firstWhere(
+        (p) => p?.id == savedId && p?.isIncluded == true,
+        orElse: () => null,
+      );
+
+      match ??= practices.cast<PracticeConfig?>().firstWhere(
+        (p) => p?.name == practice && p?.isIncluded == true,
+        orElse: () => null,
+      );
+
+      match ??= practices.cast<PracticeConfig?>().firstWhere(
+        (p) => p?.isIncluded == true,
+        orElse: () => null,
+      );
+
+      final resolved = match ?? (practices.isNotEmpty ? practices.first : PracticeConfig.defaultPractices.first);
+
       setState(() {
         _practiceDurationMinutes = saved.practiceDurationMinutes;
         _instructionDensity = saved.instructionDensity;
         _redirectionDensity = saved.redirectionDensity;
         _bells = saved.bells;
         _selectedBellId = saved.selectedBellId;
-        _selectedPractice = practice;
+        _practices = practices;
+        _selectedPracticeId = resolved.id;
+        _selectedPractice = resolved.name;
         _voiceIndex = saved.selectedVoiceIndex;
         _clockHour = initHour;
         _clockMinute = initMinute;
         _isAm = initIsAm;
+        _isInitialized = true;
       });
+    }
+  }
+
+  void _ensureValidSelectedPractice() {
+    final match = _practices.cast<PracticeConfig?>().firstWhere(
+      (p) => p?.id == _selectedPracticeId && p?.isIncluded == true,
+      orElse: () => null,
+    );
+    if (match != null) {
+      _selectedPractice = match.name;
+      return;
+    }
+
+    final firstIncluded = _practices.cast<PracticeConfig?>().firstWhere(
+      (p) => p?.isIncluded == true,
+      orElse: () => null,
+    );
+    if (firstIncluded != null) {
+      _selectedPracticeId = firstIncluded.id;
+      _selectedPractice = firstIncluded.name;
+      return;
+    }
+
+    if (_practices.isNotEmpty) {
+      _selectedPracticeId = _practices.first.id;
+      _selectedPractice = _practices.first.name;
     }
   }
 
@@ -146,6 +202,8 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   }
 
   void _persistState() {
+    if (!_isInitialized) return;
+    PreferencesService.savePractices(_practices);
     PreferencesService.saveState(
       SavedState(
         practiceDurationMinutes: _practiceDurationMinutes,
@@ -154,6 +212,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
         bells: _bells,
         selectedBellId: _selectedBellId,
         selectedPractice: _selectedPractice,
+        selectedPracticeId: _selectedPracticeId,
         selectedVoiceIndex: _voiceIndex,
         targetClockTimeHour: _clockHour,
         targetClockTimeMinute: _clockMinute,
@@ -166,6 +225,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
     required int targetSeconds,
     required String practiceType,
     required AudioSegment bell,
+    PracticeConfig? practiceConfig,
   }) {
     final minutes = targetSeconds / 60.0;
     if (minutes < 1.0 || minutes > 90.0) {
@@ -194,11 +254,10 @@ class _RootControllerScreenState extends State<RootControllerScreen>
         selectedBell: bell,
       );
     } else {
-      final archetype = ClinicalArchetype.fromTitle(practiceType);
       final voicePersona = _voiceIndex == 1 ? 'grace' : 'kia';
       queue = SessionQueueEngine.generateGuidedSessionQueue(
         targetDurationSeconds: targetSeconds,
-        archetype: archetype,
+        practice: practiceConfig,
         voicePersona: voicePersona,
         selectedBell: bell,
       );
@@ -239,7 +298,10 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           practiceDurationMinutes: _practiceDurationMinutes,
           onEnsureFutureTime: _ensureFutureTargetTime,
           onOpenSettings: () {
-            setState(() => _currentScreen = AppScreen.settings);
+            setState(() {
+              _previousScreen = AppScreen.configuration;
+              _currentScreen = AppScreen.settings;
+            });
           },
           bells: _bells,
           selectedBellId: _selectedBellId,
@@ -248,12 +310,31 @@ class _RootControllerScreenState extends State<RootControllerScreen>
             _persistState();
           },
           onOpenBellSettings: () {
-            setState(() => _currentScreen = AppScreen.bellSettings);
+            setState(() {
+              _previousScreen = AppScreen.configuration;
+              _currentScreen = AppScreen.bellSettings;
+            });
           },
           selectedType: _selectedPractice,
           onSelectedTypeChanged: (type) {
             setState(() => _selectedPractice = type);
             _persistState();
+          },
+          practices: _practices,
+          selectedPracticeId: _selectedPracticeId,
+          onSelectedPracticeIdChanged: (id) {
+            final p = _practices.firstWhere((p) => p.id == id);
+            setState(() {
+              _selectedPracticeId = id;
+              _selectedPractice = p.name;
+            });
+            _persistState();
+          },
+          onOpenManagePractices: () {
+            setState(() {
+              _previousScreen = AppScreen.configuration;
+              _currentScreen = AppScreen.managePractices;
+            });
           },
           voiceIndex: _voiceIndex,
           onVoiceIndexChanged: (idx) {
@@ -279,12 +360,33 @@ class _RootControllerScreenState extends State<RootControllerScreen>
             });
             _persistState();
           },
-          onBeginPractice: (targetSec, practiceType, bell) {
+          onBeginPractice: (targetSec, practiceType, bell, practiceConfig) {
             _startPractice(
               targetSeconds: targetSec,
               practiceType: practiceType,
               bell: bell,
+              practiceConfig: practiceConfig,
             );
+          },
+        );
+
+      case AppScreen.managePractices:
+        return ManagePracticesScreen(
+          initialPractices: _practices,
+          initialSelectedPracticeId: _selectedPracticeId,
+          onPracticesUpdated: (updated) {
+            setState(() {
+              _practices = updated;
+              _ensureValidSelectedPractice();
+            });
+            _persistState();
+          },
+          onBack: () {
+            setState(() {
+              _ensureValidSelectedPractice();
+              _currentScreen = _previousScreen;
+            });
+            _persistState();
           },
         );
 
@@ -293,6 +395,18 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           practiceDurationMinutes: _practiceDurationMinutes,
           instructionDensity: _instructionDensity,
           redirectionDensity: _redirectionDensity,
+          onOpenManagePractices: () {
+            setState(() {
+              _previousScreen = AppScreen.settings;
+              _currentScreen = AppScreen.managePractices;
+            });
+          },
+          onOpenBellSettings: () {
+            setState(() {
+              _previousScreen = AppScreen.settings;
+              _currentScreen = AppScreen.bellSettings;
+            });
+          },
           onPracticeDurationChanged: (val) {
             final now = DateTime.now();
             final newTarget = now.add(Duration(minutes: val));
@@ -343,7 +457,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
             _persistState();
           },
           onBack: () {
-            setState(() => _currentScreen = AppScreen.configuration);
+            setState(() => _currentScreen = _previousScreen);
           },
         );
 

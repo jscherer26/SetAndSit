@@ -9,6 +9,8 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<double> onInstructionDensityChanged;
   final ValueChanged<double> onRedirectionDensityChanged;
   final VoidCallback onBack;
+  final VoidCallback? onOpenManagePractices;
+  final VoidCallback? onOpenBellSettings;
 
   const SettingsScreen({
     super.key,
@@ -19,6 +21,8 @@ class SettingsScreen extends StatefulWidget {
     required this.onInstructionDensityChanged,
     required this.onRedirectionDensityChanged,
     required this.onBack,
+    this.onOpenManagePractices,
+    this.onOpenBellSettings,
   });
 
   @override
@@ -98,6 +102,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     widget.onPracticeDurationChanged(parsed);
     widget.onBack();
+  }
+
+  void _handleNavigationSilently() {
+    final text = _durationController.text.trim();
+    final parsed = int.tryParse(text);
+    if (parsed != null && parsed >= 1 && parsed <= 90) {
+      widget.onPracticeDurationChanged(parsed);
+    }
   }
 
   @override
@@ -315,6 +327,130 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
+
+              if (widget.onOpenManagePractices != null || widget.onOpenBellSettings != null) ...[
+                const SizedBox(height: 18),
+
+                // Bubble 3: Configuration & Practice Management Section
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: AppColors.cardBorder),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppColors.cardShadow,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(24),
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      children: [
+                        if (widget.onOpenManagePractices != null)
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 4,
+                            ),
+                            leading: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: const BoxDecoration(
+                                color: AppColors.backgroundSand,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.self_improvement,
+                                color: AppColors.darkOlive,
+                                size: 22,
+                              ),
+                            ),
+                            title: const Text(
+                              'Manage Practices',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                            subtitle: const Text(
+                              'Create, copy, and customize clinical meditation practices',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                            trailing: const Icon(
+                              Icons.chevron_right,
+                              color: AppColors.textMuted,
+                            ),
+                            onTap: () {
+                              _handleNavigationSilently();
+                              widget.onOpenManagePractices!();
+                            },
+                          ),
+
+                        if (widget.onOpenManagePractices != null && widget.onOpenBellSettings != null)
+                          const Divider(
+                            color: AppColors.cardBorder,
+                            height: 1,
+                            indent: 20,
+                            endIndent: 20,
+                          ),
+
+                        if (widget.onOpenBellSettings != null)
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 4,
+                            ),
+                            leading: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: const BoxDecoration(
+                                color: AppColors.backgroundSand,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.notifications_active_outlined,
+                                color: AppColors.darkOlive,
+                                size: 22,
+                              ),
+                            ),
+                            title: const Text(
+                              'Bell Parameters',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                            subtitle: const Text(
+                              'Select and configure acoustic meditation bells',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                            trailing: const Icon(
+                              Icons.chevron_right,
+                              color: AppColors.textMuted,
+                            ),
+                            onTap: () {
+                              _handleNavigationSilently();
+                              widget.onOpenBellSettings!();
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
