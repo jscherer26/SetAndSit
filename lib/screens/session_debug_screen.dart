@@ -140,11 +140,17 @@ class SessionDebugScreen extends StatelessWidget {
                     final remainingSec = (countdownBase - startSec).clamp(0, countdownBase);
 
                     if (item is PlayAudioItem) {
+                      final isOverlap = item.bellAssetPath != null ||
+                          item.segment == ClinicalSegment.S16;
+
                       return Card(
                         color: AppColors.cardSurface,
                         margin: const EdgeInsets.only(bottom: 8),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
+                          side: isOverlap
+                              ? const BorderSide(color: AppColors.sageActive, width: 1.5)
+                              : BorderSide.none,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
@@ -155,11 +161,15 @@ class SessionDebugScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '#${index + 1} [PLAY AUDIO]  ⏱ ${_formatSeconds(remainingSec)}',
-                                    style: const TextStyle(
+                                    isOverlap
+                                        ? '#${index + 1} [DUAL-PLAYER OVERLAP]  ⏱ ${_formatSeconds(remainingSec)}'
+                                        : '#${index + 1} [PLAY AUDIO]  ⏱ ${_formatSeconds(remainingSec)}',
+                                    style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.sageActive,
+                                      color: isOverlap
+                                          ? AppColors.darkOlive
+                                          : AppColors.sageActive,
                                     ),
                                   ),
                                   Text(
@@ -188,13 +198,67 @@ class SessionDebugScreen extends StatelessWidget {
                                   color: Color(0xFF9E9E9E),
                                 ),
                               ),
-                              Text(
-                                'Path: ${item.audioAssetPath}',
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFF9E9E9E),
+                              if (isOverlap) ...[
+                                const SizedBox(height: 6),
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF1E2822),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: AppColors.sageActive.withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.notifications_active,
+                                              size: 13, color: AppColors.sageActive),
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Text(
+                                              'Bell Player: ${item.bellAssetPath ?? selectedBell.filePath} (fires instantly, -2.5dB)',
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFFEAEAEA),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.record_voice_over,
+                                              size: 13, color: AppColors.sageActive),
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Text(
+                                              'Voice Player: ${item.audioAssetPath} (speaks at +2.5s over bell decay)',
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFFEAEAEA),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              ] else ...[
+                                Text(
+                                  'Path: ${item.audioAssetPath}',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFF9E9E9E),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),

@@ -290,6 +290,7 @@ class PlayAudioItem extends SessionItem {
   final bool isBell;
   @override
   final String text;
+  final String? bellAssetPath;
 
   PlayAudioItem({
     required this.id,
@@ -300,6 +301,7 @@ class PlayAudioItem extends SessionItem {
     this.segment,
     this.isBell = false,
     this.text = '',
+    this.bellAssetPath,
   });
 }
 

@@ -87,4 +87,87 @@ void main() {
       'Letting ourselves settle, seeing if it is possible.',
     );
   });
+
+  test('Guided session queue generates S16 with dual-player overlap bellAssetPath', () {
+    final bell = BellData.defaultBells.first;
+    final queue = SessionQueueEngine.generateGuidedSessionQueue(
+      targetDurationSeconds: 600,
+      archetype: ClinicalArchetype.focusedCalm,
+      voicePersona: 'kia',
+      selectedBell: bell,
+    );
+
+    expect(queue.isNotEmpty, isTrue);
+
+    // Find S16 item in queue
+    final s16Items = queue
+        .whereType<PlayAudioItem>()
+        .where((it) => it.segment == ClinicalSegment.S16)
+        .toList();
+
+    expect(s16Items.length, 1);
+    final s16Item = s16Items.first;
+
+    // Verify S16 carries the selected bell asset path for the dual-player overlap engine
+    expect(s16Item.bellAssetPath, bell.filePath);
+
+    // Verify standard sequential segments (S01 through S15) do NOT carry bellAssetPath
+    final nonS16Items = queue
+        .whereType<PlayAudioItem>()
+        .where((it) => it.segment != ClinicalSegment.S16 && it.segment != null)
+        .toList();
+
+    for (final item in nonS16Items) {
+      expect(item.bellAssetPath, isNull);
+    }
+
+    // Verify there is no redundant standalone closing bell before S16 in guided queue
+    final bellItems = queue
+        .whereType<PlayAudioItem>()
+        .where((it) => it.isBell)
+        .toList();
+    expect(bellItems.isEmpty, isTrue);
+
+    // S16 is the closing audio item; its voice completion hooks directly to session completion
+    final s16Idx = queue.indexOf(s16Item);
+    expect(s16Idx, queue.length - 1);
+  });
+
+  test('Dynamic Interval Math: SessionQueueEngine calculates silent intervals accurately across 5m, 15m, and 30m', () {
+    final bell = BellData.defaultBells.first;
+    final durationsToTest = [300, 900, 1800]; // 5 min, 15 min, 30 min
+
+    for (final targetSec in durationsToTest) {
+      for (final arch in ClinicalArchetype.values) {
+        final queue = SessionQueueEngine.generateGuidedSessionQueue(
+          targetDurationSeconds: targetSec,
+          archetype: arch,
+          voicePersona: 'kia',
+          selectedBell: bell,
+        );
+
+        var totalCalculatedSec = 0.0;
+        for (final item in queue) {
+          if (item is PlayAudioItem) {
+            totalCalculatedSec += item.durationSeconds;
+          } else if (item is PauseSilenceItem) {
+            totalCalculatedSec += item.durationSeconds;
+          }
+        }
+
+        // Total calculated duration matches targetDurationSeconds within 1 second rounding
+        expect(
+          (totalCalculatedSec - targetSec).abs(),
+          lessThanOrEqualTo(1.0),
+          reason: 'Failed for archetype ${arch.title} at $targetSec seconds',
+        );
+
+        // Verify S13 integration silence was populated and adjusted
+        final s13Item = queue
+            .whereType<PauseSilenceItem>()
+            .firstWhere((it) => it.displayTitle == 'Deep Integration Silence');
+        expect(s13Item.durationSeconds, greaterThan(0));
+      }
+    }
+  });
 }

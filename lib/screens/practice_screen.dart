@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import '../models/audio_models.dart';
 import '../theme/app_theme.dart';
 
@@ -9,16 +10,20 @@ class PracticeScreen extends StatefulWidget {
   final List<SessionItem> sessionQueue;
   final int targetDurationSeconds;
   final String selectedMeditationType;
+  final AudioSegment? selectedBell;
   final Widget Function() buildDebugScreen;
   final VoidCallback onEndSession;
+  final VoidCallback? onSessionComplete;
 
   const PracticeScreen({
     super.key,
     required this.sessionQueue,
     required this.targetDurationSeconds,
     required this.selectedMeditationType,
+    this.selectedBell,
     required this.buildDebugScreen,
     required this.onEndSession,
+    this.onSessionComplete,
   });
 
   @override
@@ -30,12 +35,17 @@ class _PracticeScreenState extends State<PracticeScreen>
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  StreamSubscription? _playerCompleteSubscription;
-  StreamSubscription? _playerLogSubscription;
+  // Phase 2: Dual AudioPlayer Architecture
+  final AudioPlayer _voicePlayer = AudioPlayer();
+  final AudioPlayer _bellPlayer = AudioPlayer();
+  StreamSubscription? _voiceCompleteSubscription;
+  StreamSubscription? _bellCompleteSubscription;
+  StreamSubscription? _voiceLogSubscription;
+  StreamSubscription? _bellLogSubscription;
   Timer? _countdownTimer;
   Timer? _silenceTimer;
   Timer? _fallbackTimer;
+  Timer? _overlapTimer;
 
   int _totalSecondsRemaining = 0;
   int _currentIndex = 0;
@@ -53,6 +63,11 @@ class _PracticeScreenState extends State<PracticeScreen>
     super.initState();
     _totalSecondsRemaining = widget.targetDurationSeconds;
 
+    // Keep screen awake throughout the entire practice, including S16 and bell decay
+    WakelockPlus.enable().catchError((e) {
+      debugPrint('[PracticeScreen] Error enabling Wakelock: $e');
+    });
+
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
@@ -62,21 +77,47 @@ class _PracticeScreenState extends State<PracticeScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _initAudioPlayer();
+    _initAudioPlayers();
     _startCountdownTimer();
     _playCurrentQueueItem();
   }
 
-  void _initAudioPlayer() {
-    _playerCompleteSubscription = _audioPlayer.onPlayerComplete.listen((_) {
-      if (mounted) _advanceQueue();
+  void _initAudioPlayers() {
+    _voiceCompleteSubscription = _voicePlayer.onPlayerComplete.listen((_) {
+      if (!mounted || _isFinished) return;
+      final item = currentItem;
+      final isS16 = item is PlayAudioItem &&
+          (item.segment == ClinicalSegment.S16 || item.id.startsWith('S16'));
+      if (isS16) {
+        // Direct hook to session completion state
+        _finishSession();
+      } else {
+        _advanceQueue();
+      }
     });
 
-    _playerLogSubscription = _audioPlayer.onLog.listen((msg) {
-      debugPrint('[AudioPlayer] $msg');
+    _bellCompleteSubscription = _bellPlayer.onPlayerComplete.listen((_) {
+      if (!mounted || _isFinished) return;
+      // Standalone bell queue items (e.g. silent session closing bell) advance queue on completion.
+      // S16 overlap bell decay finishes independently; queue advancement for S16 is driven by _voicePlayer.
+      final item = currentItem;
+      if (item is PlayAudioItem &&
+          item.isBell &&
+          item.segment != ClinicalSegment.S16 &&
+          !item.id.startsWith('S16')) {
+        _advanceQueue();
+      }
     });
 
-    _audioPlayer.setAudioContext(
+    _voiceLogSubscription = _voicePlayer.onLog.listen((msg) {
+      debugPrint('[VoicePlayer] $msg');
+    });
+
+    _bellLogSubscription = _bellPlayer.onLog.listen((msg) {
+      debugPrint('[BellPlayer] $msg');
+    });
+
+    _voicePlayer.setAudioContext(
       AudioContext(
         android: const AudioContextAndroid(
           isSpeakerphoneOn: false,
@@ -93,19 +134,47 @@ class _PracticeScreenState extends State<PracticeScreen>
         ),
       ),
     ).catchError((e) {
-      debugPrint('[AudioPlayer] Error setting AudioContext: $e');
+      debugPrint('[VoicePlayer] Error setting AudioContext: $e');
+    });
+
+    _bellPlayer.setAudioContext(
+      AudioContext(
+        android: const AudioContextAndroid(
+          isSpeakerphoneOn: false,
+          stayAwake: true,
+          contentType: AndroidContentType.music,
+          usageType: AndroidUsageType.media,
+          audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+        ),
+        iOS: AudioContextIOS(
+          category: AVAudioSessionCategory.playback,
+          options: const {
+            AVAudioSessionOptions.mixWithOthers,
+          },
+        ),
+      ),
+    ).catchError((e) {
+      debugPrint('[BellPlayer] Error setting AudioContext: $e');
     });
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
-    _playerCompleteSubscription?.cancel();
-    _playerLogSubscription?.cancel();
+    _voiceCompleteSubscription?.cancel();
+    _bellCompleteSubscription?.cancel();
+    _voiceLogSubscription?.cancel();
+    _bellLogSubscription?.cancel();
     _countdownTimer?.cancel();
     _silenceTimer?.cancel();
     _fallbackTimer?.cancel();
-    _audioPlayer.dispose();
+    _overlapTimer?.cancel();
+    _voicePlayer.dispose();
+    _bellPlayer.dispose();
+    // Ensure screen lock / wakelock is released if user exits early
+    WakelockPlus.disable().catchError((e) {
+      debugPrint('[PracticeScreen] Error disabling Wakelock on dispose: $e');
+    });
     super.dispose();
   }
 
@@ -140,6 +209,7 @@ class _PracticeScreenState extends State<PracticeScreen>
       _silenceSecondsRemaining = item.durationSeconds;
       _silenceTimer?.cancel();
       _fallbackTimer?.cancel();
+      _overlapTimer?.cancel();
 
       if (_silenceSecondsRemaining <= 0) {
         _advanceQueue();
@@ -160,10 +230,14 @@ class _PracticeScreenState extends State<PracticeScreen>
     } else if (item is PlayAudioItem) {
       _silenceTimer?.cancel();
       _fallbackTimer?.cancel();
+      _overlapTimer?.cancel();
+
+      final isS16 = item.segment == ClinicalSegment.S16 || item.id.startsWith('S16');
+      final isBellOnly = item.isBell && !isS16;
 
       // Arm a safety watchdog timer so queue CANNOT freeze if onPlayerComplete is dropped
       final clipMs = (item.durationSeconds * 1000).round();
-      final timeoutMs = max(2000, clipMs + 1500);
+      final timeoutMs = max(2000, clipMs + (isS16 ? 4000 : 2000));
       _fallbackTimer = Timer(Duration(milliseconds: timeoutMs), () {
         if (mounted && !_isFinished) {
           debugPrint('[PracticeScreen] Watchdog timeout triggered for ${item.id}');
@@ -171,17 +245,59 @@ class _PracticeScreenState extends State<PracticeScreen>
         }
       });
 
-      try {
-        final rawPath = item.audioAssetPath.replaceFirst('assets/', '');
-        final isBell = item.isBell;
+      if (isS16) {
+        // --- Phase 2: Dual-Player Overlap Engine for S16 ---
+        final bellAsset = (item.bellAssetPath ??
+                widget.selectedBell?.filePath ??
+                'bells/bell_meditation.ogg')
+            .replaceFirst('assets/', '');
+        final voiceAsset = item.audioAssetPath.replaceFirst('assets/', '');
 
-        // If muted and this is a closing bell: play a gentle, non-invasive audio alert (soft chime)
-        final volume = _isMuted ? (isBell ? 0.35 : 0.0) : 1.0;
-        await _audioPlayer.setVolume(volume);
-        await _audioPlayer.play(AssetSource(rawPath));
-      } catch (e) {
-        debugPrint('[PracticeScreen] Error playing ${item.audioAssetPath}: $e');
+        // Calibrated gain: bell at 0.75 (~ -2.5dB) allows voice at 1.0 to cut through resonant decay
+        final bellVol = _isMuted ? 0.35 : 0.75;
+        final voiceVol = _isMuted ? 0.0 : 1.0;
+
+        // 1. Instantly fire the acoustic bell asset using _bellPlayer
+        try {
+          await _bellPlayer.setVolume(bellVol);
+          await _bellPlayer.play(AssetSource(bellAsset));
+        } catch (e) {
+          debugPrint('[PracticeScreen] Error playing bell on _bellPlayer: $e');
+        }
+
+        // 2. Start a Flutter Timer for exactly 2.5 seconds
+        // When the timer triggers, play the chosen S16 voice variant using _voicePlayer
+        _overlapTimer = Timer(const Duration(milliseconds: 2500), () async {
+          if (!mounted || _isFinished) return;
+          try {
+            await _voicePlayer.setVolume(voiceVol);
+            await _voicePlayer.play(AssetSource(voiceAsset));
+          } catch (e) {
+            debugPrint('[PracticeScreen] Error playing S16 voice on _voicePlayer: $e');
+          }
+        });
+      } else if (isBellOnly) {
+        // Standalone bell playback on dedicated _bellPlayer
+        try {
+          final rawPath = item.audioAssetPath.replaceFirst('assets/', '');
+          final volume = _isMuted ? 0.35 : 1.0;
+          await _bellPlayer.setVolume(volume);
+          await _bellPlayer.play(AssetSource(rawPath));
+        } catch (e) {
+          debugPrint('[PracticeScreen] Error playing standalone bell: $e');
+        }
+      } else {
+        // Standard sequential playback for S01 through S15 on _voicePlayer
+        try {
+          final rawPath = item.audioAssetPath.replaceFirst('assets/', '');
+          final volume = _isMuted ? 0.0 : 1.0;
+          await _voicePlayer.setVolume(volume);
+          await _voicePlayer.play(AssetSource(rawPath));
+        } catch (e) {
+          debugPrint('[PracticeScreen] Error playing ${item.audioAssetPath}: $e');
+        }
       }
+
       setState(() {});
     }
   }
@@ -189,6 +305,7 @@ class _PracticeScreenState extends State<PracticeScreen>
   void _advanceQueue() {
     if (_isFinished) return;
     _fallbackTimer?.cancel();
+    _overlapTimer?.cancel();
     _currentIndex++;
     if (_currentIndex < widget.sessionQueue.length) {
       _playCurrentQueueItem();
@@ -200,44 +317,43 @@ class _PracticeScreenState extends State<PracticeScreen>
   void _finishSession() async {
     if (_isFinished) return;
 
+    // Immediately mark finished to guard against any re-entrant completion calls
+    _isFinished = true;
+
     _silenceTimer?.cancel();
     _countdownTimer?.cancel();
     _fallbackTimer?.cancel();
-
-    // If session was ended prematurely (e.g. user finished manually) while still queued
-    // before reaching S16 closing sequence, ensure the closing bell and outro play.
-    if (_currentIndex < widget.sessionQueue.length) {
-      final closingItems = widget.sessionQueue.sublist(_currentIndex);
-      final hasClosingBell = closingItems.any((it) => it is PlayAudioItem && it.isBell);
-      if (hasClosingBell) {
-        // Jump directly to the closing bell sequence so the practitioner hears the closing cue
-        final closingIdx = widget.sessionQueue.lastIndexWhere((it) => it is PlayAudioItem && it.isBell);
-        if (closingIdx != -1) {
-          _currentIndex = closingIdx;
-          _playCurrentQueueItem();
-          return;
-        }
-      }
-    }
+    _overlapTimer?.cancel();
 
     final item = currentItem;
     final isBellPlaying = item is PlayAudioItem && item.isBell;
-    final isOutroPlaying = item is PlayAudioItem && item.segment == ClinicalSegment.S16;
+    final isOutroPlaying = item is PlayAudioItem &&
+        (item.segment == ClinicalSegment.S16 || item.id.startsWith('S16'));
 
     if (!isBellPlaying && !isOutroPlaying) {
-      await _audioPlayer.stop();
+      await _voicePlayer.stop();
+      await _bellPlayer.stop();
       if (_isMuted) {
         try {
-          await _audioPlayer.setVolume(0.35);
-          await _audioPlayer.play(AssetSource('bells/bell_meditation.ogg'));
+          await _bellPlayer.setVolume(0.35);
+          final bellAsset = (widget.selectedBell?.filePath ?? 'bells/bell_meditation.ogg')
+              .replaceFirst('assets/', '');
+          await _bellPlayer.play(AssetSource(bellAsset));
         } catch (_) {}
       }
     }
+
+    // Release wakelock only upon final transition to the completion screen
+    WakelockPlus.disable().catchError((e) {
+      debugPrint('[PracticeScreen] Error disabling Wakelock on completion: $e');
+    });
 
     setState(() {
       _isFinished = true;
       _totalSecondsRemaining = 0;
     });
+
+    widget.onSessionComplete?.call();
   }
 
   void _toggleMute() async {
@@ -249,10 +365,18 @@ class _PracticeScreenState extends State<PracticeScreen>
 
     final item = currentItem;
     if (item is PlayAudioItem) {
-      final vol = _isMuted ? (item.isBell ? 0.35 : 0.0) : 1.0;
-      await _audioPlayer.setVolume(vol);
+      final isS16 = item.segment == ClinicalSegment.S16 || item.id.startsWith('S16');
+      if (isS16) {
+        await _bellPlayer.setVolume(_isMuted ? 0.35 : 0.75);
+        await _voicePlayer.setVolume(_isMuted ? 0.0 : 1.0);
+      } else if (item.isBell) {
+        await _bellPlayer.setVolume(_isMuted ? 0.35 : 1.0);
+      } else {
+        await _voicePlayer.setVolume(_isMuted ? 0.0 : 1.0);
+      }
     } else {
-      await _audioPlayer.setVolume(_isMuted ? 0.0 : 1.0);
+      await _voicePlayer.setVolume(_isMuted ? 0.0 : 1.0);
+      await _bellPlayer.setVolume(_isMuted ? 0.35 : 1.0);
     }
   }
 
@@ -294,7 +418,9 @@ class _PracticeScreenState extends State<PracticeScreen>
                   IconButton(
                     icon: const Icon(Icons.close, color: AppColors.textBlack),
                     onPressed: () {
-                      _audioPlayer.stop();
+                      _overlapTimer?.cancel();
+                      _voicePlayer.stop();
+                      _bellPlayer.stop();
                       widget.onEndSession();
                     },
                   ),

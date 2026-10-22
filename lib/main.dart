@@ -339,6 +339,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
               : (_selectedPractice == 'Breath'
                   ? 'Breath Awareness'
                   : _selectedPractice),
+          selectedBell: currentBell,
           buildDebugScreen: () => SessionDebugScreen(
             targetSeconds: _activeTargetSeconds,
             selectedType: _selectedPractice == 'Silent'

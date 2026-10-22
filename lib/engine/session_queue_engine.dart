@@ -103,8 +103,8 @@ class SessionQueueEngine {
       preClosingGuidanceSec += dur;
     }
 
-    // 3. Closing unit: 4.0s Pre-Bell Silence + Closing Bell + 2.0s Pause + S16 Vocal Outro + 3.0s Closing Stillness
-    final closingBellSec = selectedBell.durationSeconds.toDouble();
+    // 3. Closing unit: 4.0s Pre-Bell Silence + S16 Overlap (Bell strike + 2.5s timer + voice outro) + 3.0s Closing Stillness
+    const s16OverlapDelaySec = 2.5;
 
     final s16Variant = selectedVariants[ClinicalSegment.S16] ??
         ScriptVariant(
@@ -121,13 +121,9 @@ class SessionQueueEngine {
     );
 
     const preClosingBellSilenceSec = 4;
-    const s16PauseBetweenBellAndVoice = 2;
-    const postS16SilenceSec = 3; // 3 seconds of final silence after S16 completes
     final closingUnitSec = preClosingBellSilenceSec +
-        closingBellSec +
-        s16PauseBetweenBellAndVoice +
-        s16Sec +
-        postS16SilenceSec;
+        s16OverlapDelaySec +
+        s16Sec;
 
     // Intentional 4-second settling pause before S01 begins
     const settlePauseSec = 4;
@@ -215,29 +211,14 @@ class SessionQueueEngine {
       }
     }
 
-    // 4.0s silence immediately before the closing bell
+    // 4.0s silence immediately before the closing sequence
     queue.add(PauseSilenceItem(
       preClosingBellSilenceSec,
       displayTitle: 'Pre-Bell Silence',
       phaseName: 'Re-Orientation & Close',
     ));
 
-    // S16 Closing Sequence: Closing Bell -> 2.0s Pause -> S16 Vocal Outro
-    queue.add(PlayAudioItem(
-      id: '${selectedBell.id}_closing',
-      displayTitle: '${selectedBell.title} (Closing)',
-      phaseName: 'Re-Orientation & Close',
-      audioAssetPath: selectedBell.filePath,
-      durationSeconds: closingBellSec,
-      isBell: true,
-    ));
-
-    queue.add(PauseSilenceItem(
-      s16PauseBetweenBellAndVoice,
-      displayTitle: 'Final Stillness',
-      phaseName: 'Re-Orientation & Close',
-    ));
-
+    // S16 Closing Sequence: Dual-player overlap (Acoustic bell strikes immediately; voice begins at +2.5s over bell decay)
     final s16Path = AudioManifestService.getAudioAssetPath(
       voice: vNorm,
       segmentCode: 'S16',
@@ -249,16 +230,10 @@ class SessionQueueEngine {
       displayTitle: 'Closing Guidance ($s16VarNum)',
       phaseName: 'Re-Orientation & Close',
       audioAssetPath: s16Path,
-      durationSeconds: s16Sec,
+      durationSeconds: s16OverlapDelaySec + s16Sec,
       segment: ClinicalSegment.S16,
       text: s16Variant.cleanText,
-    ));
-
-    // 3.0s buffer of silence at the very end so S16 vocal outro completes without being cut off
-    queue.add(PauseSilenceItem(
-      postS16SilenceSec,
-      displayTitle: 'Closing Stillness',
-      phaseName: 'Re-Orientation & Close',
+      bellAssetPath: selectedBell.filePath,
     ));
 
     return queue;

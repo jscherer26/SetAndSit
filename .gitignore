@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+gemini-code-for-agent.txt
 
 # IntelliJ related
 *.iml
@@ -31,6 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/android/build/
 /coverage/
 
 # Symbolication related
