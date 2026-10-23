@@ -65,7 +65,3 @@ local.properties
 # Track: assets/audio/bells/
 Generated_MP3s/
 *.wav
-
-# Local documentation backup
-project_document.old.md
-project_architecture.old.md

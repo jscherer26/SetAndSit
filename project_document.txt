@@ -125,9 +125,8 @@ Just prior to Git staging and committing:
 ## STEP 6: Prepare the git commit (do NOT push)
 
 1. Run `git status --short`.
-2. Stage ALL changes across the project (new files, modifications, and deletions) along with the updated documentation artifacts:
+2. Stage ALL changes across the project (new files, modifications, and deletions) along with the updated documentation artifacts and their backup files (`project_document.md`, `project_architecture.md`, `project_document.old.md`, `project_architecture.old.md`):
    `git add -A`
-   *(Ensure local backups `project_document.old.md` and `project_architecture.old.md` are ignored via `.gitignore` so they remain strictly local and untracked).*
 3. Commit everything:
    `git commit -m "<descriptive message summarizing features, fixes, and docs>"`
 4. Verify `git status --short` confirms the working tree is clean.
