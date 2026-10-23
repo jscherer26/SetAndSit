@@ -3,9 +3,11 @@ import 'data/bell_data.dart';
 import 'engine/session_queue_engine.dart';
 import 'models/audio_models.dart';
 import 'models/practice_config.dart';
+import 'models/voice_config.dart';
 import 'screens/bell_configuration_screen.dart';
 import 'screens/configuration_screen.dart';
 import 'screens/manage_practices_screen.dart';
+import 'screens/manage_voices_screen.dart';
 import 'screens/practice_screen.dart';
 import 'screens/session_debug_screen.dart';
 import 'screens/settings_screen.dart';
@@ -15,11 +17,44 @@ import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const SetAndSitApp());
+
+  SavedState? savedState;
+  List<VoiceConfig>? voices;
+  List<PracticeConfig>? practices;
+
+  try {
+    await PreferencesService.init();
+    savedState = await PreferencesService.loadState();
+    voices = await PreferencesService.loadVoices();
+    practices = await PreferencesService.loadPractices();
+  } catch (e, stack) {
+    debugPrint('[SetAndSit] Error loading preferences: $e\n$stack');
+  }
+
+  // Run app unconditionally so UI renders even if preferences encountered an error
+  runApp(SetAndSitApp(
+    initialState: savedState,
+    initialVoices: voices,
+    initialPractices: practices,
+  ));
+
+  // Non-blocking initialization after runApp
+  AudioManifestService.initialize().catchError((e) {
+    debugPrint('[SetAndSit] AudioManifestService error: $e');
+  });
 }
 
 class SetAndSitApp extends StatelessWidget {
-  const SetAndSitApp({super.key});
+  final SavedState? initialState;
+  final List<VoiceConfig>? initialVoices;
+  final List<PracticeConfig>? initialPractices;
+
+  const SetAndSitApp({
+    super.key,
+    this.initialState,
+    this.initialVoices,
+    this.initialPractices,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +70,11 @@ class SetAndSitApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const RootControllerScreen(),
+      home: RootControllerScreen(
+        initialState: initialState,
+        initialVoices: initialVoices,
+        initialPractices: initialPractices,
+      ),
     );
   }
 }
@@ -45,12 +84,22 @@ enum AppScreen {
   settings,
   bellSettings,
   managePractices,
+  manageVoices,
   practice,
   sessionDebug,
 }
 
 class RootControllerScreen extends StatefulWidget {
-  const RootControllerScreen({super.key});
+  final SavedState? initialState;
+  final List<VoiceConfig>? initialVoices;
+  final List<PracticeConfig>? initialPractices;
+
+  const RootControllerScreen({
+    super.key,
+    this.initialState,
+    this.initialVoices,
+    this.initialPractices,
+  });
 
   @override
   State<RootControllerScreen> createState() => _RootControllerScreenState();
@@ -64,6 +113,8 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   int _practiceDurationMinutes = 20;
   double _instructionDensity = 3.0;
   double _redirectionDensity = 3.0;
+  int _preparationDelaySeconds = 10;
+  String _practiceMode = 'Guided';
 
   List<AudioSegment> _bells = BellData.defaultBells;
   String _selectedBellId = 'bell_meditation';
@@ -71,6 +122,8 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   List<PracticeConfig> _practices = PracticeConfig.defaultPractices;
   String _selectedPracticeId = 'focused_calm';
   String _selectedPractice = ClinicalArchetype.focusedCalm.title;
+  List<VoiceConfig> _voices = VoiceConfig.defaultVoices;
+  String _selectedVoiceId = 'kia';
   int _voiceIndex = 0; // 0: Kia (Male), 1: Grace (Female)
 
   int _clockHour = 8;
@@ -84,8 +137,20 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   @override
   void initState() {
     super.initState();
+    if (widget.initialState != null &&
+        widget.initialVoices != null &&
+        widget.initialPractices != null) {
+      _practiceDurationMinutes = widget.initialState!.practiceDurationMinutes;
+      _applyLoadedState(
+        saved: widget.initialState!,
+        voices: widget.initialVoices!,
+        practices: widget.initialPractices!,
+      );
+      _isInitialized = true;
+    } else {
+      _loadInitialState();
+    }
     WidgetsBinding.instance.addObserver(this);
-    _loadInitialState();
   }
 
   @override
@@ -97,63 +162,158 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _ensureFutureTargetTime();
+      if (_currentScreen == AppScreen.configuration) {
+        _ensureFutureTargetTime();
+      }
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      _persistState();
     }
   }
 
-  void _loadInitialState() async {
-    await AudioManifestService.initialize();
-    final practices = await PreferencesService.loadPractices();
-    final saved = await PreferencesService.loadState();
+  void _applyLoadedState({
+    required SavedState saved,
+    required List<VoiceConfig> voices,
+    required List<PracticeConfig> practices,
+  }) {
+    final now = DateTime.now();
 
-    if (mounted) {
-      final now = DateTime.now();
+    // Check if the saved target clock time represents a valid future time (within 1 to 90 minutes)
+    final savedHour24 = saved.targetClockTimeIsAm
+        ? (saved.targetClockTimeHour == 12 ? 0 : saved.targetClockTimeHour)
+        : (saved.targetClockTimeHour == 12 ? 12 : saved.targetClockTimeHour + 12);
+    var savedTarget = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      savedHour24,
+      saved.targetClockTimeMinute,
+    );
+
+    // If the saved target clock time is in the past for today, advance it by 1 day
+    // to match midnight rollover logic used across the app
+    if (!savedTarget.isAfter(now)) {
+      savedTarget = savedTarget.add(const Duration(days: 1));
+    }
+
+    int initHour;
+    int initMinute;
+    bool initIsAm;
+
+    final diffSeconds = savedTarget.difference(now).inSeconds;
+    if (diffSeconds >= 60 && diffSeconds <= 90 * 60) {
+      initHour = saved.targetClockTimeHour;
+      initMinute = saved.targetClockTimeMinute;
+      initIsAm = saved.targetClockTimeIsAm;
+    } else {
       final initialEnd =
           now.add(Duration(minutes: saved.practiceDurationMinutes));
-      final initHour = initialEnd.hour % 12 == 0 ? 12 : initialEnd.hour % 12;
-      final initMinute = initialEnd.minute;
-      final initIsAm = initialEnd.hour < 12;
+      initHour = initialEnd.hour % 12 == 0 ? 12 : initialEnd.hour % 12;
+      initMinute = initialEnd.minute;
+      initIsAm = initialEnd.hour < 12;
+    }
 
-      // Migrate legacy string if needed
-      var practice = saved.selectedPractice;
-      if (practice == 'Breath' || practice == 'Breath Awareness' || practice == 'Guided') {
-        practice = ClinicalArchetype.focusedCalm.title;
+    var practice = saved.selectedPractice;
+    if (practice == 'Breath' || practice == 'Breath Awareness' || practice == 'Guided') {
+      practice = ClinicalArchetype.focusedCalm.title;
+    }
+
+    final savedId = saved.selectedPracticeId;
+    var match = practices.cast<PracticeConfig?>().firstWhere(
+      (p) => p?.id == savedId && p?.isIncluded == true,
+      orElse: () => null,
+    );
+    match ??= practices.cast<PracticeConfig?>().firstWhere(
+      (p) => p?.name == practice && p?.isIncluded == true,
+      orElse: () => null,
+    );
+    match ??= practices.cast<PracticeConfig?>().firstWhere(
+      (p) => p?.isIncluded == true,
+      orElse: () => null,
+    );
+    final resolved = match ?? (practices.isNotEmpty ? practices.first : PracticeConfig.defaultPractices.first);
+
+    final savedVoiceId = saved.selectedVoiceId ??
+        (saved.selectedVoiceIndex == 1 ? 'grace' : 'kia');
+    var voiceMatch = voices.cast<VoiceConfig?>().firstWhere(
+      (v) => v?.id == savedVoiceId && v?.isIncluded == true,
+      orElse: () => null,
+    );
+    voiceMatch ??= voices.cast<VoiceConfig?>().firstWhere(
+      (v) => v?.isIncluded == true,
+      orElse: () => null,
+    );
+    final resolvedVoice = voiceMatch ??
+        (voices.isNotEmpty ? voices.first : VoiceConfig.defaultVoices.first);
+
+    _practiceDurationMinutes = saved.practiceDurationMinutes;
+    _instructionDensity = saved.instructionDensity;
+    _redirectionDensity = saved.redirectionDensity;
+    _preparationDelaySeconds = saved.preparationDelaySeconds;
+    _practiceMode = saved.practiceMode;
+    _bells = saved.bells;
+    _selectedBellId = saved.selectedBellId;
+    _practices = practices;
+    _selectedPracticeId = resolved.id;
+    _selectedPractice = resolved.name;
+    _voices = voices;
+    _selectedVoiceId = resolvedVoice.id;
+    _voiceIndex = resolvedVoice.id == 'grace' ? 1 : 0;
+    _clockHour = initHour;
+    _clockMinute = initMinute;
+    _isAm = initIsAm;
+    _isInitialized = true;
+  }
+
+  void _loadInitialState() async {
+    try {
+      final voices = await PreferencesService.loadVoices();
+      final practices = await PreferencesService.loadPractices();
+      final saved = await PreferencesService.loadState();
+
+      if (mounted) {
+        setState(() {
+          _applyLoadedState(
+            saved: saved,
+            voices: voices,
+            practices: practices,
+          );
+        });
       }
+    } catch (e, stack) {
+      debugPrint('[RootControllerScreen] Error in _loadInitialState: $e\n$stack');
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+      }
+    }
+  }
 
-      // Resolve practice ID & name
-      final savedId = saved.selectedPracticeId;
-      var match = practices.cast<PracticeConfig?>().firstWhere(
-        (p) => p?.id == savedId && p?.isIncluded == true,
-        orElse: () => null,
-      );
+  void _ensureValidSelectedVoice() {
+    final match = _voices.cast<VoiceConfig?>().firstWhere(
+      (v) => v?.id == _selectedVoiceId && v?.isIncluded == true,
+      orElse: () => null,
+    );
+    if (match != null) {
+      _voiceIndex = match.id == 'grace' ? 1 : 0;
+      return;
+    }
 
-      match ??= practices.cast<PracticeConfig?>().firstWhere(
-        (p) => p?.name == practice && p?.isIncluded == true,
-        orElse: () => null,
-      );
+    final firstIncluded = _voices.cast<VoiceConfig?>().firstWhere(
+      (v) => v?.isIncluded == true,
+      orElse: () => null,
+    );
+    if (firstIncluded != null) {
+      _selectedVoiceId = firstIncluded.id;
+      _voiceIndex = firstIncluded.id == 'grace' ? 1 : 0;
+      return;
+    }
 
-      match ??= practices.cast<PracticeConfig?>().firstWhere(
-        (p) => p?.isIncluded == true,
-        orElse: () => null,
-      );
-
-      final resolved = match ?? (practices.isNotEmpty ? practices.first : PracticeConfig.defaultPractices.first);
-
-      setState(() {
-        _practiceDurationMinutes = saved.practiceDurationMinutes;
-        _instructionDensity = saved.instructionDensity;
-        _redirectionDensity = saved.redirectionDensity;
-        _bells = saved.bells;
-        _selectedBellId = saved.selectedBellId;
-        _practices = practices;
-        _selectedPracticeId = resolved.id;
-        _selectedPractice = resolved.name;
-        _voiceIndex = saved.selectedVoiceIndex;
-        _clockHour = initHour;
-        _clockMinute = initMinute;
-        _isAm = initIsAm;
-        _isInitialized = true;
-      });
+    if (_voices.isNotEmpty) {
+      _selectedVoiceId = _voices.first.id;
+      _voiceIndex = _voices.first.id == 'grace' ? 1 : 0;
     }
   }
 
@@ -184,6 +344,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   }
 
   void _ensureFutureTargetTime() {
+    if (!_isInitialized) return;
     final now = DateTime.now();
     final hour24 = _isAm
         ? (_clockHour == 12 ? 0 : _clockHour)
@@ -202,18 +363,19 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   }
 
   void _persistState() {
-    if (!_isInitialized) return;
-    PreferencesService.savePractices(_practices);
     PreferencesService.saveState(
       SavedState(
         practiceDurationMinutes: _practiceDurationMinutes,
         instructionDensity: _instructionDensity,
         redirectionDensity: _redirectionDensity,
+        preparationDelaySeconds: _preparationDelaySeconds,
+        practiceMode: _practiceMode,
         bells: _bells,
         selectedBellId: _selectedBellId,
         selectedPractice: _selectedPractice,
         selectedPracticeId: _selectedPracticeId,
         selectedVoiceIndex: _voiceIndex,
+        selectedVoiceId: _selectedVoiceId,
         targetClockTimeHour: _clockHour,
         targetClockTimeMinute: _clockMinute,
         targetClockTimeIsAm: _isAm,
@@ -254,7 +416,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
         selectedBell: bell,
       );
     } else {
-      final voicePersona = _voiceIndex == 1 ? 'grace' : 'kia';
+      final voicePersona = _selectedVoiceId;
       queue = SessionQueueEngine.generateGuidedSessionQueue(
         targetDurationSeconds: targetSeconds,
         practice: practiceConfig,
@@ -292,6 +454,24 @@ class _RootControllerScreenState extends State<RootControllerScreen>
 
   @override
   Widget build(BuildContext context) {
+    return PopScope(
+      canPop: _currentScreen == AppScreen.configuration,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_currentScreen == AppScreen.practice) return;
+        setState(() {
+          if (_currentScreen == AppScreen.manageVoices) {
+            _ensureValidSelectedVoice();
+          }
+          _currentScreen = _previousScreen;
+        });
+        _persistState();
+      },
+      child: _buildScreen(context),
+    );
+  }
+
+  Widget _buildScreen(BuildContext context) {
     switch (_currentScreen) {
       case AppScreen.configuration:
         return ConfigurationScreen(
@@ -315,9 +495,9 @@ class _RootControllerScreenState extends State<RootControllerScreen>
               _currentScreen = AppScreen.bellSettings;
             });
           },
-          selectedType: _selectedPractice,
+          selectedType: _practiceMode,
           onSelectedTypeChanged: (type) {
-            setState(() => _selectedPractice = type);
+            setState(() => _practiceMode = type);
             _persistState();
           },
           practices: _practices,
@@ -336,6 +516,21 @@ class _RootControllerScreenState extends State<RootControllerScreen>
               _currentScreen = AppScreen.managePractices;
             });
           },
+          voices: _voices,
+          selectedVoiceId: _selectedVoiceId,
+          onSelectedVoiceIdChanged: (id) {
+            setState(() {
+              _selectedVoiceId = id;
+              _voiceIndex = id == 'grace' ? 1 : 0;
+            });
+            _persistState();
+          },
+          onOpenManageVoices: () {
+            setState(() {
+              _previousScreen = AppScreen.configuration;
+              _currentScreen = AppScreen.manageVoices;
+            });
+          },
           voiceIndex: _voiceIndex,
           onVoiceIndexChanged: (idx) {
             setState(() => _voiceIndex = idx);
@@ -345,25 +540,17 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           clockMinute: _clockMinute,
           isAm: _isAm,
           onClockTimeChanged: (h, m, am) {
-            final now = DateTime.now();
-            final h24 = am ? (h == 12 ? 0 : h) : (h == 12 ? 12 : h + 12);
-            var target = DateTime(now.year, now.month, now.day, h24, m);
-            if (!target.isAfter(now)) {
-              target = target.add(const Duration(days: 1));
-            }
-            final diffMins = (target.difference(now).inSeconds / 60.0).round().clamp(1, 90);
             setState(() {
               _clockHour = h;
               _clockMinute = m;
               _isAm = am;
-              _practiceDurationMinutes = diffMins;
             });
             _persistState();
           },
           onBeginPractice: (targetSec, practiceType, bell, practiceConfig) {
             _startPractice(
               targetSeconds: targetSec,
-              practiceType: practiceType,
+              practiceType: _practiceMode,
               bell: bell,
               practiceConfig: practiceConfig,
             );
@@ -379,6 +566,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
               _practices = updated;
               _ensureValidSelectedPractice();
             });
+            PreferencesService.savePractices(_practices);
             _persistState();
           },
           onBack: () {
@@ -390,32 +578,39 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           },
         );
 
+      case AppScreen.manageVoices:
+        return ManageVoicesScreen(
+          initialVoices: _voices,
+          initialSelectedVoiceId: _selectedVoiceId,
+          onVoicesUpdated: (updated) {
+            setState(() {
+              _voices = updated;
+              _ensureValidSelectedVoice();
+            });
+            PreferencesService.saveVoices(_voices);
+            _persistState();
+          },
+          onBack: () {
+            setState(() {
+              _ensureValidSelectedVoice();
+              _currentScreen = _previousScreen;
+            });
+            _persistState();
+          },
+        );
+
       case AppScreen.settings:
         return SettingsScreen(
           practiceDurationMinutes: _practiceDurationMinutes,
           instructionDensity: _instructionDensity,
           redirectionDensity: _redirectionDensity,
-          onOpenManagePractices: () {
-            setState(() {
-              _previousScreen = AppScreen.settings;
-              _currentScreen = AppScreen.managePractices;
-            });
-          },
-          onOpenBellSettings: () {
-            setState(() {
-              _previousScreen = AppScreen.settings;
-              _currentScreen = AppScreen.bellSettings;
-            });
-          },
+          preparationDelaySeconds: _preparationDelaySeconds,
           onPracticeDurationChanged: (val) {
-            final now = DateTime.now();
-            final newTarget = now.add(Duration(minutes: val));
-            setState(() {
-              _practiceDurationMinutes = val;
-              _clockHour = newTarget.hour % 12 == 0 ? 12 : newTarget.hour % 12;
-              _clockMinute = newTarget.minute;
-              _isAm = newTarget.hour < 12;
-            });
+            setState(() => _practiceDurationMinutes = val);
+            _persistState();
+          },
+          onPreparationDelayChanged: (val) {
+            setState(() => _preparationDelaySeconds = val);
             _persistState();
           },
           onInstructionDensityChanged: (val) {
@@ -427,13 +622,27 @@ class _RootControllerScreenState extends State<RootControllerScreen>
             _persistState();
           },
           onBack: () {
-            final now = DateTime.now();
-            final newTarget = now.add(Duration(minutes: _practiceDurationMinutes));
+            setState(() => _currentScreen = AppScreen.configuration);
+            _persistState();
+          },
+          onOpenManagePractices: () {
             setState(() {
-              _clockHour = newTarget.hour % 12 == 0 ? 12 : newTarget.hour % 12;
-              _clockMinute = newTarget.minute;
-              _isAm = newTarget.hour < 12;
-              _currentScreen = AppScreen.configuration;
+              _previousScreen = AppScreen.settings;
+              _currentScreen = AppScreen.managePractices;
+            });
+            _persistState();
+          },
+          onOpenManageVoices: () {
+            setState(() {
+              _previousScreen = AppScreen.settings;
+              _currentScreen = AppScreen.manageVoices;
+            });
+            _persistState();
+          },
+          onOpenBellSettings: () {
+            setState(() {
+              _previousScreen = AppScreen.settings;
+              _currentScreen = AppScreen.bellSettings;
             });
             _persistState();
           },
@@ -467,10 +676,44 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           orElse: () => _bells.first,
         );
 
+        final isGuided = _practiceMode != 'Silent';
+        PracticeConfig? currentPracticeConfig;
+        if (isGuided) {
+          currentPracticeConfig = _practices.firstWhere(
+            (p) => p.id == _selectedPracticeId,
+            orElse: () => _practices.first,
+          );
+        }
+
         return PracticeScreen(
           sessionQueue: _activeSessionQueue,
           targetDurationSeconds: _activeTargetSeconds,
-          selectedMeditationType: _selectedPractice == 'Silent'
+          preparationDelaySeconds: _preparationDelaySeconds,
+          targetClockHour: _clockHour,
+          targetClockMinute: _clockMinute,
+          targetClockIsAm: _isAm,
+          onBuildQueue: (actualSeconds) {
+            if (!isGuided) {
+              return SessionQueueEngine.generateSilentSessionQueue(
+                targetDurationSeconds: actualSeconds,
+                selectedBell: currentBell,
+              );
+            } else {
+              return SessionQueueEngine.generateGuidedSessionQueue(
+                targetDurationSeconds: actualSeconds,
+                practice: currentPracticeConfig,
+                voicePersona: _selectedVoiceId,
+                selectedBell: currentBell,
+              );
+            }
+          },
+          onPracticeStarted: (freshQueue, actualSeconds) {
+            setState(() {
+              _activeSessionQueue = freshQueue;
+              _activeTargetSeconds = actualSeconds;
+            });
+          },
+          selectedMeditationType: _practiceMode == 'Silent'
               ? 'Silent'
               : (_selectedPractice == 'Breath'
                   ? 'Breath Awareness'
@@ -478,7 +721,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           selectedBell: currentBell,
           buildDebugScreen: () => SessionDebugScreen(
             targetSeconds: _activeTargetSeconds,
-            selectedType: _selectedPractice == 'Silent'
+            selectedType: _practiceMode == 'Silent'
                 ? 'Silent'
                 : (_selectedPractice == 'Breath'
                     ? 'Breath Awareness'
@@ -487,6 +730,19 @@ class _RootControllerScreenState extends State<RootControllerScreen>
             redirectionDensity: _redirectionDensity,
             selectedBell: currentBell,
             sessionQueue: _activeSessionQueue,
+            onBack: () {},
+          ),
+          buildDebugScreenWithQueue: (liveQueue, liveTargetSeconds) => SessionDebugScreen(
+            targetSeconds: liveTargetSeconds,
+            selectedType: _practiceMode == 'Silent'
+                ? 'Silent'
+                : (_selectedPractice == 'Breath'
+                    ? 'Breath Awareness'
+                    : _selectedPractice),
+            instructionDensity: _instructionDensity,
+            redirectionDensity: _redirectionDensity,
+            selectedBell: currentBell,
+            sessionQueue: liveQueue,
             onBack: () {},
           ),
           onEndSession: () {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:setandsit/main.dart';
+import 'package:setandsit/models/audio_models.dart';
 import 'package:setandsit/screens/clock_time_picker_dialog.dart';
+import 'package:setandsit/screens/practice_screen.dart';
 
 void main() {
   testWidgets('SetAndSit app loads home screen', (WidgetTester tester) async {
@@ -85,5 +87,84 @@ void main() {
     // Verify the negative text has red color
     final textWidget = tester.widget<Text>(negativeFinder);
     expect(textWidget.style?.color, const Color(0xFFD32F2F));
+  });
+
+  testWidgets('PracticeScreen displays and counts down silence item correctly', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final silenceItem = PauseSilenceItem(
+      15,
+      displayTitle: 'Quiet Settling Space',
+      phaseName: 'Phase 1: Settling',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PracticeScreen(
+          sessionQueue: [silenceItem],
+          targetDurationSeconds: 15,
+          preparationDelaySeconds: 0,
+          selectedMeditationType: 'Focused Calm',
+          buildDebugScreen: () => const SizedBox.shrink(),
+          onEndSession: () {},
+        ),
+      ),
+    );
+
+    expect(find.text('Quiet Settling Space'), findsOneWidget);
+    expect(find.text('Phase 1: Settling'), findsOneWidget);
+    expect(find.text('00:15'), findsWidgets);
+
+    // Fast forward 5 seconds
+    await tester.pump(const Duration(seconds: 5));
+    expect(find.text('00:10'), findsWidgets);
+  });
+
+  testWidgets('PracticeScreen displays preparation countdown and transitions to practice', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final silenceItem = PauseSilenceItem(
+      60,
+      displayTitle: 'Quiet Settling Space',
+      phaseName: 'Phase 1: Settling',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PracticeScreen(
+          sessionQueue: [silenceItem],
+          targetDurationSeconds: 60,
+          preparationDelaySeconds: 10,
+          selectedMeditationType: 'Focused Calm',
+          buildDebugScreen: () => const SizedBox.shrink(),
+          onEndSession: () {},
+        ),
+      ),
+    );
+
+    // Initial state: Preparation countdown visible
+    expect(find.text('10'), findsOneWidget);
+    expect(find.text('seconds to settle'), findsOneWidget);
+    expect(find.text('Settling In'), findsOneWidget);
+    expect(find.text('Begin Now'), findsOneWidget);
+
+    // Advance 3 seconds
+    await tester.pump(const Duration(seconds: 3));
+    expect(find.text('7'), findsOneWidget);
+
+    // Advance past preparation (7 more seconds)
+    await tester.pump(const Duration(seconds: 7));
+    await tester.pump();
+
+    // Now transitioned to regular practice screen
+    expect(find.text('Quiet Settling Space'), findsOneWidget);
+    expect(find.text('Phase 1: Settling'), findsOneWidget);
+    expect(find.text('remaining'), findsOneWidget);
   });
 }

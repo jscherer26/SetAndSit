@@ -5,11 +5,14 @@ class SettingsScreen extends StatefulWidget {
   final int practiceDurationMinutes;
   final double instructionDensity;
   final double redirectionDensity;
+  final int preparationDelaySeconds;
   final ValueChanged<int> onPracticeDurationChanged;
   final ValueChanged<double> onInstructionDensityChanged;
   final ValueChanged<double> onRedirectionDensityChanged;
+  final ValueChanged<int> onPreparationDelayChanged;
   final VoidCallback onBack;
   final VoidCallback? onOpenManagePractices;
+  final VoidCallback? onOpenManageVoices;
   final VoidCallback? onOpenBellSettings;
 
   const SettingsScreen({
@@ -17,11 +20,14 @@ class SettingsScreen extends StatefulWidget {
     required this.practiceDurationMinutes,
     required this.instructionDensity,
     required this.redirectionDensity,
+    this.preparationDelaySeconds = 10,
     required this.onPracticeDurationChanged,
     required this.onInstructionDensityChanged,
     required this.onRedirectionDensityChanged,
+    required this.onPreparationDelayChanged,
     required this.onBack,
     this.onOpenManagePractices,
+    this.onOpenManageVoices,
     this.onOpenBellSettings,
   });
 
@@ -34,6 +40,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late FocusNode _durationFocusNode;
   String? _errorMessage;
 
+  late TextEditingController _delayController;
+  late FocusNode _delayFocusNode;
+  String? _delayErrorMessage;
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +54,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _durationFocusNode.addListener(() {
       if (!_durationFocusNode.hasFocus) {
         _validateDuration();
+      }
+    });
+
+    _delayController = TextEditingController(
+      text: widget.preparationDelaySeconds.toString(),
+    );
+    _delayFocusNode = FocusNode();
+    _delayFocusNode.addListener(() {
+      if (!_delayFocusNode.hasFocus) {
+        _validateDelay();
       }
     });
   }
@@ -61,34 +81,79 @@ class _SettingsScreenState extends State<SettingsScreen> {
         });
       }
     }
+    if (oldWidget.preparationDelaySeconds != widget.preparationDelaySeconds) {
+      if (!_delayFocusNode.hasFocus &&
+          _delayController.text !=
+              widget.preparationDelaySeconds.toString()) {
+        _delayController.text = widget.preparationDelaySeconds.toString();
+        setState(() {
+          _delayErrorMessage = null;
+        });
+      }
+    }
   }
 
   @override
   void dispose() {
     _durationController.dispose();
     _durationFocusNode.dispose();
+    _delayController.dispose();
+    _delayFocusNode.dispose();
     super.dispose();
   }
 
-  void _validateDuration() {
+  void _validateDuration({bool updateUi = true}) {
     final text = _durationController.text.trim();
     if (text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a duration.';
-      });
+      if (updateUi && mounted) {
+        setState(() {
+          _errorMessage = 'Please enter a duration.';
+        });
+      }
       return;
     }
     final parsed = int.tryParse(text);
     if (parsed == null || parsed < 1 || parsed > 90) {
-      setState(() {
-        _errorMessage = 'Duration must be between 1 and 90 minutes.';
-      });
+      if (updateUi && mounted) {
+        setState(() {
+          _errorMessage = 'Duration must be between 1 and 90 minutes.';
+        });
+      }
       return;
     }
-    setState(() {
-      _errorMessage = null;
-    });
+    if (updateUi && mounted) {
+      setState(() {
+        _errorMessage = null;
+      });
+    }
     widget.onPracticeDurationChanged(parsed);
+  }
+
+  void _validateDelay({bool updateUi = true}) {
+    final text = _delayController.text.trim();
+    if (text.isEmpty) {
+      if (updateUi && mounted) {
+        setState(() {
+          _delayErrorMessage = 'Please enter a delay (0 to 20 seconds).';
+        });
+      }
+      return;
+    }
+    final parsed = int.tryParse(text);
+    if (parsed == null || parsed < 0 || parsed > 20) {
+      if (updateUi && mounted) {
+        setState(() {
+          _delayErrorMessage = 'Delay must be between 0 and 20 seconds.';
+        });
+      }
+      return;
+    }
+    if (updateUi && mounted) {
+      setState(() {
+        _delayErrorMessage = null;
+      });
+    }
+    widget.onPreparationDelayChanged(parsed);
   }
 
   void _handleBack() {
@@ -100,7 +165,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
       return;
     }
+
+    final delayText = _delayController.text.trim();
+    final delayParsed = int.tryParse(delayText);
+    if (delayParsed == null || delayParsed < 0 || delayParsed > 20) {
+      setState(() {
+        _delayErrorMessage = 'Delay must be between 0 and 20 seconds.';
+      });
+      return;
+    }
+
     widget.onPracticeDurationChanged(parsed);
+    widget.onPreparationDelayChanged(delayParsed);
     widget.onBack();
   }
 
@@ -109,6 +185,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final parsed = int.tryParse(text);
     if (parsed != null && parsed >= 1 && parsed <= 90) {
       widget.onPracticeDurationChanged(parsed);
+    }
+    final delayText = _delayController.text.trim();
+    final delayParsed = int.tryParse(delayText);
+    if (delayParsed != null && delayParsed >= 0 && delayParsed <= 20) {
+      widget.onPreparationDelayChanged(delayParsed);
     }
   }
 
@@ -144,9 +225,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
 
-              // Bubble 1: Default Practice Duration Card
+              const Text(
+                'Defaults',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textMuted,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Top Bubble: Defaults (Duration, Delay, Density)
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -164,13 +255,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Row 1: Practice Duration
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Expanded(
                           child: Text(
-                            'Default Practice Duration',
+                            'Practice Duration',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -220,26 +312,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             onChanged: (val) {
                               final trimmed = val.trim();
-                              if (trimmed.isEmpty) {
-                                setState(() {
-                                  _errorMessage =
-                                      'Duration must be between 1 and 90 minutes.';
-                                });
-                                return;
-                              }
                               final parsed = int.tryParse(trimmed);
-                              if (parsed == null ||
-                                  parsed < 1 ||
-                                  parsed > 90) {
-                                setState(() {
-                                  _errorMessage =
-                                      'Duration must be between 1 and 90 minutes.';
-                                });
-                              } else {
+                              if (parsed != null && parsed >= 1 && parsed <= 90) {
                                 setState(() {
                                   _errorMessage = null;
                                 });
                                 widget.onPracticeDurationChanged(parsed);
+                              } else {
+                                _validateDuration();
                               }
                             },
                             onSubmitted: (_) => _validateDuration(),
@@ -249,7 +329,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
 
                     if (_errorMessage != null) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Text(
                         _errorMessage!,
                         style: const TextStyle(
@@ -259,31 +339,118 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                     ],
-                  ],
-                ),
-              ),
 
-              const SizedBox(height: 18),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Divider(
+                        color: AppColors.cardBorder,
+                        height: 1,
+                      ),
+                    ),
 
-              // Bubble 2: Instructions and Mind-Wandering Checks Card
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: AppColors.cardBorder),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: AppColors.cardShadow,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    )
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Instructions density slider
+                    // Row 2: Practice Delay
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            'Practice Delay',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textBlack,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Container(
+                          width: 100,
+                          height: 46,
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundSand,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _delayErrorMessage != null
+                                  ? AppColors.errorRed
+                                  : AppColors.cardBorder
+                                      .withValues(alpha: 0.6),
+                              width: _delayErrorMessage != null ? 1.5 : 1.0,
+                            ),
+                          ),
+                          child: TextField(
+                            controller: _delayController,
+                            focusNode: _delayFocusNode,
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: _delayErrorMessage != null
+                                  ? AppColors.errorRed
+                                  : AppColors.darkOlive,
+                            ),
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 12,
+                              ),
+                              suffixText: 'sec',
+                              suffixStyle: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                            onChanged: (val) {
+                              final trimmed = val.trim();
+                              final parsed = int.tryParse(trimmed);
+                              if (parsed != null && parsed >= 0 && parsed <= 20) {
+                                setState(() {
+                                  _delayErrorMessage = null;
+                                });
+                                widget.onPreparationDelayChanged(parsed);
+                              } else {
+                                _validateDelay();
+                              }
+                            },
+                            onSubmitted: (_) => _validateDelay(),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Time to put your phone down and get comfortable before guidance begins.',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+
+                    if (_delayErrorMessage != null) ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        _delayErrorMessage!,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.errorRed,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      child: Divider(
+                        color: AppColors.cardBorder,
+                        height: 1,
+                      ),
+                    ),
+
+                    // Row 3: Instructions density slider
                     Text(
                       '[ ${widget.instructionDensity.toInt()} ]  Instructions',
                       style: const TextStyle(
@@ -301,11 +468,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       activeColor: AppColors.darkOlive,
                       inactiveColor: AppColors.pillUnselected,
                       onChanged: widget.onInstructionDensityChanged,
+                      onChangeEnd: (val) {
+                        widget.onInstructionDensityChanged(val);
+                      },
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 14),
 
-                    // Mind-Wandering Checks density slider
+                    // Row 4: Mind-Wandering Checks density slider
                     Text(
                       '[ ${widget.redirectionDensity.toInt()} ]  Mind-Wandering Checks',
                       style: const TextStyle(
@@ -323,6 +493,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       activeColor: AppColors.darkOlive,
                       inactiveColor: AppColors.pillUnselected,
                       onChanged: widget.onRedirectionDensityChanged,
+                      onChangeEnd: (val) {
+                        widget.onRedirectionDensityChanged(val);
+                      },
                     ),
                   ],
                 ),
@@ -395,7 +568,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             },
                           ),
 
-                        if (widget.onOpenManagePractices != null && widget.onOpenBellSettings != null)
+                        if (widget.onOpenManageVoices != null) ...[
+                          const Divider(
+                            color: AppColors.cardBorder,
+                            height: 1,
+                            indent: 20,
+                            endIndent: 20,
+                          ),
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 4,
+                            ),
+                            leading: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: const BoxDecoration(
+                                color: AppColors.backgroundSand,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.record_voice_over,
+                                color: AppColors.darkOlive,
+                                size: 22,
+                              ),
+                            ),
+                            title: const Text(
+                              'Manage Voices',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                            subtitle: const Text(
+                              'Browse voices, inspect script variants, and audition audio',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                            trailing: const Icon(
+                              Icons.chevron_right,
+                              color: AppColors.textMuted,
+                            ),
+                            onTap: () {
+                              _handleNavigationSilently();
+                              widget.onOpenManageVoices!();
+                            },
+                          ),
+                        ],
+
+                        if ((widget.onOpenManagePractices != null || widget.onOpenManageVoices != null) &&
+                            widget.onOpenBellSettings != null)
                           const Divider(
                             color: AppColors.cardBorder,
                             height: 1,
@@ -423,7 +648,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             title: const Text(
-                              'Bell Parameters',
+                              'Manage Bells',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

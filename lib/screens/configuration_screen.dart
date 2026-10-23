@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/audio_models.dart';
 import '../models/practice_config.dart';
+import '../models/voice_config.dart';
 import '../theme/app_theme.dart';
 import '../widgets/practice_stepper_card.dart';
+import '../widgets/voice_stepper_card.dart';
 import 'clock_time_picker_dialog.dart';
 
 class ConfigurationScreen extends StatefulWidget {
@@ -25,8 +27,13 @@ class ConfigurationScreen extends StatefulWidget {
   final ValueChanged<String> onSelectedPracticeIdChanged;
   final VoidCallback onOpenManagePractices;
 
+  final List<VoiceConfig>? voices;
+  final String? selectedVoiceId;
+  final ValueChanged<String>? onSelectedVoiceIdChanged;
+  final VoidCallback? onOpenManageVoices;
+
   final int voiceIndex;
-  final ValueChanged<int> onVoiceIndexChanged;
+  final ValueChanged<int>? onVoiceIndexChanged;
 
   final int clockHour;
   final int clockMinute;
@@ -55,19 +62,18 @@ class ConfigurationScreen extends StatefulWidget {
     required this.selectedPracticeId,
     required this.onSelectedPracticeIdChanged,
     required this.onOpenManagePractices,
-    required this.voiceIndex,
-    required this.onVoiceIndexChanged,
+    this.voices,
+    this.selectedVoiceId,
+    this.onSelectedVoiceIdChanged,
+    this.onOpenManageVoices,
+    this.voiceIndex = 0,
+    this.onVoiceIndexChanged,
     required this.clockHour,
     required this.clockMinute,
     required this.isAm,
     required this.onClockTimeChanged,
     required this.onBeginPractice,
   });
-
-  static const List<String> voices = [
-    'Kia (Male)',
-    'Grace (Female)',
-  ];
 
   @override
   State<ConfigurationScreen> createState() => _ConfigurationScreenState();
@@ -213,7 +219,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         : null,
                     onTap: () {
                       widget.onSelectedPracticeIdChanged(p.id);
-                      widget.onSelectedTypeChanged(p.name);
                       Navigator.pop(context);
                     },
                   );
@@ -250,64 +255,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                     widget.onOpenManagePractices();
                   },
                 ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showVoicePicker(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Select Voice',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ...ConfigurationScreen.voices.asMap().entries.map((entry) {
-                  final idx = entry.key;
-                  final voiceName = entry.value;
-                  final isSel = widget.voiceIndex == idx;
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      voiceName,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight:
-                            isSel ? FontWeight.bold : FontWeight.normal,
-                        color: isSel
-                            ? AppColors.darkOlive
-                            : AppColors.textBlack,
-                      ),
-                    ),
-                    trailing: isSel
-                        ? const Icon(Icons.check, color: AppColors.darkOlive)
-                        : null,
-                    onTap: () {
-                      widget.onVoiceIndexChanged(idx);
-                      Navigator.pop(context);
-                    },
-                  );
-                }),
               ],
             ),
           ),
@@ -374,9 +321,14 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
         '${widget.clockHour.toString().padLeft(2, '0')}:${widget.clockMinute.toString().padLeft(2, '0')}';
     final amPmText = widget.isAm ? 'AM' : 'PM';
 
-    final currentVoice = ConfigurationScreen.voices.length > widget.voiceIndex
-        ? ConfigurationScreen.voices[widget.voiceIndex]
-        : ConfigurationScreen.voices.first;
+    final voiceList = widget.voices ?? VoiceConfig.defaultVoices;
+    final includedVoices = voiceList.where((v) => v.isIncluded).toList();
+    final activeVoices =
+        includedVoices.isNotEmpty ? includedVoices : voiceList;
+    final currentVoiceConfig = activeVoices.firstWhere(
+      (v) => v.id == widget.selectedVoiceId,
+      orElse: () => activeVoices.first,
+    );
 
     final enabledBells = widget.bells.where((b) => b.isEnabled).toList();
     final availableBells = enabledBells.isNotEmpty ? enabledBells : widget.bells;
@@ -570,7 +522,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                       child: GestureDetector(
                         onTap: () {
                           if (!isGuided) {
-                            widget.onSelectedTypeChanged(currentPractice.name);
+                            widget.onSelectedTypeChanged('Guided');
                           }
                         },
                         child: Container(
@@ -634,7 +586,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                           final idx = list.indexWhere((p) => p.id == currentPractice.id);
                           final nextIdx = (idx - 1 + list.length) % list.length;
                           widget.onSelectedPracticeIdChanged(list[nextIdx].id);
-                          widget.onSelectedTypeChanged(list[nextIdx].name);
                         }
                       : null,
                   onNext: includedPractices.length > 1
@@ -643,7 +594,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                           final idx = list.indexWhere((p) => p.id == currentPractice.id);
                           final nextIdx = (idx + 1) % list.length;
                           widget.onSelectedPracticeIdChanged(list[nextIdx].id);
-                          widget.onSelectedTypeChanged(list[nextIdx].name);
                         }
                       : null,
                   onTap: () => _showPracticePicker(context),
@@ -652,22 +602,32 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 const SizedBox(height: 14),
 
                 // Voice Card
-                _buildStepperPill(
-                  icon: Icons.record_voice_over,
-                  title: currentVoice,
-                  onIconTap: () => _showVoicePicker(context),
-                  onPrevious: () {
-                    final nextIdx = (widget.voiceIndex -
-                            1 +
-                            ConfigurationScreen.voices.length) %
-                        ConfigurationScreen.voices.length;
-                    widget.onVoiceIndexChanged(nextIdx);
-                  },
-                  onNext: () {
-                    final nextIdx = (widget.voiceIndex + 1) %
-                        ConfigurationScreen.voices.length;
-                    widget.onVoiceIndexChanged(nextIdx);
-                  },
+                VoiceStepperCard(
+                  voice: currentVoiceConfig,
+                  onLeadingTap: widget.onOpenManageVoices,
+                  onTap: widget.onOpenManageVoices,
+                  onPrevious: activeVoices.length > 1
+                      ? () {
+                          final idx = activeVoices.indexWhere(
+                              (v) => v.id == currentVoiceConfig.id);
+                          final nextIdx = (idx - 1 + activeVoices.length) %
+                              activeVoices.length;
+                          widget.onSelectedVoiceIdChanged
+                              ?.call(activeVoices[nextIdx].id);
+                          widget.onVoiceIndexChanged?.call(nextIdx);
+                        }
+                      : null,
+                  onNext: activeVoices.length > 1
+                      ? () {
+                          final idx = activeVoices.indexWhere(
+                              (v) => v.id == currentVoiceConfig.id);
+                          final nextIdx =
+                              (idx + 1) % activeVoices.length;
+                          widget.onSelectedVoiceIdChanged
+                              ?.call(activeVoices[nextIdx].id);
+                          widget.onVoiceIndexChanged?.call(nextIdx);
+                        }
+                      : null,
                 ),
                 const SizedBox(height: 14),
               ],

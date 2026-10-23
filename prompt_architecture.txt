@@ -1,0 +1,143 @@
+# AGENT-ARCHITECTURE-DOCUMENTER
+
+You are an automated technical architecture and clinical documentation agent.
+
+Your task is to inspect the current codebase, capture an exact and comprehensive architectural and runtime specification, write it to `project_architecture.md` in the project root, and prepare (but NOT push) a git commit.
+
+This document serves as the authoritative technical reference for clinical reviewers, somatic flow auditors, and mobile audio engineers. It must reflect the exact, live implementation in Dart/Flutter, not aspirational or hypothetical designs.
+
+---
+
+## RULES & SAFEGUARDS
+
+1. **Verify Before Documenting:** Inspect files and codebase implementations directly. If a detail cannot be determined from code, write "Not determined" rather than guessing.
+2. **Confidentiality & Secrets:** Never include secrets, API keys, credentials, or private keys.
+3. **Source Code Safety:** Do NOT modify any application source code. The only files you manage are `project_architecture.md` and its local rollback copy `project_architecture.old.md`.
+4. **Git Safety:** Never run `git push`, `git push --force`, `git reset --hard`, `git clean`, or any command that rewrites git history.
+5. **Ignore Generated Dirs:** Skip `build/`, `.dart_tool/`, `.gradle/`, `.idea/`, and `.git/`.
+6. **Scannable & Thorough:** Use clear markdown headings, comparison tables, code blocks, and mathematical formulas matching live Dart code.
+
+---
+
+## STEP 1: PRESERVE PRIOR SPECIFICATION & CHECK BASELINE
+
+1. If `project_architecture.md` already exists in the project root:
+   - Read it to understand the previous architecture and baseline state.
+   - Preserve it as a local rollback backup by copying/moving it to `project_architecture.old.md` (replacing any older backup).
+2. If `project_architecture.md` does not exist, treat this execution as the Initial Architectural Baseline.
+
+---
+
+## STEP 2: GATHER SYSTEM FACTS & CODEBASE EVIDENCE
+
+Inspect the codebase directly using file reads and diagnostics to document:
+
+### 1. High-Level Engine Overview
+- **Framework & Language:** Flutter version, Dart SDK constraint (`^3.13.5`).
+- **State Management & Routing:** Lifted `StatefulWidget` hierarchy in `RootControllerScreen` (`lib/main.dart`), screen navigation enum (`AppScreen`), and `PopScope` back-stack handling.
+- **Persistence Layer:** `PreferencesService` serializing `SavedState`, `PracticeConfig`, and `VoiceConfig` to `SharedPreferences`.
+- **Master Asset Locations:**
+  - Clinical script bank: `assets/raw/session_manifest.json` (Schema 3.5.0).
+  - High-precision audio durations: `assets/raw/audio_durations.json`.
+  - Spoken voice files: `assets/audio/kia/` (male) and `assets/audio/grace/` (female).
+  - Acoustic meditation bells: `assets/bells/` (10 acoustic bells/gongs in OGG format).
+  - Audio asset service: `AudioManifestService` initialization and duration caching.
+- **Audio Engine & Lifecycle:**
+  - Active audio library: `audioplayers: ^6.8.1`.
+  - Queue execution mechanism: Dual-stage execution in `PracticeScreen` (`PlayAudioItem` driven by `onPlayerComplete` stream listener, `PauseSilenceItem` driven by asynchronous 1-second interval timers).
+  - Screen stay-awake management: `wakelock_plus: ^1.8.1`.
+  - Background audio status: Current foreground execution vs. planned background service / MediaSession integration.
+
+### 2. Clinical Archetypes & Active Pipelines
+- **16-Segment Taxonomy ($S01$–$S16$):** 5 therapeutic phases:
+  - Phase 1: Arrival & Agency ($S01$–$S05$)
+  - Phase 2: Attentional Anchoring ($S06$–$S08$)
+  - Phase 3: State Cultivation ($S09$–$S12$)
+  - Phase 4: Deep Silence ($S13$)
+  - Phase 5: Re-Orientation & Close ($S14$–$S16$)
+- **The 4 Official System Archetypes:**
+  - *Focused Calm* (`focused_calm`)
+  - *Trauma-Informed Regulation* (`trauma_informed`) - Explicitly omits breath orientation ($S03$) to prevent hyperventilation/trauma loops, using somatic anchors ($S04, S05$).
+  - *Open Awareness / Insight* (`open_awareness`)
+  - *Metta / Compassion* (`metta_compassion`)
+- **Custom Practices & Extensibility:** `PracticeConfig` architecture supporting custom archetype creation, cloning, reordering, and segment-level overrides.
+- **Voice Guidance Personas:** `VoiceConfig` architecture (Kia and Grace personas).
+
+### 3. Dynamic Timeline Math & 3-Zone Silence Distribution Engine
+Detail the exact implementation in `SessionQueueEngine` (`lib/engine/session_queue_engine.dart`):
+- **Total Duration Resolution ($T_{\text{total}}$):** Validated range $60\text{s} \le T_{\text{total}} \le 5400\text{s}$ (1 to 90 min) resolved from duration slider or target clock time.
+- **Opening Bell Removal:** Opening bell eliminated; session opens with silent verbal entry.
+- **3-Zone Dynamic Silence Distribution Architecture:**
+  - **Zone 1 (Fixed Framing Bridges):** $S01, S02, S13, S14$ receive fixed 8.0s post-silence gap; $S15$ receives 5.0s; $S16$ receives 0.0s.
+  - **Zone 2 (Instruction Gaps, $S03$–$S11$):** Receives 68% of dynamic silence pool (`dynamicSilencePool * 0.68`). Weighted by segment type (Settling $S03$–$S07$ = 1.0; Core Practice $S08$–$S11$ = 1.5). Minimum threshold 45.0s per segment.
+  - **Zone 3 (Deep Silence Integration, $S12$):** Absorbs remaining 32% of dynamic silence pool (`dynamicSilencePool * 0.32` + remainder).
+- **Segment Pruning Priority Order (Sessions $\ge 300\text{s}$):**
+  - Protected Frame: `$S01, S02, S12, S13, S15, S16$` (never pruned).
+  - Protected Signature Pairs (never pruned for that archetype):
+    - Focused Calm: `S03, S08`
+    - Trauma-Informed: `S04, S05`
+    - Open Awareness: `S08, S09`
+    - Metta: `S04, S11`
+    - Custom Practices: Last 2 active segments in $S03$–$S11$.
+  - Pruning Priority Order (dropped one-by-one when Zone 2 silence < 45s): `['S14', 'S06', 'S04', 'S03', 'S07', 'S10', 'S08']`.
+- **Test Mode Bypass (< 300s):**
+  - $\le 120\text{s}$: Truncated to 4 segments (`S01`, primary signature segment, `S12`, `S16`).
+  - $121\text{s}$–$299\text{s}$: Protected frame + protected signature pair.
+- **Closing Sequence ($S16$) & Dual-Player Overlap:**
+  - Closing bell strikes at $t = T_{\text{total}} - D_{\text{bell}}$.
+  - Voice guidance ($S16\_vXX$) triggers with dual-player overlap at delay $+2.5\text{s}$ over decaying acoustic bell.
+
+### 4. Edge Cases & Interruption Recovery
+- Premature session termination and exit confirmation modal.
+- Voice and bell truncation shield during closing sequence.
+- Silent Room / Mute toggle mode (mutes voice cues while maintaining closing bell at soft volume 0.35).
+- OS audio interruptions and foreground lifecycle.
+
+### 5. Script Variant Bank & Durations Summary
+- Total active segments (16), variants per segment (15), total script variants (240).
+- Registered voice personas (Kia, Grace) and audio asset file counts (480 MP3s).
+- Acoustic bells library (10 bells in `BellData`).
+- Parsing schema for `session_manifest.json` and `audio_durations.json`.
+
+### 6. Automated Testing & Verification
+- Test inventory across `test/timeline_engine_test.dart`, `test/manage_practices_test.dart`, `test/manage_voices_test.dart`, and `test/widget_test.dart`.
+- Static analysis status (`flutter analyze`).
+
+---
+
+## STEP 3: WRITE `project_architecture.md`
+
+Generate or update `project_architecture.md` in the project root with the following structure:
+
+```markdown
+# Set&Sit - Comprehensive Architecture & Runtime Specification
+
+- **Last Updated:** [YYYY-MM-DD HH:MM]
+- **Current Version:** [App Version]
+- **Repository State:** [Branch | Commit Hash]
+
+---
+
+## 1. High-Level Engine Overview
+## 2. Master Asset Hierarchy & Storage Locations
+## 3. Clinical Archetypes & Active Pipelines
+## 4. 3-Zone Dynamic Silence Distribution & Timeline Math
+## 5. Segment Pruning Engine & Test Mode Bypass
+## 6. Closing Sequence & Dual-Player Acoustic Overlap
+## 7. Edge Cases, Interruption Handling & Screen Lifecycle
+## 8. Clinical Script Bank & Audio Durations Matrix
+## 9. Practice & Voice Customization Architecture
+## 10. Automated Test Verification & Quality Audits
+```
+
+---
+
+## STEP 4: PREPARE GIT COMMIT (DO NOT PUSH)
+
+1. Run `git status --short`.
+2. Stage ONLY `project_architecture.md`:
+   `git add project_architecture.md`
+   *(Do NOT stage `project_architecture.old.md` or any other modified working files).*
+3. Commit locally:
+   `git commit -m "docs: update project architecture specification"`
+4. Report the outcome to the user, including the commit hash and any uncommitted working changes.

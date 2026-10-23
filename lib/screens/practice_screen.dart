@@ -9,9 +9,16 @@ import '../theme/app_theme.dart';
 class PracticeScreen extends StatefulWidget {
   final List<SessionItem> sessionQueue;
   final int targetDurationSeconds;
+  final int preparationDelaySeconds;
+  final int? targetClockHour;
+  final int? targetClockMinute;
+  final bool? targetClockIsAm;
+  final List<SessionItem> Function(int actualTargetSeconds)? onBuildQueue;
+  final void Function(List<SessionItem> queue, int targetSeconds)? onPracticeStarted;
   final String selectedMeditationType;
   final AudioSegment? selectedBell;
-  final Widget Function() buildDebugScreen;
+  final Widget Function()? buildDebugScreen;
+  final Widget Function(List<SessionItem> queue, int targetSeconds)? buildDebugScreenWithQueue;
   final VoidCallback onEndSession;
   final VoidCallback? onSessionComplete;
 
@@ -19,9 +26,16 @@ class PracticeScreen extends StatefulWidget {
     super.key,
     required this.sessionQueue,
     required this.targetDurationSeconds,
+    this.preparationDelaySeconds = 10,
+    this.targetClockHour,
+    this.targetClockMinute,
+    this.targetClockIsAm,
+    this.onBuildQueue,
+    this.onPracticeStarted,
     required this.selectedMeditationType,
     this.selectedBell,
-    required this.buildDebugScreen,
+    this.buildDebugScreen,
+    this.buildDebugScreenWithQueue,
     required this.onEndSession,
     this.onSessionComplete,
   });
@@ -46,21 +60,33 @@ class _PracticeScreenState extends State<PracticeScreen>
   Timer? _silenceTimer;
   Timer? _fallbackTimer;
   Timer? _overlapTimer;
+  Timer? _preparationTimer;
 
+  bool _isPreparing = false;
+  int _preparationSecondsRemaining = 0;
+  bool _isVoiceSegmentPlaying = false;
+
+  late List<SessionItem> _activeQueue;
+  late int _targetDurationSeconds;
   int _totalSecondsRemaining = 0;
   int _currentIndex = 0;
   bool _isMuted = false;
   bool _isFinished = false;
   int _silenceSecondsRemaining = 0;
+  DateTime? _sessionStartTime;
+  DateTime? _silenceStartTime;
+  int _silenceTotalSeconds = 0;
 
   SessionItem? get currentItem =>
-      (_currentIndex >= 0 && _currentIndex < widget.sessionQueue.length)
-          ? widget.sessionQueue[_currentIndex]
+      (_currentIndex >= 0 && _currentIndex < _activeQueue.length)
+          ? _activeQueue[_currentIndex]
           : null;
 
   @override
   void initState() {
     super.initState();
+    _activeQueue = List.from(widget.sessionQueue);
+    _targetDurationSeconds = widget.targetDurationSeconds;
     _totalSecondsRemaining = widget.targetDurationSeconds;
 
     // Keep screen awake throughout the entire practice, including S16 and bell decay
@@ -78,14 +104,123 @@ class _PracticeScreenState extends State<PracticeScreen>
     );
 
     _initAudioPlayers();
+
+    if (widget.preparationDelaySeconds > 0) {
+      _isPreparing = true;
+      _preparationSecondsRemaining = widget.preparationDelaySeconds;
+      _startPreparationCountdown();
+    } else {
+      _startActualPractice();
+    }
+  }
+
+  void _startPreparationCountdown() {
+    _preparationTimer?.cancel();
+    _preparationTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted || _isFinished) {
+        timer.cancel();
+        return;
+      }
+      if (_preparationSecondsRemaining > 1) {
+        setState(() {
+          _preparationSecondsRemaining--;
+        });
+      } else {
+        timer.cancel();
+        setState(() {
+          _isPreparing = false;
+          _preparationSecondsRemaining = 0;
+        });
+        _startActualPractice();
+      }
+    });
+  }
+
+  void _skipPreparation() {
+    if (!_isPreparing) return;
+    _preparationTimer?.cancel();
+    setState(() {
+      _isPreparing = false;
+      _preparationSecondsRemaining = 0;
+    });
+    _startActualPractice();
+  }
+
+  int _resolveActualTargetSeconds() {
+    if (widget.targetClockHour != null && widget.targetClockMinute != null) {
+      final now = DateTime.now();
+      final hour24 = widget.targetClockIsAm == true
+          ? (widget.targetClockHour == 12 ? 0 : widget.targetClockHour!)
+          : (widget.targetClockHour == 12 ? 12 : widget.targetClockHour! + 12);
+      var targetDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        hour24,
+        widget.targetClockMinute!,
+      );
+      if (!targetDateTime.isAfter(now)) {
+        targetDateTime = targetDateTime.add(const Duration(days: 1));
+      }
+      final diff = targetDateTime.difference(now).inSeconds;
+      if (diff >= 60 && diff <= 90 * 60) {
+        return diff;
+      }
+    }
+    return widget.targetDurationSeconds;
+  }
+
+  void _startActualPractice() {
+    if (widget.onBuildQueue != null) {
+      final actualSeconds = _resolveActualTargetSeconds();
+      debugPrint('[PracticeScreen] Starting practice at ${DateTime.now()} with actualSeconds=$actualSeconds');
+      final freshQueue = widget.onBuildQueue!(actualSeconds);
+      if (freshQueue.isNotEmpty) {
+        _activeQueue = freshQueue;
+        _targetDurationSeconds = actualSeconds;
+        _totalSecondsRemaining = actualSeconds;
+        widget.onPracticeStarted?.call(freshQueue, actualSeconds);
+      }
+    }
+    _sessionStartTime = DateTime.now();
     _startCountdownTimer();
     _playCurrentQueueItem();
+  }
+
+  void _openDebugScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) {
+          if (widget.buildDebugScreenWithQueue != null) {
+            return widget.buildDebugScreenWithQueue!(
+              _activeQueue,
+              _targetDurationSeconds,
+            );
+          }
+          if (widget.buildDebugScreen != null) {
+            return widget.buildDebugScreen!();
+          }
+          return const SizedBox.shrink();
+        },
+      ),
+    );
   }
 
   void _initAudioPlayers() {
     _voiceCompleteSubscription = _voicePlayer.onPlayerComplete.listen((_) {
       if (!mounted || _isFinished) return;
+      if (!_isVoiceSegmentPlaying) {
+        // Ignore loop completions or stop events from background silence
+        return;
+      }
+      _isVoiceSegmentPlaying = false;
+
       final item = currentItem;
+      if (item is PauseSilenceItem) {
+        // Handled by wall-clock timer & duration check
+        return;
+      }
       final isS16 = item is PlayAudioItem &&
           (item.segment == ClinicalSegment.S16 || item.id.startsWith('S16'));
       if (isS16) {
@@ -117,6 +252,7 @@ class _PracticeScreenState extends State<PracticeScreen>
       debugPrint('[BellPlayer] $msg');
     });
 
+    // AndroidAudioFocus.none ensures neither voice nor bell audio pauses/ducks the other on Android
     _voicePlayer.setAudioContext(
       AudioContext(
         android: const AudioContextAndroid(
@@ -124,7 +260,7 @@ class _PracticeScreenState extends State<PracticeScreen>
           stayAwake: true,
           contentType: AndroidContentType.speech,
           usageType: AndroidUsageType.media,
-          audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+          audioFocus: AndroidAudioFocus.none,
         ),
         iOS: AudioContextIOS(
           category: AVAudioSessionCategory.playback,
@@ -144,7 +280,7 @@ class _PracticeScreenState extends State<PracticeScreen>
           stayAwake: true,
           contentType: AndroidContentType.music,
           usageType: AndroidUsageType.media,
-          audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+          audioFocus: AndroidAudioFocus.none,
         ),
         iOS: AudioContextIOS(
           category: AVAudioSessionCategory.playback,
@@ -169,6 +305,10 @@ class _PracticeScreenState extends State<PracticeScreen>
     _silenceTimer?.cancel();
     _fallbackTimer?.cancel();
     _overlapTimer?.cancel();
+    _preparationTimer?.cancel();
+    try {
+      _voicePlayer.setReleaseMode(ReleaseMode.release);
+    } catch (_) {}
     _voicePlayer.dispose();
     _bellPlayer.dispose();
     // Ensure screen lock / wakelock is released if user exits early
@@ -181,12 +321,15 @@ class _PracticeScreenState extends State<PracticeScreen>
   void _startCountdownTimer() {
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!_isFinished) {
-        if (_totalSecondsRemaining > 0) {
-          setState(() {
-            _totalSecondsRemaining--;
-          });
-        }
+      if (!_isFinished && mounted) {
+        final elapsed = _sessionStartTime != null
+            ? DateTime.now().difference(_sessionStartTime!).inSeconds
+            : 0;
+        final wallRemaining = _targetDurationSeconds - elapsed;
+        final nextRemaining = min(_totalSecondsRemaining - 1, wallRemaining);
+        setState(() {
+          _totalSecondsRemaining = max(0, nextRemaining);
+        });
         // Notice: When _totalSecondsRemaining reaches 0, we do NOT forcibly cut off
         // the session with _finishSession() here. The audio queue controls the orderly
         // completion through the closing bell, outro, and trailing silence.
@@ -198,15 +341,17 @@ class _PracticeScreenState extends State<PracticeScreen>
   void _playCurrentQueueItem() async {
     if (_isFinished) return;
 
-    if (_currentIndex >= widget.sessionQueue.length) {
+    if (_currentIndex >= _activeQueue.length) {
       _finishSession();
       return;
     }
 
-    final item = widget.sessionQueue[_currentIndex];
+    final item = _activeQueue[_currentIndex];
 
     if (item is PauseSilenceItem) {
+      _silenceTotalSeconds = item.durationSeconds;
       _silenceSecondsRemaining = item.durationSeconds;
+      _silenceStartTime = DateTime.now();
       _silenceTimer?.cancel();
       _fallbackTimer?.cancel();
       _overlapTimer?.cancel();
@@ -216,13 +361,36 @@ class _PracticeScreenState extends State<PracticeScreen>
         return;
       }
 
-      _silenceTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (_silenceSecondsRemaining > 1) {
+      // Loop silent audio asset so OS maintains active media playback & keeps CPU awake
+      try {
+        await _voicePlayer.setReleaseMode(ReleaseMode.loop);
+        await _voicePlayer.setVolume(0.0);
+        await _voicePlayer.play(AssetSource('audio/silence.mp3'));
+      } catch (e) {
+        debugPrint('[PracticeScreen] Error playing background silence: $e');
+      }
+
+      _silenceTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+        if (!mounted || _isFinished) {
+          timer.cancel();
+          return;
+        }
+        final elapsed = _silenceStartTime != null
+            ? DateTime.now().difference(_silenceStartTime!).inSeconds
+            : 0;
+        final wallRemaining = _silenceTotalSeconds - elapsed;
+        final nextRemaining = max(0, min(_silenceSecondsRemaining - 1, wallRemaining));
+
+        if (nextRemaining > 0) {
           setState(() {
-            _silenceSecondsRemaining--;
+            _silenceSecondsRemaining = nextRemaining;
           });
         } else {
           _silenceTimer?.cancel();
+          try {
+            await _voicePlayer.stop();
+            await _voicePlayer.setReleaseMode(ReleaseMode.release);
+          } catch (_) {}
           _advanceQueue();
         }
       });
@@ -237,7 +405,7 @@ class _PracticeScreenState extends State<PracticeScreen>
 
       // Arm a safety watchdog timer so queue CANNOT freeze if onPlayerComplete is dropped
       final clipMs = (item.durationSeconds * 1000).round();
-      final timeoutMs = max(2000, clipMs + (isS16 ? 4000 : 2000));
+      final timeoutMs = isS16 ? max(18000, clipMs + 5000) : max(2000, clipMs + 2000);
       _fallbackTimer = Timer(Duration(milliseconds: timeoutMs), () {
         if (mounted && !_isFinished) {
           debugPrint('[PracticeScreen] Watchdog timeout triggered for ${item.id}');
@@ -247,6 +415,8 @@ class _PracticeScreenState extends State<PracticeScreen>
 
       if (isS16) {
         // --- Phase 2: Dual-Player Overlap Engine for S16 ---
+        _isVoiceSegmentPlaying = false; // Voice triggers at +2.5s over decaying bell
+
         final bellAsset = (item.bellAssetPath ??
                 widget.selectedBell?.filePath ??
                 'bells/bell_meditation.ogg')
@@ -270,6 +440,7 @@ class _PracticeScreenState extends State<PracticeScreen>
         _overlapTimer = Timer(const Duration(milliseconds: 2500), () async {
           if (!mounted || _isFinished) return;
           try {
+            _isVoiceSegmentPlaying = true;
             await _voicePlayer.setVolume(voiceVol);
             await _voicePlayer.play(AssetSource(voiceAsset));
           } catch (e) {
@@ -278,6 +449,7 @@ class _PracticeScreenState extends State<PracticeScreen>
         });
       } else if (isBellOnly) {
         // Standalone bell playback on dedicated _bellPlayer
+        _isVoiceSegmentPlaying = false;
         try {
           final rawPath = item.audioAssetPath.replaceFirst('assets/', '');
           final volume = _isMuted ? 0.35 : 1.0;
@@ -289,6 +461,7 @@ class _PracticeScreenState extends State<PracticeScreen>
       } else {
         // Standard sequential playback for S01 through S15 on _voicePlayer
         try {
+          _isVoiceSegmentPlaying = true;
           final rawPath = item.audioAssetPath.replaceFirst('assets/', '');
           final volume = _isMuted ? 0.0 : 1.0;
           await _voicePlayer.setVolume(volume);
@@ -302,12 +475,17 @@ class _PracticeScreenState extends State<PracticeScreen>
     }
   }
 
-  void _advanceQueue() {
+  void _advanceQueue() async {
     if (_isFinished) return;
     _fallbackTimer?.cancel();
     _overlapTimer?.cancel();
+    _silenceTimer?.cancel();
+    _isVoiceSegmentPlaying = false;
+    try {
+      await _voicePlayer.setReleaseMode(ReleaseMode.release);
+    } catch (_) {}
     _currentIndex++;
-    if (_currentIndex < widget.sessionQueue.length) {
+    if (_currentIndex < _activeQueue.length) {
       _playCurrentQueueItem();
     } else {
       _finishSession();
@@ -319,11 +497,16 @@ class _PracticeScreenState extends State<PracticeScreen>
 
     // Immediately mark finished to guard against any re-entrant completion calls
     _isFinished = true;
+    _isVoiceSegmentPlaying = false;
 
     _silenceTimer?.cancel();
     _countdownTimer?.cancel();
     _fallbackTimer?.cancel();
     _overlapTimer?.cancel();
+
+    try {
+      await _voicePlayer.setReleaseMode(ReleaseMode.release);
+    } catch (_) {}
 
     final item = currentItem;
     final isBellPlaying = item is PlayAudioItem && item.isBell;
@@ -375,7 +558,8 @@ class _PracticeScreenState extends State<PracticeScreen>
         await _voicePlayer.setVolume(_isMuted ? 0.0 : 1.0);
       }
     } else {
-      await _voicePlayer.setVolume(_isMuted ? 0.0 : 1.0);
+      // In silence phase: keep silent loop at volume 0.0
+      await _voicePlayer.setVolume(0.0);
       await _bellPlayer.setVolume(_isMuted ? 0.35 : 1.0);
     }
   }
@@ -388,15 +572,21 @@ class _PracticeScreenState extends State<PracticeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final totalDuration = widget.targetDurationSeconds > 0
-        ? widget.targetDurationSeconds
+    final totalDuration = _targetDurationSeconds > 0
+        ? _targetDurationSeconds
         : 1;
     final progress =
         ((totalDuration - _totalSecondsRemaining) / totalDuration)
             .clamp(0.0, 1.0);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        // Protect active meditation practice from accidental back gestures.
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -418,6 +608,7 @@ class _PracticeScreenState extends State<PracticeScreen>
                   IconButton(
                     icon: const Icon(Icons.close, color: AppColors.textBlack),
                     onPressed: () {
+                      _preparationTimer?.cancel();
                       _overlapTimer?.cancel();
                       _voicePlayer.stop();
                       _bellPlayer.stop();
@@ -474,28 +665,65 @@ class _PracticeScreenState extends State<PracticeScreen>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                _isFinished
-                                    ? 'Sit Complete'
-                                    : _formatTime(_totalSecondsRemaining),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: _isFinished ? 22 : 36,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textBlack,
+                              if (_isPreparing) ...[
+                                Text(
+                                  '$_preparationSecondsRemaining',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.darkOlive,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _isFinished
-                                    ? 'May you be well'
-                                    : 'remaining',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.textMuted,
+                                const SizedBox(height: 2),
+                                const Text(
+                                  'seconds to settle',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.textMuted,
+                                  ),
                                 ),
-                              ),
+                              ] else if (_isFinished) ...[
+                                const Text(
+                                  'Sit Complete',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textBlack,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'May you be well',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.textMuted,
+                                  ),
+                                ),
+                              ] else ...[
+                                Text(
+                                  _formatTime(_totalSecondsRemaining),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textBlack,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  'remaining',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.textMuted,
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -511,7 +739,14 @@ class _PracticeScreenState extends State<PracticeScreen>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(3),
                       child: LinearProgressIndicator(
-                        value: progress,
+                        value: _isPreparing
+                            ? ((widget.preparationDelaySeconds > 0
+                                    ? 1.0 -
+                                        (_preparationSecondsRemaining /
+                                            widget.preparationDelaySeconds)
+                                    : 1.0)
+                                .clamp(0.0, 1.0))
+                            : progress,
                         minHeight: 5,
                         backgroundColor: AppColors.pillUnselected,
                         valueColor: const AlwaysStoppedAnimation<Color>(
@@ -523,7 +758,63 @@ class _PracticeScreenState extends State<PracticeScreen>
 
                   const SizedBox(height: 16),
 
-                  if (_isFinished) ...[
+                  if (_isPreparing) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.pillUnselected,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'Settling In',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.darkOlive,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const SizedBox(
+                      height: 28,
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          'Preparing Practice Space',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textBlack,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: 76,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        child: const Text(
+                          'Take a moment to set your phone down and get comfortable before guidance begins.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            color: AppColors.textMuted,
+                            height: 1.35,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ] else if (_isFinished) ...[
                     const Text(
                       'End of Formal Practice',
                       style: TextStyle(
@@ -665,11 +956,11 @@ class _PracticeScreenState extends State<PracticeScreen>
               // Bottom Controls
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
-                child: _isFinished
+                child: _isPreparing
                     ? SizedBox(
                         width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
+                        height: 54,
+                        child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.darkOlive,
                             foregroundColor: AppColors.buttonTextLight,
@@ -677,85 +968,102 @@ class _PracticeScreenState extends State<PracticeScreen>
                               borderRadius: BorderRadius.circular(16),
                             ),
                           ),
-                          onPressed: widget.onEndSession,
-                          child: const Text(
-                            'Finished',
+                          onPressed: _skipPreparation,
+                          icon: const Icon(Icons.play_arrow),
+                          label: const Text(
+                            'Begin Now',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       )
-                    : Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: 54,
-                              child: OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                    color: AppColors.cardBorder,
-                                    width: 1.5,
-                                  ),
-                                  foregroundColor: AppColors.textBlack,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
+                    : _isFinished
+                        ? SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.darkOlive,
+                                foregroundColor: AppColors.buttonTextLight,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => widget.buildDebugScreen(),
+                              ),
+                              onPressed: widget.onEndSession,
+                              child: const Text(
+                                'Finished',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: 54,
+                                  child: OutlinedButton.icon(
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                        color: AppColors.cardBorder,
+                                        width: 1.5,
+                                      ),
+                                      foregroundColor: AppColors.textBlack,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
                                     ),
-                                  );
-                                },
-                                icon: const Icon(Icons.bug_report_outlined),
-                                label: const Text(
-                                  'Debug',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
+                                    onPressed: _openDebugScreen,
+                                    icon: const Icon(Icons.bug_report_outlined),
+                                    label: const Text(
+                                      'Debug',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: SizedBox(
-                              height: 54,
-                              child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: _isMuted
-                                      ? AppColors.textSubtle
-                                      : AppColors.darkOlive,
-                                  foregroundColor: AppColors.buttonTextLight,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                onPressed: _toggleMute,
-                                icon: Icon(_isMuted
-                                    ? Icons.volume_up
-                                    : Icons.volume_off),
-                                label: Text(
-                                  _isMuted ? 'Unmute' : 'Mute',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 54,
+                                  child: ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _isMuted
+                                          ? AppColors.textSubtle
+                                          : AppColors.darkOlive,
+                                      foregroundColor: AppColors.buttonTextLight,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                    onPressed: _toggleMute,
+                                    icon: Icon(_isMuted
+                                        ? Icons.volume_up
+                                        : Icons.volume_off),
+                                    label: Text(
+                                      _isMuted ? 'Unmute' : 'Mute',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
               ),
             ],
           ),
         ),
+      ),
       ),
     );
   }

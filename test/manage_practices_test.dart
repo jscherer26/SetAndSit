@@ -15,6 +15,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
+    PreferencesService.resetCache();
     SharedPreferences.setMockInitialValues({});
     await AudioManifestService.initialize();
   });
@@ -733,7 +734,7 @@ void main() {
       expect(find.text('Adaptive Guided Meditation'), findsOneWidget);
     });
 
-    testWidgets('Settings Page contains entry points to Manage Practices and Bell Parameters', (WidgetTester tester) async {
+    testWidgets('Settings Page contains entry points to Manage Practices and Manage Bells', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(800, 1200);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -749,7 +750,7 @@ void main() {
       // Settings screen is open
       expect(find.text('Settings'), findsOneWidget);
       expect(find.text('Manage Practices'), findsOneWidget);
-      expect(find.text('Bell Parameters'), findsOneWidget);
+      expect(find.text('Manage Bells'), findsOneWidget);
 
       // Tap 'Manage Practices' from Settings
       await tester.tap(find.text('Manage Practices'));
@@ -763,11 +764,11 @@ void main() {
 
       expect(find.text('Settings'), findsOneWidget);
 
-      // Tap 'Bell Parameters' from Settings
-      await tester.tap(find.text('Bell Parameters'));
+      // Tap 'Manage Bells' from Settings
+      await tester.tap(find.text('Manage Bells'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Bell Parameters'), findsWidgets);
+      expect(find.text('Manage Bells'), findsWidgets);
 
       // Tap back -> returns to Settings!
       await tester.tap(find.byIcon(Icons.arrow_back));
