@@ -1,30 +1,31 @@
 # Set&Sit - Project Snapshot
 
-- Generated: 2026-10-22 13:45 EDT
+- Generated: 2026-10-22 19:55 EDT
 - Branch: main
-- Snapshot commit: 33d385e
+- Snapshot commit: d57f660
 - Version: 1.0.0+1
 
 ## 1. What Changed Since Last Snapshot
-Implemented a configurable "Practice Delay" countdown (0–20s, default 10s) giving practitioners time to set down their phone and settle into posture before vocal guidance begins. The session queue and duration logic now calculate dynamically at the exact moment the delay finishes (or when "Begin Now" is tapped), ensuring sessions finish precisely at the scheduled clock time regardless of delay length. Resolved an audio focus collision and premature teardown bug between the S16 outro and acoustic bell decay. Merged Practice Duration, Practice Delay, and density sliders into a single unified "Defaults" bubble on the Settings screen, and updated the Session Debugger to reflect live session queue timing.
+Implemented complete Voice Guidance Management (`VoiceConfig`, `ManageVoicesScreen`, `VoiceStepperCard`), persistent voice persona selection in `PreferencesService`, new unit/widget test suites for voice management and preferences, added headless silence buffer asset, optimized Gradle Daemon memory settings, and integrated local agent documentation prompts (`project_document.txt` and `prompt_architecture.txt`).
 
 - **Added:**
-  - `preparationDelaySeconds` (0–20s, default 10s) persisted in `PreferencesService` / `SavedState`.
-  - Live preparation countdown ring, pulsing animation, and "Begin Now" skip button on `PracticeScreen`.
-  - Dynamic, exact-start queue generation via `onBuildQueue` callback triggered at end of preparation delay.
-  - Widget test verifying preparation countdown and practice transition (`test/widget_test.dart`).
+  - `VoiceConfig` data model ([`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart)) for voice persona selection, custom naming, and inclusion toggles.
+  - `ManageVoicesScreen` ([`lib/screens/manage_voices_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/manage_voices_screen.dart)) and `VoiceStepperCard` ([`lib/widgets/voice_stepper_card.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/widgets/voice_stepper_card.dart)) UI components for voice management and preview audio sampling.
+  - Test suites: [`test/manage_voices_test.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/test/manage_voices_test.dart) (551 lines) and [`test/preferences_test.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/test/preferences_test.dart) (218 lines).
+  - Silent audio track asset `assets/audio/silence.mp3` for platform audio initialization.
+  - Project documentation agent prompts [`project_document.txt`](file:///home/jscherer26/AndroidStudioProjects/setandsit/project_document.txt) and [`prompt_architecture.txt`](file:///home/jscherer26/AndroidStudioProjects/setandsit/prompt_architecture.txt).
 - **Changed:**
-  - Settings UI: Top bubble titled "Defaults", consolidating Practice Duration (`min`), Practice Delay (`sec`), Instructions Density, and Mind-Wandering Checks into a single container.
-  - S16 and acoustic bell playback: Set `AudioContextAndroid` audio focus to `none` with iOS `mixWithOthers` so vocal sign-off and bell resonance play concurrently without ducking or cancellation.
-  - Isolated `_isVoiceSegmentPlaying` flag in `PracticeScreen` so looping background silence stop events cannot trigger premature session completion.
-  - `PracticeScreen` debug button updated to pass live `_activeQueue` and `_targetDurationSeconds` to `SessionDebugScreen`.
+  - `PreferencesService` ([`lib/services/preferences_service.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/services/preferences_service.dart)): Added `set_and_sit_voices` serialization/deserialization.
+  - Gradle JVM Memory: Adjusted `org.gradle.jvmargs` in `android/gradle.properties` and global `~/.gradle/gradle.properties` to `-Xmx1536m` for memory optimization in container environments.
 - **Metrics:**
-  - Automated tests increased from 49 to 50 passing tests.
-  - Dart codebase expanded from 9,698 lines to 10,243 lines across 23 files.
+  - Automated test suite expanded from 50 to 55 passing tests (100% pass rate).
+  - Static analyzer (`flutter analyze`): 0 issues found.
+  - Total Dart source code: 20 `lib/` files (8,815 LOC), 5 `test/` files (2,368 LOC), totaling 11,183 LOC.
 
 ## 2. Snapshot History
 | Date | Commit | Summary |
 |---|---|---|
+| 2026-10-22 | d57f660 | Integrated Voice Management screen, VoiceConfig persistence, test suites, and Gradle memory tuning |
 | 2026-10-22 | 33d385e | Added Practice Delay countdown, calibrated exact-start timing, fixed S16/bell overlap, unified Settings Defaults bubble |
 | 2026-10-22 | 7e2a201 | Initial project architectural baseline snapshot |
 
@@ -72,7 +73,7 @@ setandsit/
 │       ├── audio_durations.json # High-precision two-decimal voice clip duration manifest
 │       └── session_manifest.json# Clinical schema 3.5.0 (script text, taxonomy, word counts)
 ├── ios/                       # Native iOS host project (Xcode, Runner)
-├── lib/                       # Dart application source code (19 files, 8,093 lines)
+├── lib/                       # Dart application source code (20 files, 8,815 lines)
 │   ├── data/
 │   │   └── bell_data.dart     # Acoustic bell definitions and default sound library
 │   ├── engine/
@@ -99,9 +100,10 @@ setandsit/
 │   │   ├── practice_stepper_card.dart    # Practice archetype card widget with stepper controls
 │   │   └── voice_stepper_card.dart       # Voice persona card widget with preview button
 │   └── main.dart              # App entry point, RootControllerScreen, screen enum router
-└── test/                      # Test suite (4 files, 2,150 lines, 50 passing tests)
+└── test/                      # Test suite (5 files, 2,368 lines, 55 passing tests)
     ├── manage_practices_test.dart        # PracticeConfig serialization and queue tests
     ├── manage_voices_test.dart           # VoiceConfig selection and persistence tests
+    ├── preferences_test.dart             # PreferencesService state persistence tests
     ├── timeline_engine_test.dart         # 3-Zone silence math, pruning priority, and bypass tests
     └── widget_test.dart                  # App bootstrap, time picker, and settling countdown tests
 ```
@@ -115,7 +117,7 @@ setandsit/
 ### App Startup Flow
 1. `main()` calls `WidgetsFlutterBinding.ensureInitialized()` and mounts `SetAndSitApp`.
 2. `RootControllerScreen.initState()` triggers asynchronous initialization:
-   - `PreferencesService.loadState()` retrieves user settings, settling delay, and custom configurations.
+   - `PreferencesService.loadState()` retrieves user settings, settling delay, custom practices, and voice configuration.
    - `AudioManifestService.initialize()` parses `assets/raw/audio_durations.json` into memory.
 3. Once initialized, the home `ConfigurationScreen` displays configured durations and active practice archetype.
 
@@ -131,7 +133,7 @@ setandsit/
 | **Dual-Player S16 Overlap** | S16 vocal outro triggers with +2.5s delay over the acoustic closing bell without ducking or cancellation on both Android and iOS. | [`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart) | Complete |
 | **Clinical Archetypes** | Implementation of 4 clinical meditation archetypes (Focused Calm, Trauma-Informed Regulation, Open Awareness / Insight, Metta / Compassion) with defined segment sequencing. | [`lib/models/audio_models.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/audio_models.dart), [`lib/models/practice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/practice_config.dart) | Complete |
 | **Practice Management** | Full CRUD for meditation practices: inclusion toggling, reordering, cloning, custom archetype creation, and segment-level variant overrides. | [`lib/screens/manage_practices_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/manage_practices_screen.dart), [`lib/widgets/practice_stepper_card.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/widgets/practice_stepper_card.dart) | Complete |
-| **Voice Management** | Selection and audio sampling of dual voice guidance personas (Kia and Grace) with preference persistence. | [`lib/screens/manage_voices_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/manage_voices_screen.dart), [`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart) | Complete |
+| **Voice Management** | Selection and audio sampling of dual voice guidance personas (Kia and Grace) with preference persistence. | [`lib/screens/manage_voices_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/manage_voices_screen.dart), [`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart), [`lib/widgets/voice_stepper_card.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/widgets/voice_stepper_card.dart) | Complete |
 | **Bell Customization** | Preview, test play, and select default meditation acoustic bell from library of 10 acoustic bells/gongs. | [`lib/screens/bell_configuration_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/bell_configuration_screen.dart), [`lib/data/bell_data.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/data/bell_data.dart) | Complete |
 | **Diagnostics & Debug** | Live visual inspector reflecting live session queues, segment duration verification, and silence distribution breakdown. | [`lib/screens/session_debug_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/session_debug_screen.dart) | Complete |
 | **Background Audio Playback** | Background execution and platform lock screen media controls. Currently handled via foreground wake-lock (`wakelock_plus`); background services and OS media session controls are not yet integrated. | [`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart) | In progress / Planned |
@@ -197,12 +199,13 @@ setandsit/
 ## 10. Testing & Quality
 
 ### Test Suite Inventory
-- **Total Passing Tests:** 50
+- **Total Passing Tests:** 55
 - **Test Modules:**
   - `test/timeline_engine_test.dart` (349 lines): Verifies 3-zone silence distribution math across 5m, 12m, 15m, and 30m sessions; test mode bypass (< 120s and 121s–299s); and segment pruning priority rules.
   - `test/manage_practices_test.dart` (810 lines): Tests `PracticeConfig` JSON serialization, custom archetype creation, segment override routing, and integration with `SessionQueueEngine`.
   - `test/manage_voices_test.dart` (551 lines): Tests `VoiceConfig` persistence, fallback selection logic, and voice persona toggles.
-  - `test/widget_test.dart` (170 lines): Tests initial application bootstrapping, theme verification, time adjustment dialog, and settling delay countdown / transition.
+  - `test/preferences_test.dart` (218 lines): Tests `PreferencesService` JSON serialization and settings persistence.
+  - `test/widget_test.dart` (240 lines): Tests initial application bootstrapping, theme verification, time adjustment dialog, and settling delay countdown / transition.
 
 ### Code Quality & Static Analysis
 - **Linter:** `flutter_lints: ^6.0.0` activated via `analysis_options.yaml`.
@@ -223,11 +226,11 @@ setandsit/
    - The Gradle release build type currently points to the debug keystore. Production signing credentials and keystores need to be configured.
 
 ## 12. Metrics
-- **Dart Source Files (`lib/`):** 19 files, 8,093 lines of code
-- **Dart Test Files (`test/`):** 4 files, 2,150 lines of code
-- **Total Dart Codebase:** 23 files, 10,243 lines of code
+- **Dart Source Files (`lib/`):** 20 files, 8,815 lines of code
+- **Dart Test Files (`test/`):** 5 files, 2,368 lines of code
+- **Total Dart Codebase:** 25 files, 11,183 lines of code
 - **Primary Screens:** 7 screens (`Configuration`, `Practice`, `Settings`, `BellConfiguration`, `ManagePractices`, `ManageVoices`, `SessionDebug`) + 1 custom dialog (`ClockTimePickerDialog`)
-- **Unit / Widget Tests:** 50 tests (100% passing)
+- **Unit / Widget Tests:** 55 tests (100% passing)
 - **Audio Assets:** 480 voice MP3s, 10 acoustic bell OGGs, 1 silence MP3
 - **Data Manifests:** 2 clinical JSON datasets (`session_manifest.json` at 3,709 lines, `audio_durations.json` at 550 lines)
 

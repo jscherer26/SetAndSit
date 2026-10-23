@@ -1,8 +1,8 @@
 # Set&Sit - Comprehensive Architecture & Runtime Specification
 
-- **Last Updated:** 2026-10-22 13:45 EDT
+- **Last Updated:** 2026-10-22 19:55 EDT
 - **Current Version:** 1.0.0+1
-- **Repository State:** main | 33d385e
+- **Repository State:** main | d57f660
 - **Target Audience:** Clinical Reviewers, Somatic Flow Auditors, Lead Mobile Audio Engineers
 
 ---
@@ -22,7 +22,7 @@
 * **Stored Payloads:**
   * `set_and_sit_settings`: Core app preferences, slider positions, settling delay (0–20s, default 10s), selected bell ID, target finish time, and voice index.
   * `set_and_sit_practices`: Custom practice configurations and segment variant overrides serialized via `PracticeConfig.toJson()`.
-  * `set_and_sit_voices`: Voice persona order and inclusion status serialized via `VoiceConfig.toJson()`.
+  * `set_and_sit_voices`: Voice persona order, custom display names, and inclusion status serialized via `VoiceConfig.toJson()`.
 
 ### 1.3 Audio Engine & Queue Driver
 * **Active Audio Library:** `audioplayers: ^6.8.1`.
@@ -255,7 +255,7 @@ The closing sequence guarantees seamless transition without dead air or audio cl
 
 ### 9.2 Voice Configuration (`VoiceConfig`)
 * Located in [`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart).
-* Controls persona availability (Kia, Grace), preview sample playback, and active persona selection.
+* Controls persona availability (Kia, Grace), preview sample audio paths, custom display names, and active persona selection.
 
 ### 9.3 Settings UI Defaults Bubble
 * The top card of [SettingsScreen](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/settings_screen.dart) consolidates all session defaults into a single unified bubble: Practice Duration (`min`), Practice Delay (0–20s), Instructions Density (0–5), and Mind-Wandering Checks (0–5).
@@ -264,7 +264,7 @@ The closing sequence guarantees seamless transition without dead air or audio cl
 
 ## 10. Automated Test Verification & Quality Audits
 
-The architecture, timing formulas, and state persistence are verified by 50 automated tests in `test/`:
+The architecture, timing formulas, and state persistence are verified by 55 automated tests in `test/`:
 
 1. **`test/timeline_engine_test.dart` (349 lines):**
    * Validates 3-zone silence distribution math across 5m, 12m, 15m, and 30m sessions.
@@ -277,9 +277,11 @@ The architecture, timing formulas, and state persistence are verified by 50 auto
    * Validates queue generation with custom segment variant overrides.
 3. **`test/manage_voices_test.dart` (551 lines):**
    * Validates `VoiceConfig` persistence and fallback selection when voices are excluded.
-4. **`test/widget_test.dart` (170 lines):**
+4. **`test/preferences_test.dart` (218 lines):**
+   * Validates `PreferencesService` state serialization and deserialization.
+5. **`test/widget_test.dart` (240 lines):**
    * Validates app bootstrapping, circular dial taps, time adjustment dialog, and settling delay countdown / practice transitions.
 
 **Audit Status:**
-* `flutter test`: **50/50 tests pass**.
+* `flutter test`: **55/55 tests pass**.
 * `flutter analyze`: **0 issues found**.
