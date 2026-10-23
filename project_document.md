@@ -1,32 +1,24 @@
 # Set&Sit - Project Snapshot
 
-- Generated: 2026-10-22 23:30 EDT
+- Generated: 2026-10-23 00:45 EDT
 - Branch: main
-- Snapshot commit: c5cfc3f
+- Snapshot commit: c12189a
 - Version: 1.0.0+1
 
 ## 1. What Changed Since Last Snapshot
-Resolved cold restart persistence bugs and fixed physical device startup launch issues. Migrated `PreferencesService` from fragile monolithic JSON serialization to direct, awaited native primitive key persistence. Hardened `build.gradle.kts` release build configurations and `AndroidManifest.xml` auto-backup flags, and decoupled asynchronous manifest initialization from UI rendering.
+Cleaned up temporary debug UI indicators and finalized native primitive key persistence. Removed the debug banner text from the Home Screen finish clock dial header and verified seamless real-time persistence callbacks across settings and system back navigation without debug toast/snackbars.
 
-- **Added:**
-  - Dedicated persistent primitive keys in `PreferencesService`: `pref_duration`, `pref_instruction_density`, `pref_redirection_density`, `pref_prep_delay`, `pref_practice_mode`, `pref_selected_bell_id`, `pref_selected_practice_id`, `pref_selected_practice_name`, `pref_selected_voice_id`, `pref_selected_voice_idx`, `pref_clock_hour`, `pref_clock_minute`, `pref_clock_is_am`.
-  - ProGuard rules file `android/app/proguard-rules.pro` keeping Flutter platform channels and SharedPreferences classes.
-  - Visual default duration indicator inside Home Screen finish clock dial (`Practice Ends At (Default: 20m)`).
 - **Changed:**
-  - `lib/main.dart`: Fail-safe startup initialization where `PreferencesService` reads are executed safely before `runApp()`, while `AudioManifestService.initialize()` is fired non-blocking to prevent release-build freezes. Synchronized state assignments in `initState()`.
-  - `lib/services/preferences_service.dart`: Replaced monolithic JSON blob with direct `await prefs.setInt`, `await prefs.setDouble`, `await prefs.setString`, and `await prefs.setBool` calls.
-  - `lib/screens/settings_screen.dart`: Text input controllers validate immediately on every valid keystroke and hook slider disk writes to `onChangeEnd`.
-  - `android/app/build.gradle.kts`: Release build configuration explicitly applies `proguard-rules.pro` with `isMinifyEnabled = false` and `isShrinkResources = false`.
-  - `android/app/src/main/AndroidManifest.xml`: Configured `android:allowBackup="false"` and `android:fullBackupOnly="false"` to prevent stale cloud backup overwrites on app reinstall/reboot.
-- **Removed:**
-  - Monolithic single-blob JSON serialization of primitive settings that caused cascading resets when complex objects failed schema validation.
+  - `lib/screens/configuration_screen.dart`: Removed temporary debug header label `(Default: 20m)` from inside the circular dial, restoring clean production typography (`Practice Ends At`).
+  - `lib/screens/settings_screen.dart`: Verified removal of temporary debug SnackBars while preserving immediate keystroke validation, slider `onChangeEnd` callbacks, and instant persistence.
 - **Metrics:**
-  - Test suite: 55 unit and widget tests passing (100% pass rate).
+  - Automated test suite: 55 unit and widget tests passing (100% pass rate).
   - Static analyzer (`flutter analyze`): 0 issues found.
 
 ## 2. Snapshot History
 | Date | Commit | Summary |
 |---|---|---|
+| 2026-10-23 | c12189a | Removed temporary debug banners, finalized direct primitive key persistence |
 | 2026-10-22 | c5cfc3f | Hardened direct primitive key persistence, release ProGuard config, disabled auto-backup |
 | 2026-10-22 | d57f660 | Integrated Voice Management screen, VoiceConfig persistence, test suites, and Gradle memory tuning |
 | 2026-10-22 | 33d385e | Added Practice Delay countdown, calibrated exact-start timing, fixed S16/bell overlap, unified Settings Defaults bubble |
@@ -157,7 +149,7 @@ flutter build apk --release
 - **Total Test Count:** 55 passing tests.
 
 ## 13. Suggested Next Steps
-1. Test cold launch persistence on physical hardware using the updated release APK build.
+1. Verify release APK on hardware with clean UI and persistent settings intact.
 2. Implement native Android `MediaSession` background service to enable lock-screen playback controls.
 3. Update `applicationId` from `com.example.setandsit` to official clinical production reverse domain.
 4. Add user-facing session completion statistics tracking (sessions completed, total minutes meditated).
