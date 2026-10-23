@@ -1,30 +1,33 @@
 # Set&Sit - Project Snapshot
 
-- Generated: 2026-10-22 19:55 EDT
+- Generated: 2026-10-22 23:30 EDT
 - Branch: main
-- Snapshot commit: d57f660
+- Snapshot commit: c5cfc3f
 - Version: 1.0.0+1
 
 ## 1. What Changed Since Last Snapshot
-Implemented complete Voice Guidance Management (`VoiceConfig`, `ManageVoicesScreen`, `VoiceStepperCard`), persistent voice persona selection in `PreferencesService`, new unit/widget test suites for voice management and preferences, added headless silence buffer asset, optimized Gradle Daemon memory settings, and integrated local agent documentation prompts (`project_document.txt` and `prompt_architecture.txt`).
+Resolved cold restart persistence bugs and fixed physical device startup launch issues. Migrated `PreferencesService` from fragile monolithic JSON serialization to direct, awaited native primitive key persistence. Hardened `build.gradle.kts` release build configurations and `AndroidManifest.xml` auto-backup flags, and decoupled asynchronous manifest initialization from UI rendering.
 
 - **Added:**
-  - `VoiceConfig` data model ([`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart)) for voice persona selection, custom naming, and inclusion toggles.
-  - `ManageVoicesScreen` ([`lib/screens/manage_voices_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/manage_voices_screen.dart)) and `VoiceStepperCard` ([`lib/widgets/voice_stepper_card.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/widgets/voice_stepper_card.dart)) UI components for voice management and preview audio sampling.
-  - Test suites: [`test/manage_voices_test.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/test/manage_voices_test.dart) (551 lines) and [`test/preferences_test.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/test/preferences_test.dart) (218 lines).
-  - Silent audio track asset `assets/audio/silence.mp3` for platform audio initialization.
-  - Project documentation agent prompts [`project_document.txt`](file:///home/jscherer26/AndroidStudioProjects/setandsit/project_document.txt) and [`prompt_architecture.txt`](file:///home/jscherer26/AndroidStudioProjects/setandsit/prompt_architecture.txt).
+  - Dedicated persistent primitive keys in `PreferencesService`: `pref_duration`, `pref_instruction_density`, `pref_redirection_density`, `pref_prep_delay`, `pref_practice_mode`, `pref_selected_bell_id`, `pref_selected_practice_id`, `pref_selected_practice_name`, `pref_selected_voice_id`, `pref_selected_voice_idx`, `pref_clock_hour`, `pref_clock_minute`, `pref_clock_is_am`.
+  - ProGuard rules file `android/app/proguard-rules.pro` keeping Flutter platform channels and SharedPreferences classes.
+  - Visual default duration indicator inside Home Screen finish clock dial (`Practice Ends At (Default: 20m)`).
 - **Changed:**
-  - `PreferencesService` ([`lib/services/preferences_service.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/services/preferences_service.dart)): Added `set_and_sit_voices` serialization/deserialization.
-  - Gradle JVM Memory: Adjusted `org.gradle.jvmargs` in `android/gradle.properties` and global `~/.gradle/gradle.properties` to `-Xmx1536m` for memory optimization in container environments.
+  - `lib/main.dart`: Fail-safe startup initialization where `PreferencesService` reads are executed safely before `runApp()`, while `AudioManifestService.initialize()` is fired non-blocking to prevent release-build freezes. Synchronized state assignments in `initState()`.
+  - `lib/services/preferences_service.dart`: Replaced monolithic JSON blob with direct `await prefs.setInt`, `await prefs.setDouble`, `await prefs.setString`, and `await prefs.setBool` calls.
+  - `lib/screens/settings_screen.dart`: Text input controllers validate immediately on every valid keystroke and hook slider disk writes to `onChangeEnd`.
+  - `android/app/build.gradle.kts`: Release build configuration explicitly applies `proguard-rules.pro` with `isMinifyEnabled = false` and `isShrinkResources = false`.
+  - `android/app/src/main/AndroidManifest.xml`: Configured `android:allowBackup="false"` and `android:fullBackupOnly="false"` to prevent stale cloud backup overwrites on app reinstall/reboot.
+- **Removed:**
+  - Monolithic single-blob JSON serialization of primitive settings that caused cascading resets when complex objects failed schema validation.
 - **Metrics:**
-  - Automated test suite expanded from 50 to 55 passing tests (100% pass rate).
+  - Test suite: 55 unit and widget tests passing (100% pass rate).
   - Static analyzer (`flutter analyze`): 0 issues found.
-  - Total Dart source code: 20 `lib/` files (8,815 LOC), 5 `test/` files (2,368 LOC), totaling 11,183 LOC.
 
 ## 2. Snapshot History
 | Date | Commit | Summary |
 |---|---|---|
+| 2026-10-22 | c5cfc3f | Hardened direct primitive key persistence, release ProGuard config, disabled auto-backup |
 | 2026-10-22 | d57f660 | Integrated Voice Management screen, VoiceConfig persistence, test suites, and Gradle memory tuning |
 | 2026-10-22 | 33d385e | Added Practice Delay countdown, calibrated exact-start timing, fixed S16/bell overlap, unified Settings Defaults bubble |
 | 2026-10-22 | 7e2a201 | Initial project architectural baseline snapshot |
@@ -37,205 +40,124 @@ Set&Sit is a clinical meditation and mindfulness application built with Flutter.
 ### Core Framework & Toolchain
 - **Framework:** Flutter (Channel stable, 3.47.7)
 - **Language:** Dart SDK `^3.13.5`
-- **Target Platforms:** Android, iOS, Linux Desktop, macOS, Windows, Web (actively developed and verified on Android and Linux Desktop)
+- **Target Platforms:** Android (minSdk 21, targetSdk 36), iOS, Linux Desktop, macOS, Windows, Web
 
 ### Runtime Dependencies
 | Package | Version | Purpose |
 |---|---|---|
-| `flutter` | SDK | Core UI framework and material design widgets |
+| `flutter` | SDK | Core UI framework and Material 3 design widgets |
 | `audioplayers` | `^6.8.1` | Audio playback engine for meditation bells and spoken voice segments |
 | `shared_preferences` | `^2.5.6` | Persistent key-value storage for settings, custom practices, and voice selections |
 | `intl` | `^0.20.3` | Date, clock time, and duration formatting utilities |
 | `wakelock_plus` | `^1.8.1` | Keeps the screen active during ongoing meditation sessions |
 | `cupertino_icons` | `^1.0.8` | iOS-styled iconography |
 
-### Development & Test Dependencies
+### Dev Dependencies
 | Package | Version | Purpose |
 |---|---|---|
-| `flutter_test` | SDK | Unit, widget, and component test harness |
-| `flutter_lints` | `^6.0.0` | Recommended static analysis and style lint rules |
-| `audioplayers_platform_interface` | `^7.2.0` | Platform interface mocks and type contracts for testing audio player flows |
+| `flutter_test` | SDK | Unit and widget test framework |
+| `audioplayers_platform_interface` | `^7.2.0` | Mock platform interface for audio player testing |
+| `flutter_lints` | `^6.0.0` | Recommended code analysis rules and lints |
 
 ## 5. Architecture & Project Structure
 
-### Annotated Directory Tree
-```
-setandsit/
-├── android/                   # Native Android host project (Kotlin, Gradle 9.3.1, Java 17)
-├── assets/
-│   ├── audio/
-│   │   ├── grace/             # 240 spoken MP3 voice clips (Female persona, S01_v01–S16_v15)
-│   │   ├── kia/               # 240 spoken MP3 voice clips (Male persona, S01_v01–S16_v15)
-│   │   └── silence.mp3        # Silent audio buffer asset
-│   ├── bells/                 # 10 acoustic meditation bells/gongs (OGG format)
-│   ├── icon/                  # Application branding and launcher icons
-│   └── raw/
-│       ├── audio_durations.json # High-precision two-decimal voice clip duration manifest
-│       └── session_manifest.json# Clinical schema 3.5.0 (script text, taxonomy, word counts)
-├── ios/                       # Native iOS host project (Xcode, Runner)
-├── lib/                       # Dart application source code (20 files, 8,815 lines)
-│   ├── data/
-│   │   └── bell_data.dart     # Acoustic bell definitions and default sound library
-│   ├── engine/
-│   │   └── session_queue_engine.dart # Clinical queue generation, 3-zone silence math, pruning
-│   ├── models/
-│   │   ├── audio_models.dart  # Clinical taxonomy, audio segment models, session queue items
-│   │   ├── practice_config.dart # Practice archetype profiles and segment override configs
-│   │   └── voice_config.dart  # Voice persona definitions (Kia, Grace)
-│   ├── screens/
-│   │   ├── bell_configuration_screen.dart # Bell selector, previewer, and customization UI
-│   │   ├── clock_time_picker_dialog.dart # Custom wheel/clock dialog for target finish time
-│   │   ├── configuration_screen.dart     # Primary home dashboard and session setup screen
-│   │   ├── manage_practices_screen.dart  # Practice archetype manager, editor, and creator
-│   │   ├── manage_voices_screen.dart     # Voice persona toggles and preview playback
-│   │   ├── practice_screen.dart          # Live session player, countdown ring, settling buffer
-│   │   ├── session_debug_screen.dart     # Session queue inspector and timeline validator
-│   │   └── settings_screen.dart          # Defaults bubble (duration, delay, densities) & sub-menus
-│   ├── services/
-│   │   ├── audio_manifest_service.dart   # Asset loader for durations and clinical manifest
-│   │   └── preferences_service.dart      # SharedPreferences serialization/deserialization
-│   ├── theme/
-│   │   └── app_theme.dart     # Color palette (dark olive, cream, sand) and text styles
-│   ├── widgets/
-│   │   ├── practice_stepper_card.dart    # Practice archetype card widget with stepper controls
-│   │   └── voice_stepper_card.dart       # Voice persona card widget with preview button
-│   └── main.dart              # App entry point, RootControllerScreen, screen enum router
-└── test/                      # Test suite (5 files, 2,368 lines, 55 passing tests)
-    ├── manage_practices_test.dart        # PracticeConfig serialization and queue tests
-    ├── manage_voices_test.dart           # VoiceConfig selection and persistence tests
-    ├── preferences_test.dart             # PreferencesService state persistence tests
-    ├── timeline_engine_test.dart         # 3-Zone silence math, pruning priority, and bypass tests
-    └── widget_test.dart                  # App bootstrap, time picker, and settling countdown tests
-```
+### High-Level Architectural Pattern
+State is centrally lifted into `RootControllerScreen` (`lib/main.dart`) using vanilla Flutter state management (`StatefulWidget`). Navigation between views is managed via an in-memory stack enum (`AppScreen`) and system-level back gesture handling via `PopScope`.
 
-### Architecture Pattern & State Management
-- **Pattern:** Centralized state lifting with vanilla Flutter `StatefulWidget` hierarchy.
-- **Root Coordinator:** `RootControllerScreen` ([`lib/main.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/main.dart)) holds the master runtime state (selected duration, target finish time, settling delay, density parameters, selected practice, active bell, and active voice persona).
-- **Navigation Flow:** Enum-driven screen switching (`AppScreen` rendered in `_buildScreen` switch statement) wrapped with `PopScope` for native Android back button handling.
-- **Persistence Flow:** State mutations trigger `_persistState()`, which delegates to `PreferencesService` to serialize configuration entities into JSON within `SharedPreferences`.
-
-### App Startup Flow
-1. `main()` calls `WidgetsFlutterBinding.ensureInitialized()` and mounts `SetAndSitApp`.
-2. `RootControllerScreen.initState()` triggers asynchronous initialization:
-   - `PreferencesService.loadState()` retrieves user settings, settling delay, custom practices, and voice configuration.
-   - `AudioManifestService.initialize()` parses `assets/raw/audio_durations.json` into memory.
-3. Once initialized, the home `ConfigurationScreen` displays configured durations and active practice archetype.
+```
+lib/
+├── data/
+│   └── bell_data.dart                 # Pre-configured acoustic bells metadata
+├── engine/
+│   └── session_queue_engine.dart      # 3-Zone silence distribution & timeline math
+├── models/
+│   ├── audio_models.dart              # AudioSegment, SessionItem, ClinicalArchetype models
+│   ├── practice_config.dart           # Custom & system practice configurations
+│   └── voice_config.dart              # Voice persona configuration (Kia, Grace)
+├── screens/
+│   ├── bell_configuration_screen.dart # Acoustic bell selection and auditioning
+│   ├── clock_time_picker_dialog.dart  # Interactive wall-clock finish time picker
+│   ├── configuration_screen.dart      # Home screen: dial, practice/voice/bell steppers
+│   ├── manage_practices_screen.dart   # Practice management (custom archetype creation)
+│   ├── manage_voices_screen.dart      # Voice persona selection and auditioning
+│   ├── practice_screen.dart           # Active meditation playback & timer screen
+│   ├── session_debug_screen.dart      # Detailed queue timeline inspector
+│   └── settings_screen.dart           # Global defaults (duration, delay, density sliders)
+├── services/
+│   ├── audio_manifest_service.dart    # Manifest reader & duration lookup cache
+│   └── preferences_service.dart       # Dedicated native key persistence engine
+└── theme/
+    └── app_theme.dart                 # Botanical minimalist color palette & styles
+```
 
 ## 6. Features & Status
-
-| Feature / Module | Description | Primary Files | Status |
+| Feature | Status | Primary Files | Description |
 |---|---|---|---|
-| **Session Configuration** | Target duration selection (1–90 min slider or finish-at clock time picker), practice archetype dropdown, and bell selector. | [`lib/screens/configuration_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/configuration_screen.dart), [`lib/screens/clock_time_picker_dialog.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/clock_time_picker_dialog.dart) | Complete |
-| **Practice Delay Buffer** | Configurable 0–20s settling countdown with breathing circle indicator, giving users time to put their phone down before guidance starts. Includes "Begin Now" bypass. | [`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart), [`lib/screens/settings_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/settings_screen.dart) | Complete |
-| **Practice Runtime Player** | Dual-stage session execution: spoken voice playback triggered via `AudioPlayer` complete listener and silence countdowns driven by periodic interval timers. Includes pause, resume, progress ring, and early exit modal. | [`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart) | Complete |
-| **Exact-Moment Queue Generation** | Recalculates exact target duration against wall clock at the conclusion of the settling delay so the session concludes precisely at the desired finish time. | [`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart), [`lib/main.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/main.dart) | Complete |
-| **3-Zone Timeline Engine** | Mathematical silence allocation across Zone 1 (fixed arrival/exit bridges), Zone 2 (instruction intervals), and Zone 3 (deep silence), with deterministic segment pruning and test mode bypass (< 300s). | [`lib/engine/session_queue_engine.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/engine/session_queue_engine.dart) | Complete |
-| **Dual-Player S16 Overlap** | S16 vocal outro triggers with +2.5s delay over the acoustic closing bell without ducking or cancellation on both Android and iOS. | [`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart) | Complete |
-| **Clinical Archetypes** | Implementation of 4 clinical meditation archetypes (Focused Calm, Trauma-Informed Regulation, Open Awareness / Insight, Metta / Compassion) with defined segment sequencing. | [`lib/models/audio_models.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/audio_models.dart), [`lib/models/practice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/practice_config.dart) | Complete |
-| **Practice Management** | Full CRUD for meditation practices: inclusion toggling, reordering, cloning, custom archetype creation, and segment-level variant overrides. | [`lib/screens/manage_practices_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/manage_practices_screen.dart), [`lib/widgets/practice_stepper_card.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/widgets/practice_stepper_card.dart) | Complete |
-| **Voice Management** | Selection and audio sampling of dual voice guidance personas (Kia and Grace) with preference persistence. | [`lib/screens/manage_voices_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/manage_voices_screen.dart), [`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart), [`lib/widgets/voice_stepper_card.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/widgets/voice_stepper_card.dart) | Complete |
-| **Bell Customization** | Preview, test play, and select default meditation acoustic bell from library of 10 acoustic bells/gongs. | [`lib/screens/bell_configuration_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/bell_configuration_screen.dart), [`lib/data/bell_data.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/data/bell_data.dart) | Complete |
-| **Diagnostics & Debug** | Live visual inspector reflecting live session queues, segment duration verification, and silence distribution breakdown. | [`lib/screens/session_debug_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/session_debug_screen.dart) | Complete |
-| **Background Audio Playback** | Background execution and platform lock screen media controls. Currently handled via foreground wake-lock (`wakelock_plus`); background services and OS media session controls are not yet integrated. | [`lib/screens/practice_screen.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/screens/practice_screen.dart) | In progress / Planned |
+| Wall-Clock Finish Time Dial | Complete | `configuration_screen.dart`, `clock_time_picker_dialog.dart` | Radial finish time picker calculating session duration from target time |
+| 3-Zone Silence Timeline Engine | Complete | `session_queue_engine.dart` | Allocates proportional silence gaps across settling, core, and deep silence |
+| Voice Guidance Selection | Complete | `manage_voices_screen.dart`, `voice_stepper_card.dart` | Switch between Kia (Male) and Grace (Female) voice personas |
+| Practice Archetype Customizer | Complete | `manage_practices_screen.dart`, `practice_config.dart` | Create, duplicate, and toggle clinical meditation practices |
+| Acoustic Bells Library | Complete | `bell_configuration_screen.dart`, `bell_data.dart` | Selection of 10 acoustic meditation bells with volume balancing |
+| Settings Defaults & Delay | Complete | `settings_screen.dart` | Configurable preparation delay (0–20s) and instruction density sliders |
+| Dedicated Primitive Persistence | Complete | `preferences_service.dart` | Atomic, non-corruptible disk persistence directly to native SharedPreferences |
+| Dual-Player Closing Overlap | Complete | `practice_screen.dart`, `session_queue_engine.dart` | Overlaps final voice guidance over decaying acoustic bell at $+2.5\text{s}$ |
 
 ## 7. Data, Services & Integrations
-
-### Data Models
-- **`AudioSegment`** ([`lib/models/audio_models.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/audio_models.dart)): Represents individual sound files (id, name, assetPath, durationSeconds, isIncluded).
-- **`SessionItem`** (`PlayAudioItem`, `PauseSilenceItem`): Queue execution unit representing either voice/bell playback or a timed silence gap.
-- **`PracticeConfig`** ([`lib/models/practice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/practice_config.dart)): Configurable practice archetype containing archetype ID, display name, description, active inclusion flag, and map of segment variant overrides.
-- **`VoiceConfig`** ([`lib/models/voice_config.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/models/voice_config.dart)): Voice persona model containing ID, name, gender, sample audio path, and inclusion flag.
-- **`SavedState`** ([`lib/services/preferences_service.dart`](file:///home/jscherer26/AndroidStudioProjects/setandsit/lib/services/preferences_service.dart)): JSON-serializable model storing user preferences, selected bells, durations, settling delay (0–20s), density sliders, and clock targets.
-
-### Local Storage & Persistence
-- **Engine:** `shared_preferences`
-- **Keys:**
-  - `set_and_sit_settings`: Core user preferences, settling delay, and UI state.
-  - `set_and_sit_practices`: Custom practice archetypes and segment override mappings.
-  - `set_and_sit_voices`: Voice persona order and inclusion status.
-
-### Clinical Audio & Metadata Assets
-- `assets/raw/session_manifest.json`: Clinical schema 3.5.0 containing text, word count, active flags, and variant metadata for all 16 meditation segments ($S01$–$S16$).
-- `assets/raw/audio_durations.json`: Precision audio durations for 480 MP3 recordings across both personas.
-- `assets/bells/`: 10 acoustic meditation bells/gongs in OGG format.
-
-### Backend, APIs & Analytics
-- **Backend / Cloud Services:** None. Application is 100% on-device and local.
-- **Third-Party Telemetry / SDKs:** None. Privacy-first architecture with zero tracking, crashlytics, or analytics SDKs.
+- **Data Models:** `AudioSegment`, `SessionItem`, `PracticeConfig`, `VoiceConfig`, `SavedState`.
+- **Local Storage:** `shared_preferences` storing primitive settings under atomic keys, plus JSON collections for custom practices (`set_and_sit_practices`) and voice inclusion settings (`set_and_sit_voices`).
+- **External Network / APIs:** None. Fully offline architecture.
+- **Audio Assets:** 480 voice MP3s across Kia and Grace personas; 10 acoustic bell OGG files.
 
 ## 8. Platform & Configuration Details
-
-### Android Configuration
-- **Package / Namespace:** `com.example.setandsit`
-- **Build Toolchain:** Gradle 9.3.1, Android Gradle Plugin, Java 17 / JVM 17 target.
-- **SDK Constraints:** `minSdk = flutter.minSdkVersion` (API 21), `targetSdk = flutter.targetSdkVersion` (API 36).
-- **Permissions Declared (`AndroidManifest.xml`):**
-  - `android.permission.WAKE_LOCK`
-  - `android.permission.FOREGROUND_SERVICE`
-  - `android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK`
-
-### iOS Configuration
-- **Bundle Display Name:** `Set&Sit`
-- **Bundle Identifier:** `$(PRODUCT_BUNDLE_IDENTIFIER)`
-- **Orientation:** Supports Portrait and Landscape modes.
-
-### Linux Desktop Configuration
-- Native GTK/CMake runner compiled via Clang 19 and Ninja.
+- **Android:**
+  - `applicationId`: `com.example.setandsit`
+  - `minSdk`: 21, `targetSdk`: 36, Java 17 compile target.
+  - Permissions: `WAKE_LOCK`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PLAYBACK`.
+  - Auto-Backup disabled (`allowBackup="false"`, `fullBackupOnly="false"`).
+  - ProGuard rules: `proguard-rules.pro` applied with `isMinifyEnabled = false`.
+- **iOS:**
+  - Deployment target: iOS 12.0+
+  - Background audio & wakelock capabilities configured.
 
 ## 9. Build, Run & Release
+```bash
+# Install dependencies
+flutter pub get
 
-### Common Developer Commands
-- **Install dependencies:** `flutter pub get`
-- **Run static analyzer:** `flutter analyze`
-- **Run test suite:** `flutter test`
-- **Run application on desktop:** `flutter run -d linux`
-- **Run application on connected device:** `flutter run`
-- **Build Android debug APK:** `flutter build apk --debug`
-- **Build Android release APK:** `flutter build apk --release`
+# Run static analysis
+flutter analyze
 
-### CI/CD
-- Currently no automated remote CI/CD workflows configured. Build verification and tests are executed locally.
+# Run test suite
+flutter test
+
+# Build debug APK
+flutter build apk --debug
+
+# Build release APK
+flutter build apk --release
+```
 
 ## 10. Testing & Quality
-
-### Test Suite Inventory
-- **Total Passing Tests:** 55
-- **Test Modules:**
-  - `test/timeline_engine_test.dart` (349 lines): Verifies 3-zone silence distribution math across 5m, 12m, 15m, and 30m sessions; test mode bypass (< 120s and 121s–299s); and segment pruning priority rules.
-  - `test/manage_practices_test.dart` (810 lines): Tests `PracticeConfig` JSON serialization, custom archetype creation, segment override routing, and integration with `SessionQueueEngine`.
-  - `test/manage_voices_test.dart` (551 lines): Tests `VoiceConfig` persistence, fallback selection logic, and voice persona toggles.
-  - `test/preferences_test.dart` (218 lines): Tests `PreferencesService` JSON serialization and settings persistence.
-  - `test/widget_test.dart` (240 lines): Tests initial application bootstrapping, theme verification, time adjustment dialog, and settling delay countdown / transition.
-
-### Code Quality & Static Analysis
-- **Linter:** `flutter_lints: ^6.0.0` activated via `analysis_options.yaml`.
-- **Status:** `flutter analyze` reports **0 issues**.
+- **Test Inventory:**
+  - `test/timeline_engine_test.dart`: 3-Zone silence distribution math, test-mode bypass, and pruning validation.
+  - `test/preferences_test.dart`: SharedPreferences direct primitive key read/write verification across restarts.
+  - `test/manage_practices_test.dart`: Practice creation, segment editing, and selection persistence.
+  - `test/manage_voices_test.dart`: Voice persona filtering, audition playback, and inclusion logic.
+  - `test/widget_test.dart`: Root controller smoke test and navigation verification.
+- **Coverage:** 55 tests passing across all critical business logic and UI integration paths.
+- **Static Analysis:** `flutter analyze` reports 0 issues.
 
 ## 11. TODOs, Known Issues & Technical Debt
-
-### Source Code Comments
-- Zero `TODO`, `FIXME`, or `HACK` tags exist in Dart source files (`lib/`).
-- Standard boilerplate comments exist in `android/app/build.gradle.kts` regarding custom Application ID and release signing configuration.
-
-### Known Technical Debt & Risky Areas
-1. **Background Audio & MediaSession Integration:**
-   - Active sessions currently keep the device awake using `WakelockPlus`. If the user minimizes the app or screen lock is engaged without an active audio stream playing (e.g. during a long Zone 3 silence gap), the OS may throttle background Dart timers. Migrating to an OS-level MediaSession foreground service will improve reliability.
-2. **Default Application ID:**
-   - Android Application ID is currently set to `com.example.setandsit`. This should be replaced with a production reverse-domain package name before production deployment.
-3. **Release Signing:**
-   - The Gradle release build type currently points to the debug keystore. Production signing credentials and keystores need to be configured.
+- **Background Media3 / AudioService Integration:** Audio playback currently relies on foreground wakelock (`wakelock_plus`); migrating to a native Android MediaSession / Foreground AudioService is recommended for lock-screen media controls.
+- **Package ID Migration:** `applicationId` remains `com.example.setandsit` and should be updated prior to Google Play Store publishing.
 
 ## 12. Metrics
-- **Dart Source Files (`lib/`):** 20 files, 8,815 lines of code
-- **Dart Test Files (`test/`):** 5 files, 2,368 lines of code
-- **Total Dart Codebase:** 25 files, 11,183 lines of code
-- **Primary Screens:** 7 screens (`Configuration`, `Practice`, `Settings`, `BellConfiguration`, `ManagePractices`, `ManageVoices`, `SessionDebug`) + 1 custom dialog (`ClockTimePickerDialog`)
-- **Unit / Widget Tests:** 55 tests (100% passing)
-- **Audio Assets:** 480 voice MP3s, 10 acoustic bell OGGs, 1 silence MP3
-- **Data Manifests:** 2 clinical JSON datasets (`session_manifest.json` at 3,709 lines, `audio_durations.json` at 550 lines)
+- **Dart Source Files:** 20 files in `lib/` (approx. 8,850 lines of code).
+- **Test Files:** 5 files in `test/` (approx. 2,390 lines of code).
+- **Total Test Count:** 55 passing tests.
 
 ## 13. Suggested Next Steps
-1. **Implement Android & iOS Background Media Service:** Integrate `audio_session` or configure native foreground service notifications with playback controls so silence timers continue uninterrupted when the screen turns off.
-2. **Configure Production App ID & Release Keystore:** Update `com.example.setandsit` to the final bundle identifier and configure secure signing for release APK/AAB generation.
-3. **Add Continuous Integration (CI):** Add a GitHub Actions workflow to run `flutter analyze` and `flutter test` automatically on push and pull requests.
-4. **End-to-End Practice Session Integration Test:** Add an integration test simulating a full session lifecycle from configuration through practice completion and dismissal.
+1. Test cold launch persistence on physical hardware using the updated release APK build.
+2. Implement native Android `MediaSession` background service to enable lock-screen playback controls.
+3. Update `applicationId` from `com.example.setandsit` to official clinical production reverse domain.
+4. Add user-facing session completion statistics tracking (sessions completed, total minutes meditated).
