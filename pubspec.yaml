@@ -68,8 +68,11 @@ flutter:
     - assets/icon/
     - assets/raw/session_manifest.json
     - assets/raw/audio_durations.json
+    - assets/raw/staged_changes.json
     - assets/audio/grace/
+    - assets/audio/grace/changes/
     - assets/audio/kia/
+    - assets/audio/kia/changes/
     - assets/audio/silence.mp3
 
 
