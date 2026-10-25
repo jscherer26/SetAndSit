@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/audio_models.dart';
 import '../models/practice_config.dart';
 import '../models/voice_config.dart';
+import '../services/audio_manifest_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/practice_stepper_card.dart';
 import '../widgets/voice_stepper_card.dart';
@@ -40,6 +41,9 @@ class ConfigurationScreen extends StatefulWidget {
   final bool isAm;
   final Function(int hour, int minute, bool isAm) onClockTimeChanged;
 
+  final bool isDeveloperMode;
+  final ValueChanged<bool>? onDeveloperModeChanged;
+
   final Function(
     int targetSeconds,
     String practiceType,
@@ -72,6 +76,8 @@ class ConfigurationScreen extends StatefulWidget {
     required this.clockMinute,
     required this.isAm,
     required this.onClockTimeChanged,
+    this.isDeveloperMode = false,
+    this.onDeveloperModeChanged,
     required this.onBeginPractice,
   });
 
@@ -81,6 +87,8 @@ class ConfigurationScreen extends StatefulWidget {
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
   Timer? _periodicCheckTimer;
+  int _titleTapCount = 0;
+  DateTime? _lastTitleTapTime;
 
   @override
   void initState() {
@@ -91,6 +99,224 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkTimeStillInFuture();
     });
+  }
+
+  void _handleTitleTap() {
+    final now = DateTime.now();
+    if (_lastTitleTapTime == null ||
+        now.difference(_lastTitleTapTime!) > const Duration(milliseconds: 1500)) {
+      _titleTapCount = 1;
+    } else {
+      _titleTapCount++;
+    }
+    _lastTitleTapTime = now;
+
+    if (_titleTapCount >= 3) {
+      _titleTapCount = 0;
+      _showDeveloperModeDialog();
+    }
+  }
+
+  Future<void> _showDeveloperModeDialog() async {
+    if (widget.isDeveloperMode) {
+      _showActiveDeveloperModeDialog();
+      return;
+    }
+
+    final controller = TextEditingController();
+    String? errorText;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: AppColors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: const Row(
+                children: [
+                  Icon(Icons.developer_mode, color: AppColors.darkOlive),
+                  SizedBox(width: 8),
+                  Text(
+                    'Developer Mode',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textBlack,
+                    ),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Enter passcode to enable Developer Mode:',
+                    style: TextStyle(fontSize: 14, color: AppColors.textBlack),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: controller,
+                    autofocus: true,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      letterSpacing: 6,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.darkOlive,
+                    ),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.backgroundSand,
+                      errorText: errorText,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.cardBorder),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppColors.darkOlive, width: 2),
+                      ),
+                    ),
+                    onSubmitted: (val) {
+                      if (val.trim() == '2217') {
+                        Navigator.of(dialogContext).pop();
+                        widget.onDeveloperModeChanged?.call(true);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Developer Mode enabled. Staged audio active.'),
+                            backgroundColor: Color(0xFFD32F2F),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      } else {
+                        setDialogState(() {
+                          errorText = 'Incorrect passcode';
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Cancel', style: TextStyle(color: AppColors.textMuted)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.darkOlive,
+                    foregroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (controller.text.trim() == '2217') {
+                      Navigator.of(dialogContext).pop();
+                      widget.onDeveloperModeChanged?.call(true);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Developer Mode enabled. Staged audio active.'),
+                          backgroundColor: Color(0xFFD32F2F),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      setDialogState(() {
+                        errorText = 'Incorrect passcode';
+                      });
+                    }
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showActiveDeveloperModeDialog() async {
+    final count = AudioManifestService.stagedVariantsCount;
+    await showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.bug_report, color: Color(0xFFD32F2F)),
+              SizedBox(width: 8),
+              Text(
+                'Developer Mode Active',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textBlack,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Previewing staged script audio from /changes directories.',
+                style: TextStyle(fontSize: 14, color: AppColors.textBlack),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Staged variants loaded: $count',
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textMuted,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Keep Active', style: TextStyle(color: AppColors.textMuted)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFD32F2F),
+                foregroundColor: AppColors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                widget.onDeveloperModeChanged?.call(false);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Developer Mode disabled.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+              child: const Text('Disable Developer Mode'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -346,30 +572,73 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               // Header & Settings Gear Icon
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Set&Sit',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textBlack,
-                          letterSpacing: -0.5,
-                        ),
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: _handleTitleTap,
+                      behavior: HitTestBehavior.opaque,
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Set&Sit',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textBlack,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Adaptive Guided Meditation',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Adaptive Guided Meditation',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
+                  if (widget.isDeveloperMode) ...[
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: _showActiveDeveloperModeDialog,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFEBEE),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE53935), width: 1.2),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x1AE53935),
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.circle, size: 8, color: Color(0xFFD32F2F)),
+                            SizedBox(width: 6),
+                            Text(
+                              'Developer Mode',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFD32F2F),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   Container(
                     width: 44,
                     height: 44,

@@ -69,6 +69,7 @@ flutter:
     - assets/raw/session_manifest.json
     - assets/raw/audio_durations.json
     - assets/raw/staged_changes.json
+    - assets/audio/changes_manifest.json
     - assets/audio/grace/
     - assets/audio/grace/changes/
     - assets/audio/kia/

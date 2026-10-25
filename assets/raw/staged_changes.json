@@ -1,4 +1,21 @@
 {
-  "staged_at": null,
-  "variants": {}
+  "staged_at": "2026-10-25T10:16:16.906973",
+  "variants": {
+    "S01_v08": {
+      "text": "Settling into your seat—giving yourself permission to transition out of doing mode, and gently leaning into being.",
+      "word_count": 17,
+      "durations": {
+        "grace": 8.75,
+        "kia": 8.75
+      }
+    },
+    "S01_v09": {
+      "text": "Allowing yourself to inhabit this quiet space... seeing if we can release any expectations about how this session is supposed to unfold.",
+      "word_count": 22,
+      "durations": {
+        "kia": 9.8,
+        "grace": 10.37
+      }
+    }
+  }
 }

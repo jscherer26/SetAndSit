@@ -21,12 +21,14 @@ void main() async {
   SavedState? savedState;
   List<VoiceConfig>? voices;
   List<PracticeConfig>? practices;
+  bool isDevMode = false;
 
   try {
     await PreferencesService.init();
     savedState = await PreferencesService.loadState();
     voices = await PreferencesService.loadVoices();
     practices = await PreferencesService.loadPractices();
+    isDevMode = await PreferencesService.isDeveloperMode();
   } catch (e, stack) {
     debugPrint('[SetAndSit] Error loading preferences: $e\n$stack');
   }
@@ -36,10 +38,11 @@ void main() async {
     initialState: savedState,
     initialVoices: voices,
     initialPractices: practices,
+    initialDeveloperMode: isDevMode,
   ));
 
   // Non-blocking initialization after runApp
-  AudioManifestService.initialize().catchError((e) {
+  AudioManifestService.initialize(developerMode: isDevMode).catchError((e) {
     debugPrint('[SetAndSit] AudioManifestService error: $e');
   });
 }
@@ -48,12 +51,14 @@ class SetAndSitApp extends StatelessWidget {
   final SavedState? initialState;
   final List<VoiceConfig>? initialVoices;
   final List<PracticeConfig>? initialPractices;
+  final bool? initialDeveloperMode;
 
   const SetAndSitApp({
     super.key,
     this.initialState,
     this.initialVoices,
     this.initialPractices,
+    this.initialDeveloperMode,
   });
 
   @override
@@ -74,6 +79,7 @@ class SetAndSitApp extends StatelessWidget {
         initialState: initialState,
         initialVoices: initialVoices,
         initialPractices: initialPractices,
+        initialDeveloperMode: initialDeveloperMode,
       ),
     );
   }
@@ -93,12 +99,14 @@ class RootControllerScreen extends StatefulWidget {
   final SavedState? initialState;
   final List<VoiceConfig>? initialVoices;
   final List<PracticeConfig>? initialPractices;
+  final bool? initialDeveloperMode;
 
   const RootControllerScreen({
     super.key,
     this.initialState,
     this.initialVoices,
     this.initialPractices,
+    this.initialDeveloperMode,
   });
 
   @override
@@ -130,6 +138,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   int _clockMinute = 20;
   bool _isAm = true;
   bool _isInitialized = false;
+  bool _isDeveloperMode = false;
 
   List<SessionItem> _activeSessionQueue = [];
   int _activeTargetSeconds = 1200;
@@ -137,6 +146,9 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   @override
   void initState() {
     super.initState();
+    if (widget.initialDeveloperMode != null) {
+      _isDeveloperMode = widget.initialDeveloperMode!;
+    }
     if (widget.initialState != null &&
         widget.initialVoices != null &&
         widget.initialPractices != null) {
@@ -271,9 +283,11 @@ class _RootControllerScreenState extends State<RootControllerScreen>
       final voices = await PreferencesService.loadVoices();
       final practices = await PreferencesService.loadPractices();
       final saved = await PreferencesService.loadState();
+      final isDev = await PreferencesService.isDeveloperMode();
 
       if (mounted) {
         setState(() {
+          _isDeveloperMode = isDev;
           _applyLoadedState(
             saved: saved,
             voices: voices,
@@ -475,6 +489,14 @@ class _RootControllerScreenState extends State<RootControllerScreen>
     switch (_currentScreen) {
       case AppScreen.configuration:
         return ConfigurationScreen(
+          isDeveloperMode: _isDeveloperMode,
+          onDeveloperModeChanged: (enabled) async {
+            setState(() {
+              _isDeveloperMode = enabled;
+            });
+            AudioManifestService.setDeveloperMode(enabled);
+            await PreferencesService.setDeveloperMode(enabled);
+          },
           practiceDurationMinutes: _practiceDurationMinutes,
           onEnsureFutureTime: _ensureFutureTargetTime,
           onOpenSettings: () {

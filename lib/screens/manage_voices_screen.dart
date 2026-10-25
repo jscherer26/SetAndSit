@@ -131,7 +131,11 @@ class _ManageVoicesScreenState extends State<ManageVoicesScreen> {
     if (variant == null) return;
 
     final variantId = variant.variantId;
-    final audioPath = '${voice.assetFolder}/${seg}_$variantId.mp3';
+    final audioPath = AudioManifestService.getAudioAssetPath(
+      voice: voice.id,
+      segmentCode: seg,
+      variantId: variantId,
+    );
     String cleanPath =
         audioPath.startsWith('assets/') ? audioPath.substring(7) : audioPath;
     if (cleanPath.startsWith('audio/voices/')) {

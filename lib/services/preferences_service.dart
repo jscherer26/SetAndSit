@@ -9,8 +9,21 @@ import '../models/voice_config.dart';
 class PreferencesService {
   static const String _keyPractices = 'set_and_sit_practices';
   static const String _keyVoices = 'set_and_sit_voices';
+  static const String _keyDeveloperMode = 'pref_developer_mode';
 
   static SharedPreferences? _prefs;
+
+  /// Returns whether Developer Mode is enabled.
+  static Future<bool> isDeveloperMode() async {
+    final prefs = await getPrefs();
+    return prefs.getBool(_keyDeveloperMode) ?? false;
+  }
+
+  /// Sets Developer Mode state.
+  static Future<void> setDeveloperMode(bool enabled) async {
+    final prefs = await getPrefs();
+    await prefs.setBool(_keyDeveloperMode, enabled);
+  }
 
   /// Visible for testing to reset cached instance when mock values change
   @visibleForTesting
