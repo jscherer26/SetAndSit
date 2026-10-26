@@ -184,7 +184,7 @@ void main() {
 
     // 1st: Stepper Pill with bell title
     expect(find.text('Select Bell to Configure'), findsOneWidget);
-    expect(find.text('Meditation Bell'), findsNWidgets(2));
+    expect(find.text('Meditation Bell'), findsOneWidget);
 
     // 2nd: "Include on Home Screen" Switch Container with subtitle
     expect(find.text('Include on Home Screen'), findsOneWidget);
@@ -195,9 +195,9 @@ void main() {
     expect(find.text('Test Bell Sound'), findsNothing);
     expect(find.text('Enable Bell'), findsNothing);
 
-    // 4th: Bell Parameters
-    expect(find.text('Bell Name'), findsOneWidget);
-    expect(find.text('Duration (Seconds)'), findsOneWidget);
+    // 4th: Bell Parameters removed
+    expect(find.text('Bell Name'), findsNothing);
+    expect(find.text('Duration (Seconds)'), findsNothing);
   });
 
   testWidgets('Manage Voices screen does not display Voice Profile & Management subtitle', (WidgetTester tester) async {

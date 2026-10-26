@@ -23,7 +23,10 @@ class ManageVoicesScreen extends StatefulWidget {
     required this.onVoicesUpdated,
     this.onBack,
     this.audioPlayer,
+    this.isDeveloperMode,
   });
+
+  final bool? isDeveloperMode;
 
   @override
   State<ManageVoicesScreen> createState() => _ManageVoicesScreenState();
@@ -32,6 +35,8 @@ class ManageVoicesScreen extends StatefulWidget {
 class _ManageVoicesScreenState extends State<ManageVoicesScreen> {
   late List<VoiceConfig> _voices;
   late String _selectedVoiceId;
+
+  bool get _isDevMode => widget.isDeveloperMode ?? AudioManifestService.isDeveloperMode;
 
   static const List<String> _segmentCodes = [
     'S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07', 'S08',
@@ -375,17 +380,7 @@ class _ManageVoicesScreenState extends State<ManageVoicesScreen> {
         backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textBlack),
-          onPressed: () {
-            _stopAudition();
-            if (widget.onBack != null) {
-              widget.onBack!();
-            } else {
-              Navigator.pop(context);
-            }
-          },
-        ),
+        automaticallyImplyLeading: false,
         title: const Text(
           'Manage Voices',
           style: TextStyle(
@@ -394,6 +389,37 @@ class _ManageVoicesScreenState extends State<ManageVoicesScreen> {
             color: AppColors.textBlack,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.cardShadow,
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: AppColors.textBlack, size: 22),
+                onPressed: () {
+                  _stopAudition();
+                  if (widget.onBack != null) {
+                    widget.onBack!();
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -532,21 +558,22 @@ class _ManageVoicesScreenState extends State<ManageVoicesScreen> {
                 ),
               ),
 
-              // Visual Divider
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 18),
-                child: Divider(
-                  color: AppColors.cardBorder,
-                  height: 1,
-                  thickness: 1,
+              if (_isDevMode) ...[
+                // Visual Divider
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 18),
+                  child: Divider(
+                    color: AppColors.cardBorder,
+                    height: 1,
+                    thickness: 1,
+                  ),
                 ),
-              ),
 
-              // Bottom Section: Script & Variant Inspector
-              const Text(
-                'Script & Variant Inspector',
-                style: TextStyle(
-                  fontSize: 16,
+                // Bottom Section: Script & Variant Inspector
+                const Text(
+                  'Script & Variant Inspector',
+                  style: TextStyle(
+                    fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textBlack,
                 ),
@@ -722,6 +749,7 @@ class _ManageVoicesScreenState extends State<ManageVoicesScreen> {
                   ],
                 ),
               ),
+            ],
 
               const SizedBox(height: 24),
             ],

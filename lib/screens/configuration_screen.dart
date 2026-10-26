@@ -382,113 +382,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     );
   }
 
-  void _showPracticePicker(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Select Practice',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textBlack,
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        widget.onOpenManagePractices();
-                      },
-                      icon: const Icon(Icons.tune, size: 16, color: AppColors.darkOlive),
-                      label: const Text(
-                        'Manage',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.darkOlive,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                ...includedPractices.map((p) {
-                  final isSel = currentPractice.id == p.id;
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      p.name,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight:
-                            isSel ? FontWeight.bold : FontWeight.normal,
-                        color: isSel
-                            ? AppColors.darkOlive
-                            : AppColors.textBlack,
-                      ),
-                    ),
-                    trailing: isSel
-                        ? const Icon(Icons.check, color: AppColors.darkOlive)
-                        : null,
-                    onTap: () {
-                      widget.onSelectedPracticeIdChanged(p.id);
-                      Navigator.pop(context);
-                    },
-                  );
-                }),
-                const SizedBox(height: 10),
-                const Divider(color: AppColors.cardBorder, height: 1),
-                const SizedBox(height: 8),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: AppColors.darkOlive.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.tune, color: AppColors.darkOlive, size: 20),
-                  ),
-                  title: const Text(
-                    'Manage Practices',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkOlive,
-                    ),
-                  ),
-                  subtitle: const Text(
-                    'Customize segments, add or copy practices',
-                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
-                  ),
-                  trailing: const Icon(Icons.chevron_right, color: AppColors.darkOlive),
-                  onTap: () {
-                    Navigator.pop(context);
-                    widget.onOpenManagePractices();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   int get currentDurationMinutes {
     final now = DateTime.now();
     final hour24 = widget.isAm
@@ -865,16 +758,12 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                           widget.onSelectedPracticeIdChanged(list[nextIdx].id);
                         }
                       : null,
-                  onTap: () => _showPracticePicker(context),
-                  onLeadingTap: widget.onOpenManagePractices,
                 ),
                 const SizedBox(height: 14),
 
                 // Voice Card
                 VoiceStepperCard(
                   voice: currentVoiceConfig,
-                  onLeadingTap: widget.onOpenManageVoices,
-                  onTap: widget.onOpenManageVoices,
                   onPrevious: activeVoices.length > 1
                       ? () {
                           final idx = activeVoices.indexWhere(
@@ -905,7 +794,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               _buildStepperPill(
                 icon: Icons.notifications,
                 title: currentBell.title,
-                onIconTap: widget.onOpenBellSettings,
                 onPrevious: () {
                   if (availableBells.isEmpty) return;
                   final validIdx = currentBellIndex == -1
@@ -972,7 +860,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   Widget _buildStepperPill({
     required IconData icon,
     required String title,
-    required VoidCallback onIconTap,
     required VoidCallback onPrevious,
     required VoidCallback onNext,
   }) {
@@ -994,19 +881,15 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
       ),
       child: Row(
         children: [
-          // Circular Icon Button (Tapping opens Parameter page / picker)
-          InkWell(
-            onTap: onIconTap,
-            borderRadius: BorderRadius.circular(21),
-            child: Container(
-              width: 42,
-              height: 42,
-              decoration: const BoxDecoration(
-                color: AppColors.backgroundSand,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: AppColors.textBlack, size: 22),
+          // Circular Icon (inert display)
+          Container(
+            width: 42,
+            height: 42,
+            decoration: const BoxDecoration(
+              color: AppColors.backgroundSand,
+              shape: BoxShape.circle,
             ),
+            child: Icon(icon, color: AppColors.textBlack, size: 22),
           ),
           IconButton(
             icon: const Icon(Icons.chevron_left, color: AppColors.textBlack),
@@ -1016,22 +899,18 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
             splashRadius: 22,
           ),
           Expanded(
-            child: InkWell(
-              onTap: onIconTap,
-              borderRadius: BorderRadius.circular(12),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                child: Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textBlack,
-                  ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textBlack,
                 ),
               ),
             ),

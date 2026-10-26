@@ -21,6 +21,7 @@ class PracticeScreen extends StatefulWidget {
   final Widget Function(List<SessionItem> queue, int targetSeconds)? buildDebugScreenWithQueue;
   final VoidCallback onEndSession;
   final VoidCallback? onSessionComplete;
+  final bool isDeveloperMode;
 
   const PracticeScreen({
     super.key,
@@ -38,6 +39,7 @@ class PracticeScreen extends StatefulWidget {
     this.buildDebugScreenWithQueue,
     required this.onEndSession,
     this.onSessionComplete,
+    this.isDeveloperMode = false,
   });
 
   @override
@@ -605,15 +607,30 @@ class _PracticeScreenState extends State<PracticeScreen>
                       color: AppColors.textBlack,
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.textBlack),
-                    onPressed: () {
-                      _preparationTimer?.cancel();
-                      _overlapTimer?.cancel();
-                      _voicePlayer.stop();
-                      _bellPlayer.stop();
-                      widget.onEndSession();
-                    },
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: const BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.cardShadow,
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: AppColors.textBlack, size: 22),
+                      onPressed: () {
+                        _preparationTimer?.cancel();
+                        _overlapTimer?.cancel();
+                        _voicePlayer.stop();
+                        _bellPlayer.stop();
+                        widget.onEndSession();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -624,6 +641,7 @@ class _PracticeScreenState extends State<PracticeScreen>
                 children: [
                   Text(
                     widget.selectedMeditationType,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -777,22 +795,6 @@ class _PracticeScreenState extends State<PracticeScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const SizedBox(
-                      height: 28,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'Preparing Practice Space',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textBlack,
-                          ),
-                        ),
-                      ),
-                    ),
                     const SizedBox(height: 12),
                     ConstrainedBox(
                       constraints: const BoxConstraints(
@@ -814,6 +816,24 @@ class _PracticeScreenState extends State<PracticeScreen>
                         ),
                       ),
                     ),
+                    if (widget.isDeveloperMode) ...[
+                      const SizedBox(height: 8),
+                      const SizedBox(
+                        height: 28,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Preparing Practice Space',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ] else if (_isFinished) ...[
                     const Text(
                       'End of Formal Practice',
@@ -889,27 +909,6 @@ class _PracticeScreenState extends State<PracticeScreen>
                         ],
                       ],
                     ),
-                    const SizedBox(height: 8),
-
-                    // Single-line concise title (e.g. "External Arrival (10)")
-                    SizedBox(
-                      height: 28,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          currentItem?.displayTitle ?? 'Preparing Practice Space',
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textBlack,
-                          ),
-                        ),
-                      ),
-                    ),
-
                     const SizedBox(height: 12),
 
                     // Spoken Guidance Text with minHeight so it never causes layout shifts
@@ -949,6 +948,28 @@ class _PracticeScreenState extends State<PracticeScreen>
                         ),
                       ),
                     ),
+
+                    if (widget.isDeveloperMode) ...[
+                      const SizedBox(height: 8),
+                      // Single-line concise title (e.g. "Settling with Guidance")
+                      SizedBox(
+                        height: 28,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            currentItem?.displayTitle ?? 'Preparing Practice Space',
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ],
               ),
@@ -1003,33 +1024,35 @@ class _PracticeScreenState extends State<PracticeScreen>
                           )
                         : Row(
                             children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: 54,
-                                  child: OutlinedButton.icon(
-                                    style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(
-                                        color: AppColors.cardBorder,
-                                        width: 1.5,
+                              if (widget.isDeveloperMode) ...[
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 54,
+                                    child: OutlinedButton.icon(
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                          color: AppColors.cardBorder,
+                                          width: 1.5,
+                                        ),
+                                        foregroundColor: AppColors.textBlack,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
                                       ),
-                                      foregroundColor: AppColors.textBlack,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                    ),
-                                    onPressed: _openDebugScreen,
-                                    icon: const Icon(Icons.bug_report_outlined),
-                                    label: const Text(
-                                      'Debug',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
+                                      onPressed: _openDebugScreen,
+                                      icon: const Icon(Icons.bug_report_outlined),
+                                      label: const Text(
+                                        'Debug',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
+                                const SizedBox(width: 16),
+                              ],
                               Expanded(
                                 child: SizedBox(
                                   height: 54,

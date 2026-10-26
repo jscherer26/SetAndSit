@@ -104,6 +104,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: PracticeScreen(
+          isDeveloperMode: true,
           sessionQueue: [silenceItem],
           targetDurationSeconds: 15,
           preparationDelaySeconds: 0,
@@ -138,6 +139,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: PracticeScreen(
+          isDeveloperMode: true,
           sessionQueue: [silenceItem],
           targetDurationSeconds: 60,
           preparationDelaySeconds: 10,

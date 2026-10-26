@@ -602,6 +602,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
 
       case AppScreen.manageVoices:
         return ManageVoicesScreen(
+          isDeveloperMode: _isDeveloperMode,
           initialVoices: _voices,
           initialSelectedVoiceId: _selectedVoiceId,
           onVoicesUpdated: (updated) {
@@ -708,6 +709,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
         }
 
         return PracticeScreen(
+          isDeveloperMode: _isDeveloperMode,
           sessionQueue: _activeSessionQueue,
           targetDurationSeconds: _activeTargetSeconds,
           preparationDelaySeconds: _preparationDelaySeconds,

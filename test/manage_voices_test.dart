@@ -177,6 +177,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: ManageVoicesScreen(
+            isDeveloperMode: true,
             initialVoices: VoiceConfig.defaultVoices,
             onVoicesUpdated: (_) {},
           ),
@@ -277,6 +278,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: ManageVoicesScreen(
+            isDeveloperMode: true,
             initialVoices: VoiceConfig.defaultVoices,
             onVoicesUpdated: (_) {},
           ),
@@ -348,6 +350,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: ManageVoicesScreen(
+            isDeveloperMode: true,
             initialVoices: VoiceConfig.defaultVoices,
             onVoicesUpdated: (_) {},
           ),
@@ -492,32 +495,42 @@ void main() {
       expect(voiceFinder, findsOneWidget);
       expect(find.text('Kia'), findsOneWidget);
 
-      // Tap voice icon
+      // Tap voice icon - should NOT open ManageVoicesScreen
       final iconFinder = find.descendant(
         of: voiceFinder,
         matching: find.byIcon(Icons.record_voice_over),
       );
       await tester.tap(iconFinder);
       await tester.pumpAndSettle();
-
-      // ManageVoicesScreen is opened
-      expect(find.text('Manage Voices'), findsOneWidget);
-
-      // Pop back using the back arrow
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
-
       expect(find.text('Manage Voices'), findsNothing);
-      expect(find.text('Set&Sit'), findsOneWidget);
 
-      // Now tap directly on the Voice title
+      // Tap directly on the Voice title - should NOT open ManageVoicesScreen
       await tester.tap(find.descendant(
         of: voiceFinder,
         matching: find.text('Kia'),
       ));
       await tester.pumpAndSettle();
+      expect(find.text('Manage Voices'), findsNothing);
 
+      // Navigate via Settings
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Manage Voices'));
+      await tester.pumpAndSettle();
+
+      // ManageVoicesScreen is opened
       expect(find.text('Manage Voices'), findsOneWidget);
+
+      // Pop back from Manage Voices to Settings
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+
+      // Pop back from Settings to Home Screen
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Manage Voices'), findsNothing);
+      expect(find.text('Set&Sit'), findsOneWidget);
     });
 
     testWidgets('Home Screen voice selector only displays voices where isIncluded == true',

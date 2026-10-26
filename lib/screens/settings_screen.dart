@@ -423,7 +423,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                     const SizedBox(height: 8),
                     const Text(
-                      'Time to put your phone down and get comfortable before guidance begins.',
+                      'The guidance will start this many seconds after  "Begin Practice" is pressed.',
                       style: TextStyle(
                         fontSize: 13,
                         color: AppColors.textMuted,
@@ -441,62 +441,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                     ],
-
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      child: Divider(
-                        color: AppColors.cardBorder,
-                        height: 1,
-                      ),
-                    ),
-
-                    // Row 3: Instructions density slider
-                    Text(
-                      '[ ${widget.instructionDensity.toInt()} ]  Instructions',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkOlive,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Slider(
-                      value: widget.instructionDensity,
-                      min: 0,
-                      max: 5,
-                      divisions: 5,
-                      activeColor: AppColors.darkOlive,
-                      inactiveColor: AppColors.pillUnselected,
-                      onChanged: widget.onInstructionDensityChanged,
-                      onChangeEnd: (val) {
-                        widget.onInstructionDensityChanged(val);
-                      },
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    // Row 4: Mind-Wandering Checks density slider
-                    Text(
-                      '[ ${widget.redirectionDensity.toInt()} ]  Mind-Wandering Checks',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkOlive,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Slider(
-                      value: widget.redirectionDensity,
-                      min: 0,
-                      max: 5,
-                      divisions: 5,
-                      activeColor: AppColors.darkOlive,
-                      inactiveColor: AppColors.pillUnselected,
-                      onChanged: widget.onRedirectionDensityChanged,
-                      onChangeEnd: (val) {
-                        widget.onRedirectionDensityChanged(val);
-                      },
-                    ),
                   ],
                 ),
               ),

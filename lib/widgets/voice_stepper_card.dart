@@ -51,10 +51,22 @@ class VoiceStepperCard extends StatelessWidget {
       child: Row(
         children: [
           // Circular Leading Icon
-          InkWell(
-            onTap: onLeadingTap ?? onTap,
-            borderRadius: BorderRadius.circular(21),
-            child: Container(
+          if (onLeadingTap != null)
+            InkWell(
+              onTap: onLeadingTap,
+              borderRadius: BorderRadius.circular(21),
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: const BoxDecoration(
+                  color: AppColors.backgroundSand,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(leadingIcon, color: AppColors.textBlack, size: 22),
+              ),
+            )
+          else
+            Container(
               width: 42,
               height: 42,
               decoration: const BoxDecoration(
@@ -63,7 +75,6 @@ class VoiceStepperCard extends StatelessWidget {
               ),
               child: Icon(leadingIcon, color: AppColors.textBlack, size: 22),
             ),
-          ),
 
           // Previous Chevron
           IconButton(
@@ -76,40 +87,71 @@ class VoiceStepperCard extends StatelessWidget {
 
           // Voice Info
           Expanded(
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(12),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      voice.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: titleColor ?? AppColors.textBlack,
+            child: onTap != null
+                ? InkWell(
+                    onTap: onTap,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            voice.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: titleColor ?? AppColors.textBlack,
+                            ),
+                          ),
+                          if (subtitle != null && subtitle!.isNotEmpty)
+                            Text(
+                              subtitle!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    if (subtitle != null && subtitle!.isNotEmpty)
-                      Text(
-                        subtitle!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textMuted,
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          voice.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: titleColor ?? AppColors.textBlack,
+                          ),
                         ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
+                        if (subtitle != null && subtitle!.isNotEmpty)
+                          Text(
+                            subtitle!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textMuted,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
           ),
 
           // Next Chevron

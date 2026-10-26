@@ -704,7 +704,7 @@ void main() {
       expect(fc.isIncluded, isTrue);
     });
 
-    testWidgets('Tapping meditator icon opens ManagePracticesScreen (matching bell behavior)', (WidgetTester tester) async {
+    testWidgets('Meditator icon on Practice Stepper Card does not trigger navigation', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(800, 1200);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -723,14 +723,8 @@ void main() {
       await tester.tap(meditatorIcon);
       await tester.pumpAndSettle();
 
-      // ManagePracticesScreen is opened
-      expect(find.text('Clinical Arc Segments'), findsOneWidget);
-
-      // Tap back button
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
-
-      // Returns to Home Screen
+      // ManagePracticesScreen is NOT opened
+      expect(find.text('Clinical Arc Segments'), findsNothing);
       expect(find.text('Adaptive Guided Meditation'), findsOneWidget);
     });
 
@@ -788,12 +782,10 @@ void main() {
 
       expect(find.text('Focused Calm'), findsWidgets);
 
-      // Tap meditator icon on the Practice Stepper Card
-      final meditatorIcon = find.descendant(
-        of: find.byType(PracticeStepperCard),
-        matching: find.byIcon(Icons.self_improvement),
-      );
-      await tester.tap(meditatorIcon);
+      // Navigate to Manage Practices via Settings
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Manage Practices'));
       await tester.pumpAndSettle();
 
       // Toggle off 'Focused Calm'
@@ -801,6 +793,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap back button
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pumpAndSettle();
+
+      // Tap back from Settings
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
 

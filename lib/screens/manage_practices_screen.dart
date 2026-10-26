@@ -826,10 +826,7 @@ class _ManagePracticesScreenState extends State<ManagePracticesScreen> {
         backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textBlack),
-          onPressed: widget.onBack ?? () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false,
         title: const Text(
           'Manage Practices',
           style: TextStyle(
@@ -838,6 +835,30 @@ class _ManagePracticesScreenState extends State<ManagePracticesScreen> {
             color: AppColors.textBlack,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.cardShadow,
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: AppColors.textBlack, size: 22),
+                onPressed: widget.onBack ?? () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
