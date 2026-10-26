@@ -222,7 +222,7 @@ void main() {
       expect(find.textContaining('v01 •'), findsOneWidget);
       expect(find.text('Script Variant Text'), findsOneWidget);
       expect(
-        find.textContaining('arriving into this space'),
+        find.textContaining('Arriving into this space'),
         findsOneWidget,
       );
     });

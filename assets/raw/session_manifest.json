@@ -8,22 +8,22 @@
         "variant_id": "v01",
         "variant_name": "1. Gentle Arrival",
         "active": true,
-        "text": "Welcome... arriving into this space, and letting the weight of whatever came before begin to soften and settle.",
+        "text": "Welcome.  Arriving into this space, and letting the weight of whatever came before begin to soften and settle.",
         "word_count": 18
       },
       {
         "variant_id": "v02",
         "variant_name": "2. Present Unhurried Space",
         "active": false,
-        "text": "Welcome... allowing yourself to step out of doing mode, and simply taking your place in this room.",
-        "word_count": 17
+        "text": "Welcome [long pause] allowing yourself to step out of doing mode, and simply taking your place in this room.",
+        "word_count": 19
       },
       {
         "variant_id": "v03",
         "variant_name": "3. Stepping into Quiet",
         "active": false,
-        "text": "Welcome... giving yourself permission to pause, and recognizing that there is nowhere else you need to be right now.",
-        "word_count": 19
+        "text": "Welcome [pause] giving yourself permission to pause, and recognizing that there is nowhere else you need to be right now.",
+        "word_count": 20
       },
       {
         "variant_id": "v04",
@@ -115,8 +115,8 @@
         "variant_id": "v01",
         "variant_name": "1. Autonomy & Choice",
         "active": true,
-        "text": "And here, inviting the spine to find a comfortable, easeful alignment... allowing the shoulders to drop naturally away from the ears.",
-        "word_count": 21
+        "text": "And here, inviting the spine to find a comfortable, easeful alignment... allowing the shoulders to drop away from the ears.",
+        "word_count": 20
       },
       {
         "variant_id": "v02",
@@ -285,15 +285,15 @@
         "variant_id": "v10",
         "variant_name": "10. Inhaling Presence",
         "active": false,
-        "text": "Naturally, sensing the gentle flow of air... allowing each cycle of breath to anchor you a little deeper in the body.",
-        "word_count": 21
+        "text": "Naturally, sensing the gentle flow of air... allowing each cycle of breath to anchor you more fully in the body.",
+        "word_count": 20
       },
       {
         "variant_id": "v11",
         "variant_name": "11. Respiratory Ease",
         "active": false,
-        "text": "Naturally, befriending the breath as a steady companion... always present, always unfolding right here and now.",
-        "word_count": 16
+        "text": "Naturally, befriending the breath as a steady companion... which is, always present, and always unfolding.",
+        "word_count": 15
       },
       {
         "variant_id": "v12",
@@ -406,7 +406,7 @@
         "variant_id": "v12",
         "variant_name": "12. Balanced Architecture",
         "active": false,
-        "text": "Deepening here, allowing the hips and pelvis to rest heavily into their support... creating a steady platform for quiet awareness.",
+        "text": "Deepening here, allowing the hips and pelvis to rest heavily into their support... creating a solid formation for quiet awareness.",
         "word_count": 20
       },
       {
@@ -713,7 +713,7 @@
         "variant_id": "v10",
         "variant_name": "10. Diaphragm Unlocking",
         "active": false,
-        "text": "Simply holding the space of continuous attention... allowing thoughts to drift past without needing to follow them.",
+        "text": "Simply holding the space of continuous attention... allowing thoughts to drift past without having to follow them.",
         "word_count": 17
       },
       {
@@ -1078,7 +1078,7 @@
         "variant_id": "v01",
         "variant_name": "1. Traditional Metta",
         "active": true,
-        "text": "With curiosity, noticing a thought as it appears... and quietly wondering what awareness is observing it right now.",
+        "text": "With curiosity, noticing a thought as it appears... and quietly wondering what awareness is observing, in this moment.",
         "word_count": 18
       },
       {
@@ -1348,8 +1348,8 @@
         "variant_id": "v09",
         "variant_name": "9. Full Body Stretch",
         "active": false,
-        "text": "Now, setting aside every technique and effort... resting peacefully in the stillness that is already here.",
-        "word_count": 16
+        "text": "Now, setting aside every technique and effort... resting peacefully in the stillness that surrounds you.",
+        "word_count": 15
       },
       {
         "variant_id": "v10",
@@ -1376,7 +1376,7 @@
         "variant_id": "v13",
         "variant_name": "13. Awakening Energy",
         "active": false,
-        "text": "Now, releasing even the sense of practicing... simply being here, effortless and unhurried, until the voice returns.",
+        "text": "Now, releasing even the sense of practicing... simply resting, effortless and unhurried, in the stillness that remains.",
         "word_count": 17
       },
       {
