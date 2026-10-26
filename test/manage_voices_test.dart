@@ -221,7 +221,7 @@ void main() {
       expect(find.textContaining('v01 •'), findsOneWidget);
       expect(find.text('Script Variant Text'), findsOneWidget);
       expect(
-        find.textContaining('Letting ourselves settle into this space'),
+        find.textContaining('arriving into this space'),
         findsOneWidget,
       );
     });

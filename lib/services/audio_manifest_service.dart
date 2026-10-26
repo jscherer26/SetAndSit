@@ -27,6 +27,11 @@ class AudioManifestService {
 
   static Map<String, dynamic>? get stagedChanges => _cachedStagedChanges;
 
+  @visibleForTesting
+  static void setMockStagedChanges(Map<String, dynamic>? data) {
+    _cachedStagedChanges = data;
+  }
+
   /// Loads staged changes from changes_manifest.json or staged_changes.json
   static Future<void> loadStagedChanges() async {
     try {

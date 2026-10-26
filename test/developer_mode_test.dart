@@ -33,9 +33,20 @@ void main() {
     );
     expect(prodPath, 'assets/audio/kia/S01_v08.mp3');
 
-    // 2. With developer mode ON
+    // 2. With developer mode ON and staged mock changes
     AudioManifestService.setDeveloperMode(true);
-    await AudioManifestService.loadStagedChanges();
+    AudioManifestService.setMockStagedChanges({
+      "variants": {
+        "S01_v08": {
+          "text": "Settling into your seat—giving yourself permission to transition out of doing mode, and gently leaning into being.",
+          "word_count": 17,
+          "durations": {
+            "kia": 8.75,
+            "grace": 8.75
+          }
+        }
+      }
+    });
 
     final stagedPath = AudioManifestService.getAudioAssetPath(
       voice: 'kia',
