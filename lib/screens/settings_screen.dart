@@ -208,19 +208,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               // Top Bar
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back,
-                        color: AppColors.textBlack),
-                    onPressed: _handleBack,
-                  ),
-                  const SizedBox(width: 8),
                   const Text(
                     'Settings',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textBlack,
+                    ),
+                  ),
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: const BoxDecoration(
+                      color: AppColors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.cardShadow,
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: AppColors.textBlack, size: 22),
+                      onPressed: _handleBack,
                     ),
                   ),
                 ],

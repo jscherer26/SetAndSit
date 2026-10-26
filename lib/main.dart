@@ -21,14 +21,13 @@ void main() async {
   SavedState? savedState;
   List<VoiceConfig>? voices;
   List<PracticeConfig>? practices;
-  bool isDevMode = false;
 
   try {
     await PreferencesService.init();
+    await PreferencesService.resetDeveloperModeOnStartup();
     savedState = await PreferencesService.loadState();
     voices = await PreferencesService.loadVoices();
     practices = await PreferencesService.loadPractices();
-    isDevMode = await PreferencesService.isDeveloperMode();
   } catch (e, stack) {
     debugPrint('[SetAndSit] Error loading preferences: $e\n$stack');
   }
@@ -38,11 +37,11 @@ void main() async {
     initialState: savedState,
     initialVoices: voices,
     initialPractices: practices,
-    initialDeveloperMode: isDevMode,
+    initialDeveloperMode: false,
   ));
 
   // Non-blocking initialization after runApp
-  AudioManifestService.initialize(developerMode: isDevMode).catchError((e) {
+  AudioManifestService.initialize(developerMode: false).catchError((e) {
     debugPrint('[SetAndSit] AudioManifestService error: $e');
   });
 }

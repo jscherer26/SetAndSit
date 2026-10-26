@@ -25,6 +25,14 @@ class PreferencesService {
     await prefs.setBool(_keyDeveloperMode, enabled);
   }
 
+  /// Ensures Developer Mode always starts as false on fresh application launch.
+  static Future<void> resetDeveloperModeOnStartup() async {
+    try {
+      final prefs = await getPrefs();
+      await prefs.setBool(_keyDeveloperMode, false);
+    } catch (_) {}
+  }
+
   /// Visible for testing to reset cached instance when mock values change
   @visibleForTesting
   static void resetCache() {
