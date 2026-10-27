@@ -103,20 +103,10 @@ void main() {
   group('1. Data-Driven Voice Model (VoiceConfig) & Persistence', () {
     test('Default stock voices initialize with exact attributes', () {
       final voices = VoiceConfig.defaultVoices;
-      expect(voices.length, 2);
-
-      // Kia
-      final kia = voices[0];
-      expect(kia.id, 'kia');
-      expect(kia.name, 'Kia');
-      expect(kia.description, 'Warm & Grounded');
-      expect(kia.gender, 'Male');
-      expect(kia.isSystem, isTrue);
-      expect(kia.isIncluded, isTrue);
-      expect(kia.assetFolder, 'assets/audio/voices/kia');
+      expect(voices.length, 1);
 
       // Grace
-      final grace = voices[1];
+      final grace = voices[0];
       expect(grace.id, 'grace');
       expect(grace.name, 'Grace');
       expect(grace.description, 'Soft & Centered');
@@ -152,16 +142,24 @@ void main() {
     test('PreferencesService saves and loads VoiceConfig list correctly', () async {
       final customVoices = [
         VoiceConfig.defaultVoices[0].copyWith(isIncluded: false),
-        VoiceConfig.defaultVoices[1],
+        const VoiceConfig(
+          id: 'custom_voice',
+          name: 'Custom Persona',
+          description: 'Serene & Gentle',
+          gender: 'Non-binary',
+          isSystem: false,
+          isIncluded: true,
+          assetFolder: 'assets/audio/voices/custom_voice',
+        ),
       ];
 
       await PreferencesService.saveVoices(customVoices);
       final loaded = await PreferencesService.loadVoices();
 
       expect(loaded.length, 2);
-      expect(loaded[0].id, 'kia');
+      expect(loaded[0].id, 'grace');
       expect(loaded[0].isIncluded, isFalse);
-      expect(loaded[1].id, 'grace');
+      expect(loaded[1].id, 'custom_voice');
       expect(loaded[1].isIncluded, isTrue);
     });
   });
@@ -188,8 +186,8 @@ void main() {
       // Screen title
       expect(find.text('Manage Voices'), findsOneWidget);
       expect(find.byType(VoiceStepperCard), findsOneWidget);
-      expect(find.text('Kia'), findsOneWidget);
-      expect(find.text('Warm & Grounded • Male'), findsOneWidget);
+      expect(find.text('Grace'), findsOneWidget);
+      expect(find.text('Soft & Centered • Female'), findsOneWidget);
 
       // Action Buttons Row: Add, Copy, Rename, Delete
       expect(find.text('Add'), findsOneWidget);
@@ -222,7 +220,7 @@ void main() {
       expect(find.textContaining('v01 •'), findsOneWidget);
       expect(find.text('Script Variant Text'), findsOneWidget);
       expect(
-        find.textContaining('Arriving into this space'),
+        find.textContaining('arriving into this space'),
         findsOneWidget,
       );
     });
@@ -234,17 +232,31 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
+      const secondVoice = VoiceConfig(
+        id: 'voice_two',
+        name: 'Second Voice',
+        description: 'Warm & Grounded',
+        gender: 'Non-binary',
+        isSystem: false,
+        isIncluded: true,
+        assetFolder: 'assets/audio/voices/voice_two',
+      );
+      final testVoices = [
+        VoiceConfig.defaultVoices.first,
+        secondVoice,
+      ];
+
       await tester.pumpWidget(
         MaterialApp(
           home: ManageVoicesScreen(
-            initialVoices: VoiceConfig.defaultVoices,
+            initialVoices: testVoices,
             onVoicesUpdated: (_) {},
           ),
         ),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Kia'), findsOneWidget);
+      expect(find.text('Grace'), findsOneWidget);
 
       // Tap next chevron in Voice Stepper
       final nextVoiceBtn = find.descendant(
@@ -254,8 +266,8 @@ void main() {
       await tester.tap(nextVoiceBtn);
       await tester.pumpAndSettle();
 
-      expect(find.text('Grace'), findsOneWidget);
-      expect(find.text('Soft & Centered • Female'), findsOneWidget);
+      expect(find.text('Second Voice'), findsOneWidget);
+      expect(find.text('Warm & Grounded • Non-binary'), findsOneWidget);
 
       // Tap previous chevron
       final prevVoiceBtn = find.descendant(
@@ -265,7 +277,7 @@ void main() {
       await tester.tap(prevVoiceBtn);
       await tester.pumpAndSettle();
 
-      expect(find.text('Kia'), findsOneWidget);
+      expect(find.text('Grace'), findsOneWidget);
     });
 
     testWidgets('Segment Stepper and Variant Stepper cycle through segments and variants',
@@ -347,11 +359,25 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
+      const secondVoice = VoiceConfig(
+        id: 'voice_two',
+        name: 'Second Voice',
+        description: 'Warm & Grounded',
+        gender: 'Male',
+        isSystem: false,
+        isIncluded: true,
+        assetFolder: 'assets/audio/voices/voice_two',
+      );
+      final testVoices = [
+        VoiceConfig.defaultVoices.first,
+        secondVoice,
+      ];
+
       await tester.pumpWidget(
         MaterialApp(
           home: ManageVoicesScreen(
             isDeveloperMode: true,
-            initialVoices: VoiceConfig.defaultVoices,
+            initialVoices: testVoices,
             onVoicesUpdated: (_) {},
           ),
         ),
@@ -371,6 +397,14 @@ void main() {
       await tester.tap(nextVoiceBtn);
       await tester.pump();
       expect(find.widgetWithText(ElevatedButton, 'Audition Voice'), findsOneWidget);
+
+      // Tap previous to switch back to Grace so audition has valid audio
+      final prevVoiceBtn = find.descendant(
+        of: find.byType(VoiceStepperCard),
+        matching: find.byIcon(Icons.chevron_left),
+      );
+      await tester.tap(prevVoiceBtn);
+      await tester.pump();
 
       // Start audition again
       await tester.tap(find.widgetWithText(ElevatedButton, 'Audition Voice'));
@@ -403,13 +437,27 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
+      const secondVoice = VoiceConfig(
+        id: 'voice_two',
+        name: 'Second Voice',
+        description: 'Warm & Grounded',
+        gender: 'Male',
+        isSystem: false,
+        isIncluded: true,
+        assetFolder: 'assets/audio/voices/voice_two',
+      );
+      final testVoices = [
+        VoiceConfig.defaultVoices.first,
+        secondVoice,
+      ];
+
       List<VoiceConfig>? updatedList;
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: ManageVoicesScreen(
-              initialVoices: VoiceConfig.defaultVoices,
+              initialVoices: testVoices,
               onVoicesUpdated: (u) => updatedList = u,
             ),
           ),
@@ -417,18 +465,19 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Current voice is Kia. Both Kia and Grace are included.
-      // Toggle Kia to false
+      // Current voice is Grace. Both Grace and secondVoice are included.
+      // Toggle Grace to false
       await tester.tap(find.byType(Switch));
       await tester.pumpAndSettle();
 
       expect(updatedList, isNotNull);
-      expect(updatedList!.firstWhere((v) => v.id == 'kia').isIncluded, isFalse);
-      expect(updatedList!.firstWhere((v) => v.id == 'grace').isIncluded, isTrue);
+      expect(updatedList!.firstWhere((v) => v.id == 'grace').isIncluded, isFalse);
+      expect(updatedList!.firstWhere((v) => v.id == 'voice_two').isIncluded, isTrue);
 
       final loaded = await PreferencesService.loadVoices();
-      expect(loaded.firstWhere((v) => v.id == 'kia').isIncluded, isFalse);
+      expect(loaded.firstWhere((v) => v.id == 'grace').isIncluded, isFalse);
     });
+
     testWidgets('Blocks toggling off last remaining active voice and shows SnackBar',
         (WidgetTester tester) async {
       tester.view.physicalSize = const Size(800, 1400);
@@ -436,10 +485,9 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      // Start with only 1 active voice (Kia included, Grace excluded)
+      // Start with only 1 active voice (Grace)
       final voices = [
         VoiceConfig.defaultVoices[0].copyWith(isIncluded: true),
-        VoiceConfig.defaultVoices[1].copyWith(isIncluded: false),
       ];
 
       List<VoiceConfig>? updatedList;
@@ -456,12 +504,12 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Current voice is Kia, which is active
-      expect(find.text('Kia'), findsOneWidget);
+      // Current voice is Grace, which is active
+      expect(find.text('Grace'), findsOneWidget);
       final switchFinder = find.byType(Switch);
       expect(switchFinder, findsOneWidget);
 
-      // Attempt to toggle off Kia (the only active voice)
+      // Attempt to toggle off Grace (the only active voice)
       await tester.tap(switchFinder);
       await tester.pumpAndSettle();
 
@@ -493,7 +541,7 @@ void main() {
         matching: find.byType(VoiceStepperCard),
       );
       expect(voiceFinder, findsOneWidget);
-      expect(find.text('Kia'), findsOneWidget);
+      expect(find.text('Grace'), findsOneWidget);
 
       // Tap voice icon - should NOT open ManageVoicesScreen
       final iconFinder = find.descendant(
@@ -507,7 +555,7 @@ void main() {
       // Tap directly on the Voice title - should NOT open ManageVoicesScreen
       await tester.tap(find.descendant(
         of: voiceFinder,
-        matching: find.text('Kia'),
+        matching: find.text('Grace'),
       ));
       await tester.pumpAndSettle();
       expect(find.text('Manage Voices'), findsNothing);
@@ -540,17 +588,26 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      // Mock preferences with Kia excluded and Grace included
+      // Mock preferences with custom voice excluded and Grace included
+      const customVoice = VoiceConfig(
+        id: 'voice_two',
+        name: 'Second Voice',
+        description: 'Warm & Grounded',
+        gender: 'Male',
+        isSystem: false,
+        isIncluded: false,
+        assetFolder: 'assets/audio/voices/voice_two',
+      );
       final voices = [
-        VoiceConfig.defaultVoices[0].copyWith(isIncluded: false),
-        VoiceConfig.defaultVoices[1].copyWith(isIncluded: true),
+        customVoice,
+        VoiceConfig.defaultVoices[0].copyWith(isIncluded: true),
       ];
       await PreferencesService.saveVoices(voices);
 
       await tester.pumpWidget(const SetAndSitApp());
       await tester.pumpAndSettle();
 
-      // Home Screen should display Grace because Kia is excluded
+      // Home Screen should display Grace because customVoice is excluded
       expect(find.text('Grace'), findsOneWidget);
 
       // Because only 1 voice is included, stepping chevrons should be disabled (onPrevious == null)

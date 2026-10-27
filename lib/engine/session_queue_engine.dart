@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import '../models/audio_models.dart';
 import '../models/practice_config.dart';
+import '../models/voice_config.dart';
 import '../services/audio_manifest_service.dart';
 
 class SessionQueueEngine {
@@ -177,7 +178,7 @@ class SessionQueueEngine {
     required int targetDurationSeconds,
     PracticeConfig? practice,
     ClinicalArchetype? archetype,
-    required String voicePersona, // 'kia' or 'grace'
+    required String voicePersona,
     required AudioSegment selectedBell,
   }) {
     final effectivePractice = practice ??
@@ -185,7 +186,10 @@ class SessionQueueEngine {
             ? PracticeConfig.fromArchetype(archetype)
             : PracticeConfig.defaultPractices.first);
 
-    final vNorm = voicePersona.toLowerCase() == 'grace' ? 'grace' : 'kia';
+    final trimmed = voicePersona.trim();
+    final vNorm = trimmed.isEmpty
+        ? (VoiceConfig.defaultVoices.isNotEmpty ? VoiceConfig.defaultVoices.first.id : 'grace')
+        : trimmed.toLowerCase();
     const s16OverlapDelaySec = 2.5;
 
     final sigPair = getProtectedSignaturePairForPractice(effectivePractice);

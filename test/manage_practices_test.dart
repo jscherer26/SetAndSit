@@ -152,7 +152,7 @@ void main() {
       final queue = SessionQueueEngine.generateGuidedSessionQueue(
         targetDurationSeconds: 600,
         practice: customPractice,
-        voicePersona: 'kia',
+        voicePersona: 'grace',
         selectedBell: bell,
       );
 

@@ -51,6 +51,7 @@ class PreferencesService {
   }
 
   /// Loads voices from local storage, returning defaults if not found.
+  /// Automatically purges any retired voices (e.g. legacy 'kia') and migrates storage.
   static Future<List<VoiceConfig>> loadVoices() async {
     final prefs = await getPrefs();
     final raw = prefs.getString(_keyVoices);
@@ -61,7 +62,19 @@ class PreferencesService {
       final list = jsonDecode(raw) as List<dynamic>;
       final voices = list
           .map((e) => VoiceConfig.fromJson(e as Map<String, dynamic>))
+          .where((v) => v.id.toLowerCase() != 'kia')
           .toList();
+
+      for (final def in VoiceConfig.defaultVoices) {
+        if (!voices.any((v) => v.id == def.id)) {
+          voices.insert(0, def);
+        }
+      }
+
+      if (voices.length != list.length) {
+        await saveVoices(voices);
+      }
+
       return voices.isNotEmpty ? voices : VoiceConfig.defaultVoices;
     } catch (_) {
       return VoiceConfig.defaultVoices;
@@ -111,7 +124,7 @@ class PreferencesService {
       await prefs.setString('pref_selected_bell_id', state.selectedBellId);
       await prefs.setString('pref_selected_practice_id', state.selectedPracticeId ?? 'focused_calm');
       await prefs.setString('pref_selected_practice_name', state.selectedPractice);
-      await prefs.setString('pref_selected_voice_id', state.selectedVoiceId ?? 'kia');
+      await prefs.setString('pref_selected_voice_id', state.selectedVoiceId ?? 'grace');
       await prefs.setInt('pref_selected_voice_idx', state.selectedVoiceIndex);
       await prefs.setInt('pref_clock_hour', state.targetClockTimeHour);
       await prefs.setInt('pref_clock_minute', state.targetClockTimeMinute);
@@ -132,7 +145,11 @@ class PreferencesService {
       final bellId = prefs.getString('pref_selected_bell_id') ?? 'bell_meditation';
       final practiceId = prefs.getString('pref_selected_practice_id') ?? 'focused_calm';
       final practiceName = prefs.getString('pref_selected_practice_name') ?? 'Focused Calm';
-      final voiceId = prefs.getString('pref_selected_voice_id') ?? 'kia';
+      var voiceId = prefs.getString('pref_selected_voice_id') ?? 'grace';
+      if (voiceId.toLowerCase() == 'kia') {
+        voiceId = 'grace';
+        await prefs.setString('pref_selected_voice_id', 'grace');
+      }
       final voiceIdx = prefs.getInt('pref_selected_voice_idx') ?? 0;
       final clockHour = prefs.getInt('pref_clock_hour') ?? 8;
       final clockMin = prefs.getInt('pref_clock_minute') ?? 20;
@@ -167,7 +184,7 @@ class PreferencesService {
         selectedPractice: 'Focused Calm',
         selectedPracticeId: 'focused_calm',
         selectedVoiceIndex: 0,
-        selectedVoiceId: 'kia',
+        selectedVoiceId: 'grace',
         targetClockTimeHour: 8,
         targetClockTimeMinute: 20,
         targetClockTimeIsAm: true,

@@ -48,26 +48,17 @@ class VoiceConfig {
       };
 
   factory VoiceConfig.fromJson(Map<String, dynamic> json) => VoiceConfig(
-        id: json['id'] as String? ?? 'kia',
-        name: json['name'] as String? ?? 'Kia',
-        description: json['description'] as String? ?? 'Warm & Grounded',
-        gender: json['gender'] as String? ?? 'Male',
+        id: json['id'] as String? ?? 'grace',
+        name: json['name'] as String? ?? 'Grace',
+        description: json['description'] as String? ?? 'Soft & Centered',
+        gender: json['gender'] as String? ?? 'Female',
         isSystem: json['isSystem'] as bool? ?? true,
         isIncluded: json['isIncluded'] as bool? ?? true,
         assetFolder: json['assetFolder'] as String? ??
-            'assets/audio/voices/${json['id'] ?? 'kia'}',
+            'assets/audio/voices/${json['id'] ?? 'grace'}',
       );
 
   static const List<VoiceConfig> defaultVoices = [
-    VoiceConfig(
-      id: 'kia',
-      name: 'Kia',
-      description: 'Warm & Grounded',
-      gender: 'Male',
-      isSystem: true,
-      isIncluded: true,
-      assetFolder: 'assets/audio/voices/kia',
-    ),
     VoiceConfig(
       id: 'grace',
       name: 'Grace',

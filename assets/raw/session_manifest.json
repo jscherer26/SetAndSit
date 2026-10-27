@@ -6,117 +6,117 @@
     "S01": [
       {
         "variant_id": "v01",
-        "variant_name": "1. Gentle Arrival",
+        "variant_name": "Gentle Arrival",
         "active": true,
-        "text": "Welcome.  Arriving into this space, and letting the weight of whatever came before begin to soften and settle.",
-        "word_count": 18
-      },
-      {
-        "variant_id": "v02",
-        "variant_name": "2. Present Unhurried Space",
-        "active": false,
-        "text": "Welcome [long pause] allowing yourself to step out of doing mode, and simply taking your place in this room.",
+        "text": "Welcome [pause] arriving into this space... and letting the weight of whatever came before begin to soften and settle.",
         "word_count": 19
       },
       {
-        "variant_id": "v03",
-        "variant_name": "3. Stepping into Quiet",
+        "variant_id": "v02",
+        "variant_name": "Leaving Doing Behind",
         "active": false,
-        "text": "Welcome [pause] giving yourself permission to pause, and recognizing that there is nowhere else you need to be right now.",
+        "text": "Welcome [pause] allowing yourself to shift out of doing mode... and simply taking your place in this space.",
+        "word_count": 18
+      },
+      {
+        "variant_id": "v03",
+        "variant_name": "Permission to Pause",
+        "active": false,
+        "text": "Welcome [pause] giving yourself permission to pause... and recognizing that there is nowhere else you need to be right now.",
         "word_count": 20
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Welcoming Stillness",
+        "variant_name": "Noticing Your Surroundings",
         "active": false,
-        "text": "Welcome... noticing the space around you, and letting the ambient sounds and temperature register gently without needing change.",
+        "text": "Welcome [pause] noticing the space around you... and letting ambient sensations and sounds register gently without needing change.",
         "word_count": 18
       },
       {
         "variant_id": "v05",
-        "variant_name": "5. Transitioning Inward",
+        "variant_name": "Entering Quiet",
         "active": false,
-        "text": "Welcome... landing here in this moment, and acknowledging the transition from activity into intentional quiet.",
-        "word_count": 15
+        "text": "Welcome [pause] landing here in this moment... and acknowledging the gentle transition from activity into intentional stillness.",
+        "word_count": 17
       },
       {
         "variant_id": "v06",
-        "variant_name": "6. Easing the Mind",
+        "variant_name": "Welcoming Your Present State",
         "active": false,
-        "text": "Welcome... taking a moment to arrive, sensing the space around you, and welcoming whatever state you bring in.",
-        "word_count": 18
+        "text": "Welcome [pause] taking a moment to arrive in this space... and welcoming whatever state is currently present.",
+        "word_count": 17
       },
       {
         "variant_id": "v07",
-        "variant_name": "7. Softening the Gaze",
+        "variant_name": "Supported by Your Setting",
         "active": false,
-        "text": "Welcome... settling into your physical setting, and letting your surroundings support you as you shift toward stillness.",
-        "word_count": 17
+        "text": "Welcome [pause] settling into your immediate surroundings... and letting this space support you as you shift toward stillness.",
+        "word_count": 18
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Finding Comfort",
+        "variant_name": "Pausing Daily Momentum",
         "active": false,
-        "text": "Welcome... pausing the momentum of the day, and allowing the body and mind to inhabit the present environment.",
-        "word_count": 18
+        "text": "Welcome [pause] pausing the momentum of your routine... and allowing the body and mind to inhabit the present environment.",
+        "word_count": 19
       },
       {
         "variant_id": "v09",
-        "variant_name": "9. Settling In",
+        "variant_name": "Welcoming the Pause",
         "active": false,
-        "text": "Welcome... welcoming this deliberate pause, and noticing the sounds in the distance fading softly into the background.",
-        "word_count": 17
-      },
-      {
-        "variant_id": "v10",
-        "variant_name": "10. Space to Unwind",
-        "active": false,
-        "text": "Welcome... acknowledging the threshold of practice, and arriving just as you are without any expectation to feel different.",
+        "text": "Welcome [pause] welcoming this deliberate pause... and noticing ambient sounds in the distance fading softly into the background.",
         "word_count": 18
       },
       {
-        "variant_id": "v11",
-        "variant_name": "11. Reclaiming Peace",
+        "variant_id": "v10",
+        "variant_name": "Arriving Without Expectations",
         "active": false,
-        "text": "Welcome... giving the nervous system a clear signal that the demands of the day can wait outside this space.",
+        "text": "Welcome [pause] acknowledging the threshold of practice... and arriving just as you are without any expectation to feel different.",
         "word_count": 19
+      },
+      {
+        "variant_id": "v11",
+        "variant_name": "Setting Demands Aside",
+        "active": false,
+        "text": "Welcome [pause] offering the nervous system a gentle signal... knowing that external demands can wait outside this space.",
+        "word_count": 18
       },
       {
         "variant_id": "v12",
-        "variant_name": "12. Arriving Home",
+        "variant_name": "Orienting to Your Surroundings",
         "active": false,
-        "text": "Welcome... orienting yourself to the room, and feeling the container of this space holding you safely in this pause.",
-        "word_count": 19
+        "text": "Welcome [pause] orienting yourself to your immediate surroundings... and sensing the quiet container of this intentional pause.",
+        "word_count": 17
       },
       {
         "variant_id": "v13",
-        "variant_name": "13. Softening Ambition",
+        "variant_name": "Slowing the Pace",
         "active": false,
-        "text": "Welcome... letting the pace of the day slow down, and meeting the quiet of this room with open curiosity.",
-        "word_count": 19
+        "text": "Welcome [pause] allowing your internal pace to slow down... and meeting this present space with open curiosity.",
+        "word_count": 17
       },
       {
         "variant_id": "v14",
-        "variant_name": "14. Mindful Pause",
+        "variant_name": "Crossing into Stillness",
         "active": false,
-        "text": "Welcome... stepping across the threshold of practice, and allowing physical stillness to initiate mental ease.",
-        "word_count": 15
+        "text": "Welcome [pause] crossing the threshold into practice... and inviting the body and mind to settle into this moment.",
+        "word_count": 18
       },
       {
         "variant_id": "v15",
-        "variant_name": "15. Quiet Presence",
+        "variant_name": "Acknowledging Your Arrival",
         "active": false,
-        "text": "Welcome... resting here at the start, and simply acknowledging that you have arrived right where you need to be.",
-        "word_count": 19
+        "text": "Welcome [pause] resting here at the start... and simply acknowledging that you have arrived in this present moment.",
+        "word_count": 18
       }
     ],
     "S02": [
       {
         "variant_id": "v01",
-        "variant_name": "1. Autonomy & Choice",
+        "variant_name": "Easeful Alignment",
         "active": true,
-        "text": "And here, inviting the spine to find a comfortable, easeful alignment... allowing the shoulders to drop away from the ears.",
-        "word_count": 20
+        "text": "And here, inviting the body to find a comfortable, supported alignment... allowing the shoulders to soften and release.",
+        "word_count": 18
       },
       {
         "variant_id": "v02",
@@ -134,10 +134,10 @@
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Honoring Your Body",
+        "variant_name": "Supported Body Alignment",
         "active": false,
-        "text": "And here, allowing the hands to rest wherever they feel supported... feeling the natural line of the spine finding its own center.",
-        "word_count": 22
+        "text": "And here, allowing the body to rest however it feels most supported... sensing your posture finding its own natural center.",
+        "word_count": 20
       },
       {
         "variant_id": "v05",
@@ -162,9 +162,9 @@
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Zero Obligation",
+        "variant_name": "Softening the Torso",
         "active": false,
-        "text": "And here, allowing the collarbones to broaden softly... opening the chest while keeping the belly relaxed and free.",
+        "text": "And here, inviting the front of the torso to soften... allowing the chest and belly to rest unforced.",
         "word_count": 18
       },
       {
@@ -190,10 +190,10 @@
       },
       {
         "variant_id": "v12",
-        "variant_name": "12. Trusting Boundaries",
+        "variant_name": "Resting into Support",
         "active": false,
-        "text": "And here, allowing the arms to rest heavy from the shoulders... hands settling comfortably wherever they naturally land.",
-        "word_count": 18
+        "text": "And here, allowing the upper body to rest heavily into support... settling comfortably into whatever position feels most natural.",
+        "word_count": 19
       },
       {
         "variant_id": "v13",
@@ -204,10 +204,10 @@
       },
       {
         "variant_id": "v14",
-        "variant_name": "14. Personal Pace",
+        "variant_name": "Inhabiting Your Body Kindly",
         "active": false,
-        "text": "And here, inhabiting the shape of your body with kindness... neither collapsing into tension nor straining to hold yourself up.",
-        "word_count": 20
+        "text": "And here, inhabiting the shape of your body with kindness... releasing unnecessary effort while resting into steady support.",
+        "word_count": 18
       },
       {
         "variant_id": "v15",
@@ -234,17 +234,17 @@
       },
       {
         "variant_id": "v03",
-        "variant_name": "3. Effortless Breathing",
+        "variant_name": "Effortless Exhalation",
         "active": false,
-        "text": "Naturally, inviting a slow, effortless exhalation... letting the out-breath carry away residual tension from the day.",
-        "word_count": 16
+        "text": "Naturally, noticing the rhythm of each exhalation... letting the out-breath soften any residual tension in the body.",
+        "word_count": 17
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Cool Air & Warm Air",
+        "variant_name": "Cool and Warm Air",
         "active": false,
-        "text": "Naturally, observing the cool sensation at the nostrils as you breathe in... and the gentle warmth as you breathe out.",
-        "word_count": 20
+        "text": "Naturally, observing the subtle coolness as air enters the body... and the gentle warmth as the breath releases.",
+        "word_count": 18
       },
       {
         "variant_id": "v05",
@@ -327,17 +327,17 @@
     "S04": [
       {
         "variant_id": "v01",
-        "variant_name": "1. Contact Points",
+        "variant_name": "Releasing into Support",
         "active": true,
-        "text": "Deepening here, sensing the firmness beneath you... realizing there is no need to hold yourself up right now, and letting go.",
-        "word_count": 21
+        "text": "Deepening here, sensing the firmness of the surface beneath you... realizing there is no need to brace or hold tension.",
+        "word_count": 20
       },
       {
         "variant_id": "v02",
-        "variant_name": "2. Dependable Surface",
+        "variant_name": "Feeling Support Below",
         "active": false,
-        "text": "Deepening here, feeling the points where your feet or legs meet the surface below... letting the earth take the full weight of your body.",
-        "word_count": 24
+        "text": "Deepening here, feeling the points where your body meets the surface below... letting that support take your full weight.",
+        "word_count": 19
       },
       {
         "variant_id": "v03",
@@ -348,23 +348,23 @@
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Gravity Holding",
+        "variant_name": "Tactile Warmth and Presence",
         "active": false,
-        "text": "Deepening here, noticing where your palms meet fabric or skin... feeling the gentle warmth and presence in your hands.",
+        "text": "Deepening here, noticing where your body meets fabric or air... sensing the gentle warmth and tactile presence right here.",
         "word_count": 19
       },
       {
         "variant_id": "v05",
-        "variant_name": "5. Solid Foundation",
+        "variant_name": "Trusting Your Foundation",
         "active": false,
-        "text": "Deepening here, resting in the physical base of your posture... trusting that the ground beneath you is unwavering and stable.",
+        "text": "Deepening here, resting in the physical base of your position... trusting that the support beneath you is steady and stable.",
         "word_count": 20
       },
       {
         "variant_id": "v06",
-        "variant_name": "6. Soles & Spine",
+        "variant_name": "Softening into Support",
         "active": false,
-        "text": "Deepening here, tracing sensations across the lower back and hips... inviting the muscles to melt into the support below.",
+        "text": "Deepening here, tracing sensations across the points of physical contact... inviting the muscles to soften into the support below.",
         "word_count": 19
       },
       {
@@ -376,10 +376,10 @@
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Texture & Air",
+        "variant_name": "Grounding Restlessness",
         "active": false,
-        "text": "Deepening here, sensing the solid foundation beneath your body... allowing any restlessness to drain downward into the earth.",
-        "word_count": 18
+        "text": "Deepening here, sensing the solid foundation beneath your body... allowing any restlessness to settle downward into the support below.",
+        "word_count": 19
       },
       {
         "variant_id": "v09",
@@ -390,17 +390,17 @@
       },
       {
         "variant_id": "v10",
-        "variant_name": "10. Sinking Deeper",
+        "variant_name": "Feeling Safely Held",
         "active": false,
-        "text": "Deepening here, feeling the stability of the ground beneath you... letting this physical contact remind you that you are safely held.",
-        "word_count": 21
+        "text": "Deepening here, feeling the stability of the surface beneath you... letting this tangible contact offer a sense of steady support.",
+        "word_count": 20
       },
       {
         "variant_id": "v11",
-        "variant_name": "11. Skin & Boundary",
+        "variant_name": "Pressure and Texture",
         "active": false,
-        "text": "Deepening here, observing the pressure and texture beneath your legs and torso... letting each contact point deepen your sense of arrival.",
-        "word_count": 21
+        "text": "Deepening here, observing the pressure and texture of the surface beneath you... letting each contact point deepen your arrival.",
+        "word_count": 19
       },
       {
         "variant_id": "v12",
@@ -441,10 +441,10 @@
       },
       {
         "variant_id": "v02",
-        "variant_name": "2. 3 Tactile Details",
+        "variant_name": "Remembering Your Choices",
         "active": false,
-        "text": "And gently, reminding yourself that you are in complete control... knowing you may open your eyes or adjust your posture whenever you choose.",
-        "word_count": 23
+        "text": "And gently, reminding yourself that you are in complete control... knowing you may adjust your posture whenever you choose.",
+        "word_count": 19
       },
       {
         "variant_id": "v03",
@@ -462,10 +462,10 @@
       },
       {
         "variant_id": "v05",
-        "variant_name": "5. Orienting Outward",
+        "variant_name": "Radiating Inner Ease",
         "active": false,
-        "text": "And gently, resting your inner gaze on a place of ease... allowing that quiet calm to radiate outward through the body.",
-        "word_count": 21
+        "text": "And gently, resting your attention on a place of ease... inviting that quiet steadiness to spread softly through the body.",
+        "word_count": 20
       },
       {
         "variant_id": "v06",
@@ -483,10 +483,10 @@
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Sensory Receptors",
+        "variant_name": "Inward Presence as Refuge",
         "active": false,
-        "text": "And gently, cultivating a refuge within your own breathing... a reliable harbor where you can always return to rest.",
-        "word_count": 19
+        "text": "And gently, cultivating an inward refuge within your own presence... a reliable harbor where attention can always return to rest.",
+        "word_count": 20
       },
       {
         "variant_id": "v09",
@@ -525,16 +525,16 @@
       },
       {
         "variant_id": "v14",
-        "variant_name": "14. Spatial Presence",
+        "variant_name": "Keeping a Resource Accessible",
         "active": false,
-        "text": "And gently, keeping an internal resource accessible... an anchor of neutrality in the hands, feet, or breath that you can return to at any time.",
-        "word_count": 25
+        "text": "And gently, keeping an internal resource accessible... a neutral point of contact or sound you can return to anytime.",
+        "word_count": 19
       },
       {
         "variant_id": "v15",
-        "variant_name": "15. Outer World Anchor",
+        "variant_name": "Allowing Natural Experience",
         "active": false,
-        "text": "And gently, establishing your foundation of comfort... reminding yourself that peace is never forced, but discovered right here.",
+        "text": "And gently, establishing your foundation of comfort... allowing your experience to unfold naturally without forcing any particular state.",
         "word_count": 18
       }
     ],
@@ -562,16 +562,16 @@
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Diaphragmatic Expansion",
+        "variant_name": "Finding an Accessible Focus",
         "active": false,
-        "text": "Steadily, selecting an anchor that feels most accessible today... placing your attention there with effortless lightness.",
-        "word_count": 16
+        "text": "Steadily, selecting an anchor that feels most accessible right now... placing your attention there with an effortless lightness.",
+        "word_count": 18
       },
       {
         "variant_id": "v05",
-        "variant_name": "5. Calming Breath Pacing",
+        "variant_name": "Breath Entry Sensations",
         "active": false,
-        "text": "Steadily, anchoring attention right at the threshold of the nostrils... observing the subtle sensations that accompany each breath.",
+        "text": "Steadily, anchoring attention where the breath enters and leaves the body... observing the subtle sensations of each cycle.",
         "word_count": 18
       },
       {
@@ -797,10 +797,10 @@
       },
       {
         "variant_id": "v07",
-        "variant_name": "7. Zero Frustration",
+        "variant_name": "Releasing Passing Thoughts",
         "active": false,
-        "text": "Whenever needed, letting go of a passing thought like a leaf on moving water... watching it drift away as you rejoin your anchor.",
-        "word_count": 23
+        "text": "Whenever needed, releasing a passing thought without holding on... letting it dissolve naturally as you rejoin your chosen anchor.",
+        "word_count": 19
       },
       {
         "variant_id": "v08",
@@ -846,10 +846,10 @@
       },
       {
         "variant_id": "v14",
-        "variant_name": "14. Gentle Precision",
+        "variant_name": "Allowing Thoughts to Pass",
         "active": false,
-        "text": "Whenever needed, releasing the urge to solve or manage your thoughts... letting them pass like weather across an open sky.",
-        "word_count": 20
+        "text": "Whenever needed, releasing the urge to solve or manage your thoughts... letting them move through awareness without resistance.",
+        "word_count": 18
       },
       {
         "variant_id": "v15",
@@ -876,10 +876,10 @@
       },
       {
         "variant_id": "v03",
-        "variant_name": "3. Open Sky Mind",
+        "variant_name": "Flow of Experience",
         "active": false,
-        "text": "Spaciously, watching thoughts and sensations arise and pass... letting them move like ripples across the surface of a deep, quiet ocean.",
-        "word_count": 21
+        "text": "Spaciously, noticing thoughts and sensations arise and pass... letting them move effortlessly through a wide, quiet field of awareness.",
+        "word_count": 19
       },
       {
         "variant_id": "v04",
@@ -904,9 +904,9 @@
       },
       {
         "variant_id": "v07",
-        "variant_name": "7. Spacious Awareness",
+        "variant_name": "Thoughts Passing Through",
         "active": false,
-        "text": "Spaciously, observing fleeting mental stories come and go... resting as the open sky through which the clouds effortlessly pass.",
+        "text": "Spaciously, observing fleeting mental stories come and go... resting as the open awareness through which all experiences effortlessly pass.",
         "word_count": 19
       },
       {
@@ -932,9 +932,9 @@
       },
       {
         "variant_id": "v11",
-        "variant_name": "11. Ocean & Waves",
+        "variant_name": "Awareness Without Edges",
         "active": false,
-        "text": "Spaciously, expanding your perspective across the entire room... sensing an open awareness that needs no center and no edge.",
+        "text": "Spaciously, expanding your perspective across this entire space... sensing an open awareness that needs no center and no edge.",
         "word_count": 19
       },
       {
@@ -960,10 +960,10 @@
       },
       {
         "variant_id": "v15",
-        "variant_name": "15. Spacious Mind",
+        "variant_name": "Panoramic Awareness",
         "active": false,
-        "text": "Spaciously, abiding as panoramic awareness itself... knowing yourself as the vast expanse rather than the passing weather.",
-        "word_count": 17
+        "text": "Spaciously, abiding as panoramic awareness itself... resting as the open expanse rather than the passing stream of thought.",
+        "word_count": 18
       }
     ],
     "S10": [
@@ -990,10 +990,10 @@
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Whisper Label",
+        "variant_name": "A Silent Wish of Peace",
         "active": false,
-        "text": "With warmth, bringing someone you care about into the mind's eye... sending them a silent wish of peace, health, and ease.",
-        "word_count": 21
+        "text": "With warmth, holding a quiet sense of goodwill in awareness... allowing a silent wish of peace and ease to unfold.",
+        "word_count": 20
       },
       {
         "variant_id": "v05",
@@ -1018,16 +1018,16 @@
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Noting Distractions",
+        "variant_name": "Expanding the Goodwill Circle",
         "active": false,
-        "text": "With warmth, extending this circle of goodwill outward... including friends, loved ones, and all those who share your community.",
+        "text": "With warmth, allowing this circle of goodwill to widen outward... extending a quiet wish of ease beyond this space.",
         "word_count": 19
       },
       {
         "variant_id": "v09",
-        "variant_name": "9. Somatic Feeling of Emotion",
+        "variant_name": "Unconditional Self-Care",
         "active": false,
-        "text": "With warmth, holding your own challenges with patient tenderness... greeting yourself as you would a dear, cherished friend.",
+        "text": "With warmth, holding your present experience with patient tenderness... meeting yourself with unconditional care, respect, and gentle understanding.",
         "word_count": 18
       },
       {
@@ -1118,10 +1118,10 @@
       },
       {
         "variant_id": "v07",
-        "variant_name": "7. Gentle Wishes",
+        "variant_name": "Turning Toward Awareness",
         "active": false,
-        "text": "With curiosity, looking gently toward the observer of experience... noticing how awareness itself remains open, clear, and unburdened.",
-        "word_count": 18
+        "text": "With curiosity, turning attention gently toward the observer of experience... noticing how awareness itself remains open, clear, and unburdened.",
+        "word_count": 19
       },
       {
         "variant_id": "v08",
@@ -1132,9 +1132,9 @@
       },
       {
         "variant_id": "v09",
-        "variant_name": "9. Heart Breathing",
+        "variant_name": "Sensing Thoughts Dissolve",
         "active": false,
-        "text": "With curiosity, witnessing the exact moment a thought dissolves... watching it fade completely back into open stillness.",
+        "text": "With curiosity, witnessing the exact moment a thought dissolves... sensing it fade completely back into open stillness.",
         "word_count": 17
       },
       {
@@ -1153,16 +1153,16 @@
       },
       {
         "variant_id": "v12",
-        "variant_name": "12. Shared Humanity",
+        "variant_name": "Mental Chatter as Background",
         "active": false,
-        "text": "With curiosity, treating mental chatter like wind moving through leaves... interesting to notice, yet requiring no action or reply.",
-        "word_count": 19
+        "text": "With curiosity, treating mental chatter like distant background sound... interesting to notice, yet requiring no action or reply.",
+        "word_count": 18
       },
       {
         "variant_id": "v13",
-        "variant_name": "13. Soft Radiance",
+        "variant_name": "Changing Opinions and Doubts",
         "active": false,
-        "text": "With curiosity, observing the changing nature of opinions and doubts... watching them take shape, shift, and quietly fade away.",
+        "text": "With curiosity, observing the changing nature of opinions and doubts... noticing them take shape, shift, and quietly fade away.",
         "word_count": 19
       },
       {
@@ -1183,108 +1183,108 @@
     "S12": [
       {
         "variant_id": "v01",
-        "variant_name": "1. Silent Integration Window",
+        "variant_name": "Deep Somatic Stillness",
         "active": true,
-        "text": "As you picture yourself resting beside a clear mountain lake... allowing the stillness of the water to foster a deep, restorative calm.",
-        "word_count": 22
+        "text": "As a sense of quiet stillness settles through your awareness... allowing that calm depth to invite a restorative ease.",
+        "word_count": 19
       },
       {
         "variant_id": "v02",
-        "variant_name": "2. Deep Stillness",
+        "variant_name": "Soothing Somatic Warmth",
         "active": false,
-        "text": "As warm sunlight rests gently across your face and shoulders... feeling that soothing warmth melt away lingering tension.",
+        "text": "As a gentle sensation of warmth rests across your shoulders... feeling that soothing comfort soften any lingering tension.",
         "word_count": 18
       },
       {
         "variant_id": "v03",
-        "variant_name": "3. Pure Silence Window",
+        "variant_name": "Anchored Stability",
         "active": false,
-        "text": "As you imagine steady roots extending downward into the cool, quiet earth... drawing up a felt sense of unwavering stability.",
-        "word_count": 20
+        "text": "As your awareness settles deeply into the support beneath you... drawing upon a felt sense of unwavering physical stability.",
+        "word_count": 19
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Extended Quiet Space",
+        "variant_name": "A Wave of Relaxation",
         "active": false,
-        "text": "As a soft, calming light washes gently from the crown of the head down to the feet... inviting every muscle to soften and restore.",
-        "word_count": 24
+        "text": "As a gentle wave of ease travels slowly down through the body... inviting every area of tension to soften.",
+        "word_count": 19
       },
       {
         "variant_id": "v05",
-        "variant_name": "5. Peaceful Stillness",
+        "variant_name": "Sheltered Stillness",
         "active": false,
-        "text": "As you picture resting beneath a quiet forest canopy... sensing the cool shade and earthy stillness sheltering you from all hurry.",
-        "word_count": 21
+        "text": "As you rest within the quiet shelter of this space... sensing a cool, grounded stillness buffering you from hurry.",
+        "word_count": 19
       },
       {
         "variant_id": "v06",
-        "variant_name": "6. Total Stillness",
+        "variant_name": "Rhythmic Ebb and Flow",
         "active": false,
-        "text": "As gentle ocean waves roll rhythmically onto a quiet shore... letting the steady ebb and flow mirror the ease of your breath.",
-        "word_count": 22
+        "text": "As a steady, rhythmic ebb and flow moves through your body... letting that natural cadence mirror your unforced breath.",
+        "word_count": 19
       },
       {
         "variant_id": "v07",
-        "variant_name": "7. Unbroken Calm",
+        "variant_name": "Unhurried Expanse",
         "active": false,
-        "text": "As you gaze up into a vast, peaceful twilight sky... sensing your quiet, supported place within a wide and unhurried expanse.",
-        "word_count": 21
+        "text": "As your awareness opens into a vast, unhurried expanse... sensing your quiet, supported place within this wide stillness.",
+        "word_count": 18
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Natural Assimilation",
+        "variant_name": "Centered Inner Warmth",
         "active": false,
-        "text": "As a warm golden glow settles softly at the center of the chest and belly... feeling an inner hearth of steady, tranquil ease.",
-        "word_count": 23
+        "text": "As a comforting warmth settles softly at the center of the torso... feeling an inner core of steady ease.",
+        "word_count": 19
       },
       {
         "variant_id": "v09",
-        "variant_name": "9. Effortless Peace",
+        "variant_name": "Comforting Stillness",
         "active": false,
-        "text": "As you imagine resting near the gentle warmth of glowing evening embers... settling into the timeless comfort of quiet reflection.",
-        "word_count": 20
+        "text": "As you rest within a gentle, radiating sense of warmth... settling into the timeless comfort of quiet reflection.",
+        "word_count": 18
       },
       {
         "variant_id": "v10",
-        "variant_name": "10. Pure Open Space",
+        "variant_name": "Clearing Mental Fatigue",
         "active": false,
-        "text": "As clear stream water glides smoothly over rounded stones... imagining mental fatigue being gently rinsed away into clarity.",
+        "text": "As a smooth, refreshing current of ease moves through awareness... allowing mental fatigue to dissolve gently into clarity.",
         "word_count": 18
       },
       {
         "variant_id": "v11",
-        "variant_name": "11. Somatic Settling",
+        "variant_name": "Spacious Inner Renewal",
         "active": false,
-        "text": "As cool morning light spreads softly across an open meadow... feeling refreshed, settled, and quietly renewed from within.",
-        "word_count": 18
+        "text": "As a cool, spacious clarity spreads softly through your awareness... inviting a felt sense of quiet renewal from within.",
+        "word_count": 19
       },
       {
         "variant_id": "v12",
-        "variant_name": "12. Restful Void",
+        "variant_name": "Calm Inner Sanctuary",
         "active": false,
-        "text": "As you picture a sheltered garden filled with quiet light and soft air... resting inside this calm sanctuary at your own pace.",
-        "word_count": 22
-      },
-      {
-        "variant_id": "v13",
-        "variant_name": "13. Open Horizon",
-        "active": false,
-        "text": "As a soft canopy of gentle light surrounds your body... buffering you from external demands and letting you rest unburdened.",
+        "text": "As you sense a sheltered space of quiet and soft air... resting inside this calm sanctuary at your own pace.",
         "word_count": 20
       },
       {
-        "variant_id": "v14",
-        "variant_name": "14. Gentle Interval",
+        "variant_id": "v13",
+        "variant_name": "A Cushion of Quiet",
         "active": false,
-        "text": "As dawn breaks slowly across a still horizon... letting soft hues of amber and rose fill your awareness with quiet steadiness.",
-        "word_count": 21
+        "text": "As a soft boundary of quiet surrounds your body... buffering you from external demands and letting you rest unburdened.",
+        "word_count": 19
+      },
+      {
+        "variant_id": "v14",
+        "variant_name": "Steady Emerging Clarity",
+        "active": false,
+        "text": "As a gentle sense of openness expands across your awareness... letting a soft, steady clarity fill this present moment.",
+        "word_count": 19
       },
       {
         "variant_id": "v15",
-        "variant_name": "15. Final Integration Pause",
+        "variant_name": "A Wave of Warmth",
         "active": false,
-        "text": "As a wave of soothing warmth drifts slowly from your shoulders down to your hands and feet... letting that peaceful resonance settle deeply into the body.",
-        "word_count": 26
+        "text": "As a wave of soothing warmth drifts slowly through your entire frame... letting that gentle resonance settle into the body.",
+        "word_count": 20
       }
     ],
     "S13": [
@@ -1397,17 +1397,17 @@
     "S14": [
       {
         "variant_id": "v01",
-        "variant_name": "1. Self-Gratitude",
+        "variant_name": "Presence in Conversation",
         "active": true,
-        "text": "And from here, considering how you might bring this same patient presence into your conversations and interactions later today.",
-        "word_count": 19
+        "text": "And from here, considering how you might bring this same patient presence into your next conversations and interactions.",
+        "word_count": 18
       },
       {
         "variant_id": "v02",
-        "variant_name": "2. Three Blessings",
+        "variant_name": "Steadiness Travels with You",
         "active": false,
-        "text": "And from here, noticing that the steadiness you touched in this practice is not confined to this room... it travels with you wherever you go.",
-        "word_count": 25
+        "text": "And from here, noticing that the steadiness cultivated in this practice is not confined here... it travels with you.",
+        "word_count": 19
       },
       {
         "variant_id": "v03",
@@ -1418,23 +1418,23 @@
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Practice Appreciation",
+        "variant_name": "Listening and Connection",
         "active": false,
-        "text": "And from here, recognizing how this quiet quality of listening can enrich your connection with the people around you.",
+        "text": "And from here, recognizing how this quiet quality of listening can enrich your connection with the world around you.",
         "word_count": 19
       },
       {
         "variant_id": "v05",
-        "variant_name": "5. Simple Comforts",
+        "variant_name": "An Accessible Daily Anchor",
         "active": false,
-        "text": "And from here, remembering that whenever the day feels hurried... this steady breath and grounded body remain accessible at any moment.",
-        "word_count": 21
+        "text": "And from here, remembering that whenever life feels hurried... this steady breath and grounded body remain accessible at any moment.",
+        "word_count": 20
       },
       {
         "variant_id": "v06",
-        "variant_name": "6. Mindful Respect",
+        "variant_name": "Patience in the Next Steps",
         "active": false,
-        "text": "And from here, intending to move through the hours ahead with dignity, patience, and non-judgmental presence.",
+        "text": "And from here, intending to move into what comes next with dignity, patience, and non-judgmental presence.",
         "word_count": 16
       },
       {
@@ -1446,9 +1446,9 @@
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Heart Gratitude",
+        "variant_name": "Meeting Challenges Spaciously",
         "active": false,
-        "text": "And from here, holding the intention to meet challenges today not with bracing, but with spacious awareness.",
+        "text": "And from here, holding the intention to meet any challenges not with bracing, but with spacious awareness.",
         "word_count": 17
       },
       {
@@ -1460,38 +1460,38 @@
       },
       {
         "variant_id": "v10",
-        "variant_name": "10. Self-Care Honor",
+        "variant_name": "The Ripple of Mindful Pauses",
         "active": false,
-        "text": "And from here, recognizing that each mindful pause you take ripples outward into the spaces you share with others.",
-        "word_count": 19
+        "text": "And from here, recognizing that each mindful pause you take ripples outward into every space you inhabit.",
+        "word_count": 17
       },
       {
         "variant_id": "v11",
-        "variant_name": "11. Gratitude Wave",
+        "variant_name": "Embodied Task Awareness",
         "active": false,
-        "text": "And from here, anchoring an intention to stay connected to your body while navigating the pace of daily tasks.",
-        "word_count": 19
+        "text": "And from here, anchoring an intention to stay connected to your body while navigating your upcoming tasks.",
+        "word_count": 17
       },
       {
         "variant_id": "v12",
-        "variant_name": "12. Life Gift",
+        "variant_name": "Warmth in Your Next Activity",
         "active": false,
-        "text": "And from here, carrying this quiet, compassionate warmth into the very next room and activity you enter.",
+        "text": "And from here, carrying this quiet, compassionate warmth into the very next space and activity you enter.",
         "word_count": 17
       },
       {
         "variant_id": "v13",
-        "variant_name": "13. Inner Wealth",
+        "variant_name": "A Foundation for Daily Life",
         "active": false,
-        "text": "And from here, realizing that practice is not an escape from daily life... it is a steady foundation for meeting life wholeheartedly.",
-        "word_count": 22
+        "text": "And from here, realizing that practice is not an escape from life... it is a steady foundation for living wholeheartedly.",
+        "word_count": 20
       },
       {
         "variant_id": "v14",
-        "variant_name": "14. Grateful Release",
+        "variant_name": "Carrying an Inner Refuge",
         "active": false,
-        "text": "And from here, trusting that you have cultivated an internal refuge that will quietly support you throughout the day.",
-        "word_count": 19
+        "text": "And from here, trusting that you have cultivated an internal refuge... that can quietly support you as you move forward.",
+        "word_count": 20
       },
       {
         "variant_id": "v15",
@@ -1504,138 +1504,138 @@
     "S15": [
       {
         "variant_id": "v01",
-        "variant_name": "1. Visual Orientation",
+        "variant_name": "A Gentle Energy Return",
         "active": true,
-        "text": "Gradually, beginning to deepen your breath... inviting a gentle return of physical energy and allowing your eyes to softly open when ready.",
-        "word_count": 22
+        "text": "Gradually, noticing the natural rhythm of your breath... inviting a gentle return of physical energy as you reorient outward.",
+        "word_count": 19
       },
       {
         "variant_id": "v02",
-        "variant_name": "2. Soft Gaze Return",
+        "variant_name": "Widening Outward Awareness",
         "active": false,
-        "text": "Gradually, inviting subtle movement into the fingers and toes... waking the extremities and letting your gaze return softly to the room.",
-        "word_count": 21
+        "text": "Gradually, inviting a gentle return of physical energy... letting your awareness widen outward into your immediate surroundings.",
+        "word_count": 17
       },
       {
         "variant_id": "v03",
-        "variant_name": "3. Environment Welcome",
+        "variant_name": "Gentle Movement and Mobility",
         "active": false,
-        "text": "Gradually, rolling the shoulders softly and taking a fuller breath... letting physical mobility and visual awareness return at your own pace.",
-        "word_count": 21
+        "text": "Gradually, inviting any gentle movement your body welcomes... letting physical mobility and outward awareness return at its own pace.",
+        "word_count": 19
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Light Reception",
+        "variant_name": "Reorienting to Sound and Sensation",
         "active": false,
-        "text": "Gradually, bringing attention back to the sounds and light in the room... wiggling the fingers and toes as you reorient to your surroundings.",
-        "word_count": 23
+        "text": "Gradually, bringing attention back to the sounds and sensations of this space... inviting small movements as you reorient outwards.",
+        "word_count": 19
       },
       {
         "variant_id": "v05",
-        "variant_name": "5. Space Integration",
+        "variant_name": "A Refreshing In-Breath",
         "active": false,
-        "text": "Gradually, taking a slightly fuller, refreshing in-breath... feeling the chest expand with clear energy and letting the eyes gently open.",
-        "word_count": 20
+        "text": "Gradually, welcoming a refreshing sense of energy with your next breath... returning your full attention to your immediate surroundings.",
+        "word_count": 19
       },
       {
         "variant_id": "v06",
-        "variant_name": "6. Soft Eye Opening",
+        "variant_name": "Gentle Movement and Return",
         "active": false,
-        "text": "Gradually, inviting gentle movement into the hands, feet, or neck... easing out of stillness and welcoming the room back into view.",
-        "word_count": 21
+        "text": "Gradually, inviting gentle movement wherever your body welcomes it... easing out of stillness and re-engaging with your immediate environment.",
+        "word_count": 19
       },
       {
         "variant_id": "v07",
-        "variant_name": "7. Re-engaging Light",
+        "variant_name": "Skin Awareness and Stretching",
         "active": false,
-        "text": "Gradually, noticing the sensation of air against your skin and the weight of your body... stretching gently and blinking the eyes open whenever you choose.",
-        "word_count": 25
+        "text": "Gradually, noticing the air against your skin and the support beneath you... shifting gently and returning to your surroundings.",
+        "word_count": 19
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Outer World Return",
+        "variant_name": "Honoring the Body on Return",
         "active": false,
-        "text": "Gradually, allowing a fuller breath or a gentle stretch of the arms... honoring what the body asks for as you open your eyes to the space.",
-        "word_count": 26
+        "text": "Gradually, welcoming any gentle stretch or shift in posture... honoring what the body asks for as you reorient outwards.",
+        "word_count": 19
       },
       {
         "variant_id": "v09",
-        "variant_name": "9. Grounding Visuals",
+        "variant_name": "Waking with Steadiness",
         "active": false,
-        "text": "Gradually, waking the body with small movements in the hands and feet... blinking the eyes open slowly while keeping your inner calm intact.",
-        "word_count": 23
+        "text": "Gradually, waking the body with small, comfortable movements... reconnecting with your surroundings slowly while keeping your inner steadiness intact.",
+        "word_count": 19
       },
       {
         "variant_id": "v10",
-        "variant_name": "10. Fresh Vision",
+        "variant_name": "Clear Outward Presence",
         "active": false,
-        "text": "Gradually, deepening the breath and shifting your posture gently... reconnecting with the room around you with a clear, steady gaze.",
-        "word_count": 20
+        "text": "Gradually, shifting your posture gently as you feel ready... reconnecting with the space around you with clear, steady presence.",
+        "word_count": 19
       },
       {
         "variant_id": "v11",
-        "variant_name": "11. Eyelid Flutter",
+        "variant_name": "From Stillness to Surroundings",
         "active": false,
-        "text": "Gradually, feeling the physical support beneath you as you wiggle fingers and toes... transitioning smoothly from inward stillness to outward awareness.",
-        "word_count": 21
+        "text": "Gradually, feeling the physical support beneath you as gentle movement returns... transitioning smoothly from inward stillness to outward awareness.",
+        "word_count": 19
       },
       {
         "variant_id": "v12",
-        "variant_name": "12. Room Horizon",
+        "variant_name": "An Unhurried Reawakening",
         "active": false,
-        "text": "Gradually, giving yourself a moment to stretch, breathe deeply, and let light back into the eyes... reorienting without any rush.",
-        "word_count": 20
+        "text": "Gradually, giving yourself a moment to shift, adjust, and sense the space around you... reorienting without any rush.",
+        "word_count": 18
       },
       {
         "variant_id": "v13",
-        "variant_name": "13. Mindful Vision",
+        "variant_name": "Returning to Alertness",
         "active": false,
-        "text": "Gradually, breathing in vitality and gentle alertness... inviting small movements into the body and allowing your eyes to open to the room.",
-        "word_count": 22
+        "text": "Gradually, welcoming a sense of vitality and gentle alertness... inviting small movements as you reorient to this space.",
+        "word_count": 18
       },
       {
         "variant_id": "v14",
-        "variant_name": "14. Gentle Eye Unfurl",
+        "variant_name": "Gentle Motion and Clarity",
         "active": false,
-        "text": "Gradually, awakening the hands and feet with gentle motion... allowing your gaze to soften over the room with quiet clarity.",
+        "text": "Gradually, allowing your attention to expand back into your surroundings... inviting gentle motion and arriving back at your own pace.",
         "word_count": 20
       },
       {
         "variant_id": "v15",
-        "variant_name": "15. Outer Awareness",
+        "variant_name": "Refreshed and Present",
         "active": false,
-        "text": "Gradually, taking a fresh, energizing breath and inviting gentle movement back into the body... opening your eyes to the room, refreshed and present.",
-        "word_count": 23
+        "text": "Gradually, welcoming a fresh sense of energy and gentle movement... meeting your surroundings once more with grounded presence.",
+        "word_count": 18
       }
     ],
     "S16": [
       {
         "variant_id": "v01",
-        "variant_name": "1. Wisdom",
+        "variant_name": "Thanking Yourself",
         "active": true,
-        "text": "Thanking yourself for dedicating this time to your well-being... and honoring the quiet presence you have cultivated today.",
+        "text": "Thanking yourself for dedicating this time to your well-being... and honoring the quiet presence you have cultivated here.",
         "word_count": 18
       },
       {
         "variant_id": "v02",
-        "variant_name": "2. Transition ",
+        "variant_name": "Benefits Beyond the Session",
         "active": false,
-        "text": "Allowing the benefits of this practice to continue unfolding within you... supporting you and all those you meet along the way.",
-        "word_count": 21
+        "text": "Allowing the benefits of this practice to continue unfolding within you... supporting you as you move forward from here.",
+        "word_count": 19
       },
       {
         "variant_id": "v03",
-        "variant_name": "3. Session Concluded",
+        "variant_name": "Gratitude for Body and Breath",
         "active": false,
-        "text": "Closing this session with gratitude for your mind, your body, and your breath... and carrying this ease forward into your day.",
-        "word_count": 21
+        "text": "Closing this session with gratitude for your mind, your body, and your breath... carrying this ease forward with you.",
+        "word_count": 19
       },
       {
         "variant_id": "v04",
-        "variant_name": "4. Warm Farewell",
+        "variant_name": "Steadiness as a Companion",
         "active": false,
-        "text": "Acknowledging the care it takes to pause and sit with yourself... letting this inner steadiness remain a quiet companion today.",
-        "word_count": 20
+        "text": "Acknowledging the care it takes to pause and be with yourself... letting this inner steadiness remain a quiet companion.",
+        "word_count": 19
       },
       {
         "variant_id": "v05",
@@ -1646,31 +1646,31 @@
       },
       {
         "variant_id": "v06",
-        "variant_name": "6. Happiness WIsh",
+        "variant_name": "Dedicating Peace Outward",
         "active": false,
-        "text": "Dedicating the stillness cultivated here to your own well-being... and to the peace of your home and community.",
-        "word_count": 18
+        "text": "Dedicating the stillness cultivated here to your own well-being... and to a wider sense of ease in the world.",
+        "word_count": 19
       },
       {
         "variant_id": "v07",
-        "variant_name": "7. Closing Gently",
+        "variant_name": "Celebrating Self-Care",
         "active": false,
-        "text": "Taking one last appreciative breath as the chime fades... celebrating this pause as an act of genuine self-care.",
-        "word_count": 18
+        "text": "Resting in a final moment of appreciation as this practice concludes... honoring this pause as an act of self-care.",
+        "word_count": 19
       },
       {
         "variant_id": "v08",
-        "variant_name": "8. Soft Farewell ",
+        "variant_name": "Wishes for the Way Ahead",
         "active": false,
-        "text": "Wishing yourself steady steps, a light heart, and an unhurried mind as you move ahead... thank you for your practice.",
+        "text": "Wishing yourself steady presence, a kind heart, and an unhurried mind as you move ahead... thank you for your practice.",
         "word_count": 20
       },
       {
         "variant_id": "v09",
-        "variant_name": "9. Mindful Transition",
+        "variant_name": "Carrying Quiet Clarity",
         "active": false,
-        "text": "Honoring the wisdom of stillness as the sound dissolves... carrying its quiet clarity into all that lies ahead.",
-        "word_count": 18
+        "text": "Honoring the quiet wisdom of stillness as this session concludes... carrying its steady clarity into all that lies ahead.",
+        "word_count": 19
       },
       {
         "variant_id": "v10",
@@ -1681,16 +1681,16 @@
       },
       {
         "variant_id": "v11",
-        "variant_name": "11. Peaceful Farewell",
+        "variant_name": "Releasing Formal Practice",
         "active": false,
-        "text": "Releasing the formal practice now as the tone fades... and stepping into the rest of your day with open-hearted presence.",
-        "word_count": 20
+        "text": "Releasing the formal practice now as this session draws to a close... moving forward with an open-hearted, grounded presence.",
+        "word_count": 19
       },
       {
         "variant_id": "v12",
-        "variant_name": "12. Final Sigh",
+        "variant_name": "Ongoing Kindness and Patience",
         "active": false,
-        "text": "Inviting kindness toward yourself today, patience with others, and a steady return to peace whenever you need it.",
+        "text": "Inviting ongoing kindness toward yourself... patience with your experience, and a steady return to stillness whenever you choose.",
         "word_count": 18
       },
       {
@@ -1702,16 +1702,16 @@
       },
       {
         "variant_id": "v14",
-        "variant_name": "14. Soft Closing",
+        "variant_name": "The Echo of Practice",
         "active": false,
-        "text": "Letting the gentle echo of this sit accompany you into the hours ahead... thank you for taking this time to practice.",
-        "word_count": 21
+        "text": "Letting the gentle resonance of this practice accompany you as you move forward... thank you for taking this time.",
+        "word_count": 19
       },
       {
         "variant_id": "v15",
-        "variant_name": "15. Radiant Completion",
+        "variant_name": "Completing in Peace",
         "active": false,
-        "text": "Completing this time of meditation with a full, grateful breath... and moving back into your day in peace.",
+        "text": "Completing this time of meditation with quiet gratitude... and moving back into your surroundings in steadiness and ease.",
         "word_count": 18
       }
     ]

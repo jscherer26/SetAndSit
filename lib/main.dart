@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'data/bell_data.dart';
 import 'engine/session_queue_engine.dart';
@@ -74,6 +75,45 @@ class SetAndSitApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
+      builder: (context, child) {
+        if (!kIsWeb) return child ?? const SizedBox.shrink();
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            // When opened on a mobile device's browser, fill the screen normally
+            if (constraints.maxWidth <= 500) {
+              return child ?? const SizedBox.shrink();
+            }
+            // On desktop/laptop web browsers, constrain to phone width and center with a backdrop
+            const double maxAppWidth = 440;
+            return Container(
+              color: const Color(0xFF1E201E),
+              child: Center(
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: maxAppWidth),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.35),
+                        blurRadius: 30,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: ClipRect(
+                    child: MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        size: Size(maxAppWidth, constraints.maxHeight),
+                      ),
+                      child: child ?? const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
       home: RootControllerScreen(
         initialState: initialState,
         initialVoices: initialVoices,
@@ -130,8 +170,8 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   String _selectedPracticeId = 'focused_calm';
   String _selectedPractice = ClinicalArchetype.focusedCalm.title;
   List<VoiceConfig> _voices = VoiceConfig.defaultVoices;
-  String _selectedVoiceId = 'kia';
-  int _voiceIndex = 0; // 0: Kia (Male), 1: Grace (Female)
+  String _selectedVoiceId = 'grace';
+  int _voiceIndex = 0;
 
   int _clockHour = 8;
   int _clockMinute = 20;
@@ -245,18 +285,32 @@ class _RootControllerScreenState extends State<RootControllerScreen>
     );
     final resolved = match ?? (practices.isNotEmpty ? practices.first : PracticeConfig.defaultPractices.first);
 
-    final savedVoiceId = saved.selectedVoiceId ??
-        (saved.selectedVoiceIndex == 1 ? 'grace' : 'kia');
-    var voiceMatch = voices.cast<VoiceConfig?>().firstWhere(
-      (v) => v?.id == savedVoiceId && v?.isIncluded == true,
-      orElse: () => null,
-    );
-    voiceMatch ??= voices.cast<VoiceConfig?>().firstWhere(
+    final cleanedVoices = voices.where((v) => v.id.toLowerCase() != 'kia').toList();
+    final effectiveVoices = cleanedVoices.isNotEmpty ? cleanedVoices : VoiceConfig.defaultVoices;
+
+    final savedVoiceId = (saved.selectedVoiceId != null && saved.selectedVoiceId!.toLowerCase() != 'kia')
+        ? saved.selectedVoiceId
+        : null;
+    var voiceMatch = savedVoiceId != null
+        ? effectiveVoices.cast<VoiceConfig?>().firstWhere(
+            (v) => v?.id == savedVoiceId && v?.isIncluded == true,
+            orElse: () => null,
+          )
+        : null;
+    if (voiceMatch == null &&
+        saved.selectedVoiceIndex >= 0 &&
+        saved.selectedVoiceIndex < effectiveVoices.length) {
+      final candidate = effectiveVoices[saved.selectedVoiceIndex];
+      if (candidate.isIncluded && candidate.id.toLowerCase() != 'kia') {
+        voiceMatch = candidate;
+      }
+    }
+    voiceMatch ??= effectiveVoices.cast<VoiceConfig?>().firstWhere(
       (v) => v?.isIncluded == true,
       orElse: () => null,
     );
     final resolvedVoice = voiceMatch ??
-        (voices.isNotEmpty ? voices.first : VoiceConfig.defaultVoices.first);
+        (effectiveVoices.isNotEmpty ? effectiveVoices.first : VoiceConfig.defaultVoices.first);
 
     _practiceDurationMinutes = saved.practiceDurationMinutes;
     _instructionDensity = saved.instructionDensity;
@@ -268,9 +322,10 @@ class _RootControllerScreenState extends State<RootControllerScreen>
     _practices = practices;
     _selectedPracticeId = resolved.id;
     _selectedPractice = resolved.name;
-    _voices = voices;
+    _voices = effectiveVoices;
     _selectedVoiceId = resolvedVoice.id;
-    _voiceIndex = resolvedVoice.id == 'grace' ? 1 : 0;
+    final resolvedIdx = effectiveVoices.indexWhere((v) => v.id == resolvedVoice.id);
+    _voiceIndex = resolvedIdx >= 0 ? resolvedIdx : 0;
     _clockHour = initHour;
     _clockMinute = initMinute;
     _isAm = initIsAm;
@@ -305,12 +360,20 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   }
 
   void _ensureValidSelectedVoice() {
+    _voices = _voices.where((v) => v.id.toLowerCase() != 'kia').toList();
+    if (_voices.isEmpty) {
+      _voices = VoiceConfig.defaultVoices;
+    }
+    if (_selectedVoiceId.toLowerCase() == 'kia') {
+      _selectedVoiceId = _voices.first.id;
+    }
     final match = _voices.cast<VoiceConfig?>().firstWhere(
       (v) => v?.id == _selectedVoiceId && v?.isIncluded == true,
       orElse: () => null,
     );
     if (match != null) {
-      _voiceIndex = match.id == 'grace' ? 1 : 0;
+      final idx = _voices.indexWhere((v) => v.id == match.id);
+      _voiceIndex = idx >= 0 ? idx : 0;
       return;
     }
 
@@ -320,13 +383,14 @@ class _RootControllerScreenState extends State<RootControllerScreen>
     );
     if (firstIncluded != null) {
       _selectedVoiceId = firstIncluded.id;
-      _voiceIndex = firstIncluded.id == 'grace' ? 1 : 0;
+      final idx = _voices.indexWhere((v) => v.id == firstIncluded.id);
+      _voiceIndex = idx >= 0 ? idx : 0;
       return;
     }
 
     if (_voices.isNotEmpty) {
       _selectedVoiceId = _voices.first.id;
-      _voiceIndex = _voices.first.id == 'grace' ? 1 : 0;
+      _voiceIndex = 0;
     }
   }
 
@@ -542,7 +606,8 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           onSelectedVoiceIdChanged: (id) {
             setState(() {
               _selectedVoiceId = id;
-              _voiceIndex = id == 'grace' ? 1 : 0;
+              final idx = _voices.indexWhere((v) => v.id == id);
+              _voiceIndex = idx >= 0 ? idx : 0;
             });
             _persistState();
           },
@@ -554,7 +619,12 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           },
           voiceIndex: _voiceIndex,
           onVoiceIndexChanged: (idx) {
-            setState(() => _voiceIndex = idx);
+            setState(() {
+              _voiceIndex = idx;
+              if (idx >= 0 && idx < _voices.length) {
+                _selectedVoiceId = _voices[idx].id;
+              }
+            });
             _persistState();
           },
           clockHour: _clockHour,

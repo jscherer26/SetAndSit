@@ -440,10 +440,13 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
         '${widget.clockHour.toString().padLeft(2, '0')}:${widget.clockMinute.toString().padLeft(2, '0')}';
     final amPmText = widget.isAm ? 'AM' : 'PM';
 
-    final voiceList = widget.voices ?? VoiceConfig.defaultVoices;
-    final includedVoices = voiceList.where((v) => v.isIncluded).toList();
+    final voiceList = (widget.voices ?? VoiceConfig.defaultVoices)
+        .where((v) => v.id.toLowerCase() != 'kia')
+        .toList();
+    final effectiveVoiceList = voiceList.isNotEmpty ? voiceList : VoiceConfig.defaultVoices;
+    final includedVoices = effectiveVoiceList.where((v) => v.isIncluded).toList();
     final activeVoices =
-        includedVoices.isNotEmpty ? includedVoices : voiceList;
+        includedVoices.isNotEmpty ? includedVoices : effectiveVoiceList;
     final currentVoiceConfig = activeVoices.firstWhere(
       (v) => v.id == widget.selectedVoiceId,
       orElse: () => activeVoices.first,

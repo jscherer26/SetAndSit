@@ -58,9 +58,17 @@ class _ManageVoicesScreenState extends State<ManageVoicesScreen> {
     _ownsAudioPlayer = widget.audioPlayer == null;
     _audioPlayer = widget.audioPlayer ?? AudioPlayer();
 
-    _voices = List<VoiceConfig>.from(widget.initialVoices);
+    _voices = widget.initialVoices
+        .where((v) => v.id.toLowerCase() != 'kia')
+        .toList();
+    if (_voices.isEmpty) {
+      _voices = List<VoiceConfig>.from(VoiceConfig.defaultVoices);
+    }
     _selectedVoiceId = widget.initialSelectedVoiceId ??
-        (_voices.isNotEmpty ? _voices.first.id : 'kia');
+        (_voices.isNotEmpty ? _voices.first.id : 'grace');
+    if (_selectedVoiceId.toLowerCase() == 'kia') {
+      _selectedVoiceId = _voices.first.id;
+    }
 
     if (!_voices.any((v) => v.id == _selectedVoiceId) && _voices.isNotEmpty) {
       _selectedVoiceId = _voices.first.id;

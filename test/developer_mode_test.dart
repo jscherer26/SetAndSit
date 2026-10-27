@@ -27,11 +27,11 @@ void main() {
     // 1. With developer mode OFF
     AudioManifestService.setDeveloperMode(false);
     final prodPath = AudioManifestService.getAudioAssetPath(
-      voice: 'kia',
+      voice: 'grace',
       segmentCode: 'S01',
       variantId: 'v08',
     );
-    expect(prodPath, 'assets/audio/kia/S01_v08.mp3');
+    expect(prodPath, 'assets/audio/grace/S01_v08.mp3');
 
     // 2. With developer mode ON and staged mock changes
     AudioManifestService.setDeveloperMode(true);
@@ -41,7 +41,6 @@ void main() {
           "text": "Settling into your seat—giving yourself permission to transition out of doing mode, and gently leaning into being.",
           "word_count": 17,
           "durations": {
-            "kia": 8.75,
             "grace": 8.75
           }
         }
@@ -49,15 +48,15 @@ void main() {
     });
 
     final stagedPath = AudioManifestService.getAudioAssetPath(
-      voice: 'kia',
+      voice: 'grace',
       segmentCode: 'S01',
       variantId: 'v08',
     );
-    expect(stagedPath, 'assets/audio/kia/changes/S01_v08.mp3');
+    expect(stagedPath, 'assets/audio/grace/changes/S01_v08.mp3');
 
-    // Staged duration for S01_v08 kia should be 8.75
+    // Staged duration for S01_v08 grace should be 8.75
     final dur = AudioManifestService.getAudioDuration(
-      voice: 'kia',
+      voice: 'grace',
       segmentCode: 'S01',
       variantId: 'v08',
     );

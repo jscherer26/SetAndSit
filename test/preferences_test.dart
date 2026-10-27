@@ -210,7 +210,7 @@ void main() {
       MaterialApp(
         home: ManageVoicesScreen(
           initialVoices: VoiceConfig.defaultVoices,
-          initialSelectedVoiceId: 'kia',
+          initialSelectedVoiceId: 'grace',
           onVoicesUpdated: (_) {},
         ),
       ),
@@ -219,5 +219,20 @@ void main() {
 
     expect(find.text('Manage Voices'), findsOneWidget);
     expect(find.text('Voice Profile & Management'), findsNothing);
+  });
+
+  test('PreferencesService.loadVoices migrates and filters out legacy kia from storage', () async {
+    final prefs = await SharedPreferences.getInstance();
+    const legacyJson =
+        '[{"id":"kia","name":"Kia","description":"Warm & Grounded","gender":"Male","isSystem":true,"isIncluded":true,"assetFolder":"assets/audio/voices/kia"},{"id":"grace","name":"Grace","description":"Soft & Centered","gender":"Female","isSystem":true,"isIncluded":true,"assetFolder":"assets/audio/voices/grace"}]';
+    await prefs.setString('pref_voices_list', legacyJson);
+    await prefs.setString('pref_selected_voice_id', 'kia');
+
+    final voices = await PreferencesService.loadVoices();
+    expect(voices.any((v) => v.id == 'kia'), isFalse);
+    expect(voices.any((v) => v.id == 'grace'), isTrue);
+
+    final state = await PreferencesService.loadState();
+    expect(state.selectedVoiceId, 'grace');
   });
 }

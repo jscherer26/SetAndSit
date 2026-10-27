@@ -60,7 +60,6 @@ local.properties
 # Audio test renders & intermediate batch logs
 # Ensure production assets remain tracked:
 # Track: assets/raw/session_manifest.json
-# Track: assets/audio/kia/
 # Track: assets/audio/grace/
 # Track: assets/audio/bells/
 Generated_MP3s/

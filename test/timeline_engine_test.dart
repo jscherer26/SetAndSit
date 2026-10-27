@@ -79,12 +79,12 @@ void main() {
     expect(manifest.scriptBank.containsKey('S01'), isTrue);
     expect(manifest.scriptBank['S01']!.first.text, 'Sample text');
 
-    final kiaPath = AudioManifestService.getAudioAssetPath(
-      voice: 'Kia',
+    final customVoicePath = AudioManifestService.getAudioAssetPath(
+      voice: 'CustomVoice',
       segmentCode: 'S01',
       variantId: 'v01',
     );
-    expect(kiaPath, 'assets/audio/kia/S01_v01.mp3');
+    expect(customVoicePath, 'assets/audio/customvoice/S01_v01.mp3');
 
     final gracePath = AudioManifestService.getAudioAssetPath(
       voice: 'Grace',
@@ -114,7 +114,7 @@ void main() {
     final queue = SessionQueueEngine.generateGuidedSessionQueue(
       targetDurationSeconds: 600,
       archetype: ClinicalArchetype.focusedCalm,
-      voicePersona: 'kia',
+      voicePersona: 'grace',
       selectedBell: bell,
     );
 
@@ -163,7 +163,7 @@ void main() {
         final queue = SessionQueueEngine.generateGuidedSessionQueue(
           targetDurationSeconds: targetSec,
           archetype: arch,
-          voicePersona: 'kia',
+          voicePersona: 'grace',
           selectedBell: bell,
         );
 
@@ -209,7 +209,7 @@ void main() {
       final queue = SessionQueueEngine.generateGuidedSessionQueue(
         targetDurationSeconds: 60,
         archetype: arch,
-        voicePersona: 'kia',
+        voicePersona: 'grace',
         selectedBell: bell,
       );
 
@@ -249,7 +249,7 @@ void main() {
       final queue = SessionQueueEngine.generateGuidedSessionQueue(
         targetDurationSeconds: 180,
         archetype: arch,
-        voicePersona: 'kia',
+        voicePersona: 'grace',
         selectedBell: bell,
       );
 
@@ -296,7 +296,7 @@ void main() {
       final queue = SessionQueueEngine.generateGuidedSessionQueue(
         targetDurationSeconds: 300,
         archetype: arch,
-        voicePersona: 'kia',
+        voicePersona: 'grace',
         selectedBell: bell,
       );
 
@@ -325,7 +325,7 @@ void main() {
     final queue = SessionQueueEngine.generateGuidedSessionQueue(
       targetDurationSeconds: 900,
       archetype: ClinicalArchetype.traumaInformed,
-      voicePersona: 'kia',
+      voicePersona: 'grace',
       selectedBell: bell,
     );
 

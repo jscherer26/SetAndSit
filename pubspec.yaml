@@ -72,8 +72,6 @@ flutter:
     - assets/audio/changes_manifest.json
     - assets/audio/grace/
     - assets/audio/grace/changes/
-    - assets/audio/kia/
-    - assets/audio/kia/changes/
     - assets/audio/silence.mp3
 
 
