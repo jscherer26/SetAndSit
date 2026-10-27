@@ -235,4 +235,20 @@ void main() {
     final state = await PreferencesService.loadState();
     expect(state.selectedVoiceId, 'grace');
   });
+
+  test('PreferencesService.loadPractices migrates legacy Trauma-Informed Regulation to Trauma-Sensitive Grounding', () async {
+    final prefs = await SharedPreferences.getInstance();
+    const legacyPracticesJson =
+        '[{"id":"trauma_informed","name":"Trauma-Informed Regulation","subtitle":"Old subtitle","isSystem":true,"isIncluded":true,"segmentIds":["S01","S02"]}]';
+    await prefs.setString('set_and_sit_practices', legacyPracticesJson);
+    await prefs.setString('pref_selected_practice_name', 'Trauma-Informed Regulation');
+    await prefs.setString('pref_selected_practice_id', 'trauma_informed');
+
+    final practices = await PreferencesService.loadPractices();
+    final ti = practices.firstWhere((p) => p.id == 'trauma_informed');
+    expect(ti.name, 'Trauma-Sensitive Grounding');
+
+    final state = await PreferencesService.loadState();
+    expect(state.selectedPractice, 'Trauma-Sensitive Grounding');
+  });
 }

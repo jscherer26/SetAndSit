@@ -47,7 +47,7 @@ class PracticeScreen extends StatefulWidget {
 }
 
 class _PracticeScreenState extends State<PracticeScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
@@ -87,6 +87,7 @@ class _PracticeScreenState extends State<PracticeScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _activeQueue = List.from(widget.sessionQueue);
     _targetDurationSeconds = widget.targetDurationSeconds;
     _totalSecondsRemaining = widget.targetDurationSeconds;
@@ -262,7 +263,7 @@ class _PracticeScreenState extends State<PracticeScreen>
           stayAwake: true,
           contentType: AndroidContentType.speech,
           usageType: AndroidUsageType.media,
-          audioFocus: AndroidAudioFocus.none,
+          audioFocus: AndroidAudioFocus.gain,
         ),
         iOS: AudioContextIOS(
           category: AVAudioSessionCategory.playback,
@@ -297,7 +298,32 @@ class _PracticeScreenState extends State<PracticeScreen>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // 1. If session is already finished, ensure all audio is completely stopped
+      if (_isFinished) {
+        _voicePlayer.stop();
+        _bellPlayer.stop();
+        return;
+      }
+
+      // 2. Check if the session duration elapsed while the app was inactive/backgrounded
+      if (_sessionStartTime != null) {
+        final elapsed = DateTime.now().difference(_sessionStartTime!).inSeconds;
+        if (elapsed >= _targetDurationSeconds || _totalSecondsRemaining <= 0) {
+          _totalSecondsRemaining = 0;
+          _finishSession();
+          _voicePlayer.stop();
+          _bellPlayer.stop();
+          return;
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pulseController.dispose();
     _voiceCompleteSubscription?.cancel();
     _bellCompleteSubscription?.cancel();
@@ -425,8 +451,8 @@ class _PracticeScreenState extends State<PracticeScreen>
             .replaceFirst('assets/', '');
         final voiceAsset = item.audioAssetPath.replaceFirst('assets/', '');
 
-        // Calibrated gain: bell at 0.75 (~ -2.5dB) allows voice at 1.0 to cut through resonant decay
-        final bellVol = _isMuted ? 0.35 : 0.75;
+        // Calibrated gain: strike closing singing bowl / chime at 100% target volume (1.0)
+        final bellVol = _isMuted ? 0.35 : 1.0;
         final voiceVol = _isMuted ? 0.0 : 1.0;
 
         // 1. Instantly fire the acoustic bell asset using _bellPlayer
@@ -484,6 +510,8 @@ class _PracticeScreenState extends State<PracticeScreen>
     _silenceTimer?.cancel();
     _isVoiceSegmentPlaying = false;
     try {
+      await _voicePlayer.stop();
+      await _bellPlayer.stop();
       await _voicePlayer.setReleaseMode(ReleaseMode.release);
     } catch (_) {}
     _currentIndex++;
@@ -494,12 +522,15 @@ class _PracticeScreenState extends State<PracticeScreen>
     }
   }
 
-  void _finishSession() async {
+  void _finishSession() {
     if (_isFinished) return;
 
-    // Immediately mark finished to guard against any re-entrant completion calls
-    _isFinished = true;
-    _isVoiceSegmentPlaying = false;
+    // Immediately mark finished and update UI to guard against re-entrant calls
+    setState(() {
+      _isFinished = true;
+      _isVoiceSegmentPlaying = false;
+      _totalSecondsRemaining = 0;
+    });
 
     _silenceTimer?.cancel();
     _countdownTimer?.cancel();
@@ -507,7 +538,12 @@ class _PracticeScreenState extends State<PracticeScreen>
     _overlapTimer?.cancel();
 
     try {
-      await _voicePlayer.setReleaseMode(ReleaseMode.release);
+      _voicePlayer.setReleaseMode(ReleaseMode.release);
+    } catch (_) {}
+
+    // Always stop voice playback upon session completion
+    try {
+      _voicePlayer.stop();
     } catch (_) {}
 
     final item = currentItem;
@@ -516,14 +552,15 @@ class _PracticeScreenState extends State<PracticeScreen>
         (item.segment == ClinicalSegment.S16 || item.id.startsWith('S16'));
 
     if (!isBellPlaying && !isOutroPlaying) {
-      await _voicePlayer.stop();
-      await _bellPlayer.stop();
+      try {
+        _bellPlayer.stop();
+      } catch (_) {}
       if (_isMuted) {
         try {
-          await _bellPlayer.setVolume(0.35);
+          _bellPlayer.setVolume(0.35);
           final bellAsset = (widget.selectedBell?.filePath ?? 'bells/bell_meditation.ogg')
               .replaceFirst('assets/', '');
-          await _bellPlayer.play(AssetSource(bellAsset));
+          _bellPlayer.play(AssetSource(bellAsset));
         } catch (_) {}
       }
     }
@@ -531,11 +568,6 @@ class _PracticeScreenState extends State<PracticeScreen>
     // Release wakelock only upon final transition to the completion screen
     WakelockPlus.disable().catchError((e) {
       debugPrint('[PracticeScreen] Error disabling Wakelock on completion: $e');
-    });
-
-    setState(() {
-      _isFinished = true;
-      _totalSecondsRemaining = 0;
     });
 
     widget.onSessionComplete?.call();
@@ -552,7 +584,7 @@ class _PracticeScreenState extends State<PracticeScreen>
     if (item is PlayAudioItem) {
       final isS16 = item.segment == ClinicalSegment.S16 || item.id.startsWith('S16');
       if (isS16) {
-        await _bellPlayer.setVolume(_isMuted ? 0.35 : 0.75);
+        await _bellPlayer.setVolume(_isMuted ? 0.35 : 1.0);
         await _voicePlayer.setVolume(_isMuted ? 0.0 : 1.0);
       } else if (item.isBell) {
         await _bellPlayer.setVolume(_isMuted ? 0.35 : 1.0);

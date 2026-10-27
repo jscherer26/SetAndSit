@@ -256,7 +256,7 @@ class PracticeConfig {
         ),
         PracticeConfig(
           id: 'trauma_informed',
-          name: 'Trauma-Informed Regulation',
+          name: 'Trauma-Sensitive Grounding',
           subtitle:
               'High agency, down-regulation, safety anchoring, bypasses forced breathwork.',
           isSystem: true,

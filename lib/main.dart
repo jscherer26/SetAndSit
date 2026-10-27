@@ -5,6 +5,7 @@ import 'engine/session_queue_engine.dart';
 import 'models/audio_models.dart';
 import 'models/practice_config.dart';
 import 'models/voice_config.dart';
+import 'screens/about_screen.dart';
 import 'screens/bell_configuration_screen.dart';
 import 'screens/configuration_screen.dart';
 import 'screens/manage_practices_screen.dart';
@@ -132,6 +133,7 @@ enum AppScreen {
   manageVoices,
   practice,
   sessionDebug,
+  about,
 }
 
 class RootControllerScreen extends StatefulWidget {
@@ -258,8 +260,10 @@ class _RootControllerScreenState extends State<RootControllerScreen>
       initMinute = saved.targetClockTimeMinute;
       initIsAm = saved.targetClockTimeIsAm;
     } else {
+      final roundedMinute = now.second >= 30 ? now.minute + 1 : now.minute;
+      final base = DateTime(now.year, now.month, now.day, now.hour, roundedMinute);
       final initialEnd =
-          now.add(Duration(minutes: saved.practiceDurationMinutes));
+          base.add(Duration(minutes: saved.practiceDurationMinutes));
       initHour = initialEnd.hour % 12 == 0 ? 12 : initialEnd.hour % 12;
       initMinute = initialEnd.minute;
       initIsAm = initialEnd.hour < 12;
@@ -268,6 +272,8 @@ class _RootControllerScreenState extends State<RootControllerScreen>
     var practice = saved.selectedPractice;
     if (practice == 'Breath' || practice == 'Breath Awareness' || practice == 'Guided') {
       practice = ClinicalArchetype.focusedCalm.title;
+    } else if (practice == 'Trauma-Informed Regulation') {
+      practice = ClinicalArchetype.traumaInformed.title;
     }
 
     final savedId = saved.selectedPracticeId;
@@ -429,7 +435,9 @@ class _RootControllerScreenState extends State<RootControllerScreen>
     final target =
         DateTime(now.year, now.month, now.day, hour24, _clockMinute);
     if (!target.isAfter(now)) {
-      final newTarget = now.add(Duration(minutes: _practiceDurationMinutes));
+      final roundedMinute = now.second >= 30 ? now.minute + 1 : now.minute;
+      final base = DateTime(now.year, now.month, now.day, now.hour, roundedMinute);
+      final newTarget = base.add(Duration(minutes: _practiceDurationMinutes));
       setState(() {
         _clockHour = newTarget.hour % 12 == 0 ? 12 : newTarget.hour % 12;
         _clockMinute = newTarget.minute;
@@ -437,6 +445,20 @@ class _RootControllerScreenState extends State<RootControllerScreen>
       });
       _persistState();
     }
+  }
+
+  void _updatePracticeDuration(int newDurationMinutes) {
+    final now = DateTime.now();
+    final roundedMinute = now.second >= 30 ? now.minute + 1 : now.minute;
+    final base = DateTime(now.year, now.month, now.day, now.hour, roundedMinute);
+    final newTarget = base.add(Duration(minutes: newDurationMinutes));
+    setState(() {
+      _practiceDurationMinutes = newDurationMinutes;
+      _clockHour = newTarget.hour % 12 == 0 ? 12 : newTarget.hour % 12;
+      _clockMinute = newTarget.minute;
+      _isAm = newTarget.hour < 12;
+    });
+    _persistState();
   }
 
   void _persistState() {
@@ -698,8 +720,7 @@ class _RootControllerScreenState extends State<RootControllerScreen>
           redirectionDensity: _redirectionDensity,
           preparationDelaySeconds: _preparationDelaySeconds,
           onPracticeDurationChanged: (val) {
-            setState(() => _practiceDurationMinutes = val);
-            _persistState();
+            _updatePracticeDuration(val);
           },
           onPreparationDelayChanged: (val) {
             setState(() => _preparationDelaySeconds = val);
@@ -737,6 +758,20 @@ class _RootControllerScreenState extends State<RootControllerScreen>
               _currentScreen = AppScreen.bellSettings;
             });
             _persistState();
+          },
+          onOpenAbout: () {
+            setState(() {
+              _previousScreen = AppScreen.settings;
+              _currentScreen = AppScreen.about;
+            });
+            _persistState();
+          },
+        );
+
+      case AppScreen.about:
+        return AboutScreen(
+          onBack: () {
+            setState(() => _currentScreen = _previousScreen);
           },
         );
 

@@ -97,10 +97,34 @@ class PreferencesService {
     }
     try {
       final list = jsonDecode(raw) as List<dynamic>;
-      final practices = list
+      var practices = list
           .map((e) => PracticeConfig.fromJson(e as Map<String, dynamic>))
           .toList();
-      return practices.isNotEmpty ? practices : PracticeConfig.defaultPractices;
+      if (practices.isEmpty) {
+        return PracticeConfig.defaultPractices;
+      }
+
+      // Sync system practices with updated system defaults (e.g. renamed "Trauma-Sensitive Grounding")
+      var changed = false;
+      practices = practices.map((p) {
+        if (p.isSystem) {
+          final sysDefault = PracticeConfig.defaultPractices.cast<PracticeConfig?>().firstWhere(
+            (def) => def?.id == p.id,
+            orElse: () => null,
+          );
+          if (sysDefault != null && (sysDefault.name != p.name || sysDefault.subtitle != p.subtitle)) {
+            changed = true;
+            return p.copyWith(name: sysDefault.name, subtitle: sysDefault.subtitle);
+          }
+        }
+        return p;
+      }).toList();
+
+      if (changed) {
+        await savePractices(practices);
+      }
+
+      return practices;
     } catch (_) {
       return PracticeConfig.defaultPractices;
     }
@@ -144,7 +168,11 @@ class PreferencesService {
       final mode = prefs.getString('pref_practice_mode') ?? 'Guided';
       final bellId = prefs.getString('pref_selected_bell_id') ?? 'bell_meditation';
       final practiceId = prefs.getString('pref_selected_practice_id') ?? 'focused_calm';
-      final practiceName = prefs.getString('pref_selected_practice_name') ?? 'Focused Calm';
+      var practiceName = prefs.getString('pref_selected_practice_name') ?? 'Focused Calm';
+      if (practiceName == 'Trauma-Informed Regulation') {
+        practiceName = 'Trauma-Sensitive Grounding';
+        await prefs.setString('pref_selected_practice_name', 'Trauma-Sensitive Grounding');
+      }
       var voiceId = prefs.getString('pref_selected_voice_id') ?? 'grace';
       if (voiceId.toLowerCase() == 'kia') {
         voiceId = 'grace';

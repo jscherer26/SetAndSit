@@ -54,28 +54,37 @@ The clinical guidance is structured across a **16-Segment Clinical Meditation Ta
 
 ---
 
-## 4. 3-Zone Dynamic Silence Distribution & Timeline Math
+## 4. The Progressive Settling Funnel & Dynamic Silence Math
 Implemented in `SessionQueueEngine.generateGuidedSessionQueue`:
 
-$$\text{dynamicSilencePool} = T_{\text{total}} - D_{\text{audio}} - D_{\text{zone1\_fixed}}$$
+Rather than using a static silent pause between every opening segment, the runtime engine implements a Progressive Settling Funnel across Phase 1 and Phase 2, paired with a Progressive Re-Awakening Taper in Phase 5:
+
+$$\text{Silence Window Duration } (S12) = T_{\text{total}} - D_{\text{audio}} - \sum D_{\text{pacing\_gaps}}$$
 
 Where:
 - $T_{\text{total}}$: Target duration in seconds ($60\text{s} \le T_{\text{total}} \le 5400\text{s}$).
-- $D_{\text{audio}}$: Sum of exact audio durations for all selected script variants.
-- $D_{\text{zone1\_fixed}}$: Sum of Zone 1 fixed framing gaps ($S01, S02, S13, S14 = 8.0\text{s}$; $S15 = 5.0\text{s}$; $S16 = 0.0\text{s}$).
+- $D_{\text{audio}}$: Sum of exact audio durations for all selected script variants (plus $S16$ bell overlap offset of $2.5\text{s}$).
+- $\sum D_{\text{pacing\_gaps}}$: Calibrated physiological inter-segment pacing gaps derived from duration tier (Quick Reset, Standard Sit, Deep Practice).
 
-### Zone Allocations
-- **Zone 1 (Framing Bridges):** Fixed duration gaps to ensure immediate pacing.
-- **Zone 2 (Instruction Gaps, $S03$–$S11$):** Receives 68% of the dynamic silence pool:
-  $$\text{Zone 2 Pool} = \text{dynamicSilencePool} \times 0.68$$
-  Segments are weighted by category: Settling ($S03$–$S07$) weight = 1.0; Core Practice ($S08$–$S11$) weight = 1.5. Minimum required silence per segment is 45.0s.
-- **Zone 3 (Deep Silence Integration, $S12$):** Receives 32% of dynamic silence pool plus mathematical rounding remainders:
-  $$\text{Zone 3 Silence} = \text{dynamicSilencePool} \times 0.32 + \text{remainder}$$
+### Timing Matrix by Session Duration
+| Transition Pair | Physiological Task | Quick Reset (3–5 Min) | Standard Sit (10–15 Min) | Deep Practice (20–30+ Min) |
+|---|---|---|---|---|
+| **Start → S01** | Phone set-down & physical arrival | User Default (5–10s) | User Default (10–20s) | User Default (15–30s) |
+| **S01 → S02** | Exteroceptive room orientation | 3s | 4–5s | 5–6s |
+| **S02 → S03** | Physical posture micro-adjustments | 4s | 6–8s | 8–10s |
+| **S03 → S04** | 2 natural, unforced breath cycles | 6s | 10–12s | 12–15s |
+| **S04 → S05 → S06** | Gravitational release & safety harbor | 6–8s | 12–15s | 15–20s |
+| **S06 → S07 / S08 Loops** | Sustained focus & mind-wandering return | 10–15s | 20–35s | 40–75s |
+| **S09 / S10 / S11** | State cultivation & open monitoring | Omitted or 10s | 20–30s | 35–60s |
+| **S12 (Silence Window)** | Dynamic exact-timestamp budget solver | 15–30s | 60–180s | 3–12+ minutes |
+| **S13 → S14 / S15** | Somatic re-awakening bridge | 4s | 8–10s | 10–12s |
+| **S14 → S15** | Meaning bridge to somatic awakening | 4s | 8–10s | 10–12s |
+| **S15 → Bell + S16** | Extremity movement & eye opening before bell | 4–5s | 6–8s | 8–10s |
 
 ---
 
 ## 5. Segment Pruning Engine & Test Mode Bypass
-When session duration is short, the engine automatically prunes lower-priority segments to guarantee at least 45 seconds of silence between active cues:
+When session duration is short ($\le 300\text{s}$) or remaining open silence is constrained ($< 45\text{s}$), the engine automatically prunes lower-priority segments according to clinical priority:
 
 ### Standard Sessions ($\ge 300\text{s}$)
 - **Protected Frame:** $S01, S02, S12, S13, S15, S16$ (never pruned).
@@ -84,7 +93,7 @@ When session duration is short, the engine automatically prunes lower-priority s
   - Trauma-Informed: `S04, S05`
   - Open Awareness: `S08, S09`
   - Metta: `S04, S11`
-- **Pruning Priority Order:** Dropped sequentially if Zone 2 silence falls below 45s:
+- **Pruning Priority Order:** Dropped sequentially if silence window is constrained:
   `['S14', 'S06', 'S04', 'S03', 'S07', 'S10', 'S08']`.
 
 ### Test Mode Bypass ($< 300\text{s}$)
@@ -94,9 +103,11 @@ When session duration is short, the engine automatically prunes lower-priority s
 ---
 
 ## 6. Closing Sequence & Dual-Player Acoustic Overlap
-To achieve a seamless transition out of deep silence without abrupt audio cuts:
-1. At $t = T_{\text{total}} - D_{\text{bell}}$, the chosen acoustic meditation bell strikes.
-2. At delay $+2.5\text{s}$ after the initial bell strike, closing voice guidance ($S16\_vXX$) begins playing simultaneously over the decaying acoustic resonance using an independent secondary audio player instance.
+To execute the $S16$ overlay cleanly:
+1. Following $S15$, a $6$–$8\text{s}$ pause is scheduled allowing the practitioner to physically stretch, deepen their breath, and blink their eyes open to the room.
+2. The closing singing bowl / chime strikes at $100\%$ target volume ($1.0$).
+3. At $+2.5\text{s}$ after the initial strike (allowing the sharp metallic attack transient of the bell to pass and settle into its warm harmonic decay), the chosen $S16$ voice guidance variant triggers layered directly over the fading resonance using the secondary audio player.
+4. Bell resonance duration ($14$–$18\text{s}$) naturally trails $2$–$4\text{s}$ past the last spoken word of $S16$, sealing the session container smoothly without an abrupt cutoff.
 
 ---
 

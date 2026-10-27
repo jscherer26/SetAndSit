@@ -125,14 +125,97 @@ class SessionQueueEngine {
     }
   }
 
+  /// Returns the calibrated post-guidance silent pause duration (in seconds)
+  /// according to the Progressive Settling Funnel (Phases 1-2), Core State Cultivation (Phase 3),
+  /// and the Progressive Re-Awakening Taper (Phase 5).
+  static int getProgressivePauseSeconds(ClinicalSegment seg, int targetDurationSeconds) {
+    final isQuickReset = targetDurationSeconds < 600;
+    final isStandardSit = targetDurationSeconds >= 600 && targetDurationSeconds < 1200;
+
+    switch (seg.code) {
+      // Phase 1: Early Capture (S01 -> S02)
+      case 'S01':
+        if (isQuickReset) return 3;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 4 : 5;
+        return 6;
+
+      // Phase 1: Motor Adjustment Window (S02 -> S03)
+      case 'S02':
+        if (isQuickReset) return 4;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 6 : 8;
+        return targetDurationSeconds < 1800 ? 8 : 10;
+
+      // Phase 1: Two-Breath Interoceptive Window (S03 -> S04)
+      case 'S03':
+        if (isQuickReset) return 6;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 10 : 12;
+        return targetDurationSeconds < 1800 ? 12 : 15;
+
+      // Phase 1: Parasympathetic Consolidation (S04 -> S05 -> S06)
+      case 'S04':
+      case 'S05':
+        if (isQuickReset) return 7;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 12 : 15;
+        return targetDurationSeconds < 1800 ? 15 : 20;
+
+      // Phase 2: Sustained Focus & Mind-Wandering Return (S06 -> S07 / S08 Loops)
+      case 'S06':
+      case 'S07':
+      case 'S08':
+        if (isQuickReset) return 12;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 20 : 30;
+        return targetDurationSeconds < 1800 ? 45 : 60;
+
+      // Phase 3: State Cultivation & Open Monitoring (S09 / S10 / S11)
+      case 'S09':
+      case 'S10':
+      case 'S11':
+        if (isQuickReset) return 10;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 20 : 25;
+        return targetDurationSeconds < 1800 ? 35 : 50;
+
+      // Phase 4: S12 is the Dynamic exact-timestamp budget solver (calculated dynamically)
+      case 'S12':
+        return 0;
+
+      // Phase 5: Progressive Re-Awakening Taper
+      // Somatic Re-Awakening (S13 -> S14 / S15)
+      case 'S13':
+        if (isQuickReset) return 4;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 8 : 10;
+        return targetDurationSeconds < 1800 ? 10 : 12;
+
+      // Meaning bridge to somatic awakening (S14 -> S15)
+      case 'S14':
+        if (isQuickReset) return 4;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 8 : 10;
+        return targetDurationSeconds < 1800 ? 10 : 12;
+
+      // Extremity movement & eye opening before bell (S15 -> Bell + S16)
+      case 'S15':
+        if (isQuickReset) return 5;
+        if (isStandardSit) return targetDurationSeconds < 900 ? 7 : 8;
+        return targetDurationSeconds < 1800 ? 8 : 10;
+
+      // S16 closing sequence triggers closing bell and overlay voice; no trailing silence
+      case 'S16':
+      default:
+        return 0;
+    }
+  }
+
   /// Returns the Zone label for debug logging.
   static String getZoneLabel(ClinicalSegment seg) {
     if (seg == ClinicalSegment.S12) {
-      return 'Zone 3';
-    } else if (isZone2(seg)) {
-      return 'Zone 2';
+      return 'Phase 4: Deep Silence Window';
+    } else if (seg.code.compareTo('S01') >= 0 && seg.code.compareTo('S05') <= 0) {
+      return 'Phase 1: Progressive Funnel';
+    } else if (seg.code.compareTo('S06') >= 0 && seg.code.compareTo('S08') <= 0) {
+      return 'Phase 2: Attentional Anchoring';
+    } else if (seg.code.compareTo('S09') >= 0 && seg.code.compareTo('S11') <= 0) {
+      return 'Phase 3: State Cultivation';
     } else {
-      return 'Zone 1';
+      return 'Phase 5: Re-Awakening Taper';
     }
   }
 
@@ -215,14 +298,11 @@ class SessionQueueEngine {
       return total;
     }
 
-    double calcTotalZone1(List<ClinicalSegment> segs) {
+    double calcTotalPacing(List<ClinicalSegment> segs) {
       var total = 0.0;
       for (final seg in segs) {
-        if (seg.code == 'S01' || seg.code == 'S02' || seg.code == 'S13' || seg.code == 'S14') {
-          total += 8.0;
-        } else if (seg.code == 'S15') {
-          total += 5.0;
-        }
+        if (seg == ClinicalSegment.S12 || seg == ClinicalSegment.S16) continue;
+        total += getProgressivePauseSeconds(seg, targetDurationSeconds);
       }
       return total;
     }
@@ -297,7 +377,7 @@ class SessionQueueEngine {
         postSilenceMap[ClinicalSegment.S12] = s12Silence;
       }
     } else {
-      // --- Sessions >= 5 Minutes (>= 300s) ---
+      // --- Sessions >= 5 Minutes (>= 300s): Progressive Settling Funnel & Dynamic Solver ---
       activeSegments = effectivePractice.segmentIds
           .map((c) => ClinicalSegment.fromCode(c))
           .toList();
@@ -318,13 +398,14 @@ class SessionQueueEngine {
       }
 
       var totalAudioSeconds = calcTotalAudio(activeSegments);
-      var totalZone1Seconds = calcTotalZone1(activeSegments);
-      var dynamicSilencePool = targetDurationSeconds - totalAudioSeconds - totalZone1Seconds;
-      var zone2Pool = dynamicSilencePool * 0.68;
+      var totalPacingSeconds = calcTotalPacing(activeSegments);
+      var remainingSilence = targetDurationSeconds - totalAudioSeconds - totalPacingSeconds;
       var activeZone2 = activeSegments.where((s) => isZone2(s)).toList();
 
-      // Pruning Loop Check (halting when activeZone2.length <= 1 prevents division-by-zero)
-      while (activeZone2.length > 1 && (zone2Pool / activeZone2.length) < 60.0) {
+      // Pruning Loop Check: In short sessions (<= 300s) or if remaining silence window
+      // is constrained (< 45s), prune lower-priority segments sequentially until only
+      // protected frame and signature pair remain.
+      while (activeZone2.length > 1 && (targetDurationSeconds <= 300 || remainingSilence < 45.0)) {
         ClinicalSegment? toPrune;
         for (final code in pruningPriorityOrder) {
           if (protectedFrame.contains(code) || sigPair.contains(code)) continue;
@@ -346,20 +427,13 @@ class SessionQueueEngine {
         prunedSegments.add(toPrune.code);
 
         totalAudioSeconds = calcTotalAudio(activeSegments);
-        totalZone1Seconds = calcTotalZone1(activeSegments);
-        dynamicSilencePool = targetDurationSeconds - totalAudioSeconds - totalZone1Seconds;
-        zone2Pool = dynamicSilencePool * 0.68;
+        totalPacingSeconds = calcTotalPacing(activeSegments);
+        remainingSilence = targetDurationSeconds - totalAudioSeconds - totalPacingSeconds;
         activeZone2 = activeSegments.where((s) => isZone2(s)).toList();
       }
 
-      // Final Silence Assignment
-      dynamicSilencePool = max(0.0, targetDurationSeconds - totalAudioSeconds - totalZone1Seconds);
-      zone2Pool = dynamicSilencePool * 0.68;
-      final sumOfActiveZone2Weights = activeZone2.fold<double>(
-        0.0,
-        (sum, s) => sum + getZone2Weight(s),
-      );
-
+      // Final Silence Assignment:
+      // Assign calibrated Progressive Settling Funnel & Re-Awakening Taper pauses
       var assignedOtherSilence = 0;
       for (final seg in activeSegments) {
         if (seg == ClinicalSegment.S12) continue;
@@ -368,24 +442,13 @@ class SessionQueueEngine {
           continue;
         }
 
-        int silence;
-        if (seg.code == 'S01' || seg.code == 'S02' || seg.code == 'S13' || seg.code == 'S14') {
-          silence = 8;
-        } else if (seg.code == 'S15') {
-          silence = 5;
-        } else if (isZone2(seg)) {
-          final segWeight = getZone2Weight(seg);
-          silence = sumOfActiveZone2Weights > 0
-              ? (zone2Pool * (segWeight / sumOfActiveZone2Weights)).round()
-              : 0;
-        } else {
-          silence = 0;
-        }
+        final silence = getProgressivePauseSeconds(seg, targetDurationSeconds);
         postSilenceMap[seg] = silence;
         assignedOtherSilence += silence;
       }
 
-      // Zone 3: S12 absorbs remaining dynamic silence pool to guarantee exact duration match
+      // Phase 4: S12 (Silent Integration Window) absorbs remaining dynamic silence pool
+      // to guarantee exact duration match down to the second.
       if (activeSegments.contains(ClinicalSegment.S12)) {
         final s12Silence = max(
           0,

@@ -56,7 +56,7 @@ enum ClinicalArchetype {
   ),
   traumaInformed(
     id: 'trauma_informed',
-    title: 'Trauma-Informed Regulation',
+    title: 'Trauma-Sensitive Grounding',
     subtitle: 'High agency, explicit somatic safe-harbor, bypasses vulnerable breath focus',
     pipeline: [
       ClinicalSegment.S01,

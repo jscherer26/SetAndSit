@@ -1213,8 +1213,8 @@
         "variant_id": "v05",
         "variant_name": "Sheltered Stillness",
         "active": false,
-        "text": "As you rest within the quiet shelter of this space... sensing a cool, grounded stillness buffering you from hurry.",
-        "word_count": 19
+        "text": "As you rest within the quiet shelter of this space... sensing a cool, grounded stillness buffering you from any urgency.",
+        "word_count": 20
       },
       {
         "variant_id": "v06",

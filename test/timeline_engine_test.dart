@@ -320,7 +320,7 @@ void main() {
     }
   });
 
-  test('3-Zone Silence Distribution assigns fixed Zone 1 bridges at 900s', () {
+  test('Progressive Settling Funnel and Re-Awakening Taper assign calibrated gaps at 900s', () {
     final bell = BellData.defaultBells.first;
     final queue = SessionQueueEngine.generateGuidedSessionQueue(
       targetDurationSeconds: 900,
@@ -329,21 +329,68 @@ void main() {
       selectedBell: bell,
     );
 
-    // Verify Zone 1 fixed bridge pauses
+    // Verify Progressive Settling Funnel, Core Practice, and Re-Awakening Taper pauses
     for (var i = 0; i < queue.length - 1; i++) {
       final item = queue[i];
       final nextItem = queue[i + 1];
 
       if (item is PlayAudioItem && nextItem is PauseSilenceItem) {
         final code = item.segment?.code;
-        if (code == 'S01' || code == 'S02' || code == 'S13' || code == 'S14') {
-          expect(nextItem.durationSeconds, 8,
-              reason: 'Zone 1 segment $code must have an 8s fixed bridge pause');
-        } else if (code == 'S15') {
+        if (code == 'S01') {
           expect(nextItem.durationSeconds, 5,
-              reason: 'S15 must have a 5s fixed bridge pause transitioning into S16 bell');
+              reason: 'S01 must have a 5s early capture pause at 900s');
+        } else if (code == 'S02') {
+          expect(nextItem.durationSeconds, 8,
+              reason: 'S02 must have an 8s motor adjustment pause at 900s');
+        } else if (code == 'S04' || code == 'S05') {
+          expect(nextItem.durationSeconds, 15,
+              reason: 'S04/S05 must have a 15s parasympathetic consolidation pause at 900s');
+        } else if (code == 'S07' || code == 'S08') {
+          expect(nextItem.durationSeconds, 30,
+              reason: 'S07/S08 must have a 30s sustained focus pause at 900s');
+        } else if (code == 'S10') {
+          expect(nextItem.durationSeconds, 25,
+              reason: 'S10 must have a 25s state cultivation pause at 900s');
+        } else if (code == 'S13' || code == 'S14') {
+          expect(nextItem.durationSeconds, 10,
+              reason: 'S13/S14 must have a 10s somatic re-awakening bridge pause at 900s');
+        } else if (code == 'S15') {
+          expect(nextItem.durationSeconds, 8,
+              reason: 'S15 must have an 8s pre-bell visual reorientation pause at 900s');
         }
       }
     }
+  });
+
+  test('Progressive Settling Funnel adheres to pacing matrix across duration tiers', () {
+    // Quick Reset (300s):
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S01, 300), 3);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S02, 300), 4);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S03, 300), 6);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S04, 300), 7);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S06, 300), 12);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S13, 300), 4);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S14, 300), 4);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S15, 300), 5);
+
+    // Standard Sit (600s):
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S01, 600), 4);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S02, 600), 6);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S03, 600), 10);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S04, 600), 12);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S06, 600), 20);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S13, 600), 8);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S14, 600), 8);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S15, 600), 7);
+
+    // Deep Practice (1800s):
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S01, 1800), 6);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S02, 1800), 10);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S03, 1800), 15);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S04, 1800), 20);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S06, 1800), 60);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S13, 1800), 12);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S14, 1800), 12);
+    expect(SessionQueueEngine.getProgressivePauseSeconds(ClinicalSegment.S15, 1800), 10);
   });
 }

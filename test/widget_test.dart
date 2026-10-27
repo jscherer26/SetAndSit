@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:setandsit/main.dart';
 import 'package:setandsit/models/audio_models.dart';
 import 'package:setandsit/screens/clock_time_picker_dialog.dart';
 import 'package:setandsit/screens/practice_screen.dart';
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({
+      'pref_clock_hour': 0,
+      'pref_clock_minute': 0,
+      'pref_clock_is_am': true,
+      'pref_duration': 20,
+    });
+  });
+
   testWidgets('SetAndSit app loads home screen', (WidgetTester tester) async {
     await tester.pumpWidget(const SetAndSitApp());
     expect(find.text('Set&Sit'), findsOneWidget);
@@ -168,5 +178,75 @@ void main() {
     expect(find.text('Quiet Settling Space'), findsOneWidget);
     expect(find.text('Phase 1: Settling'), findsOneWidget);
     expect(find.text('remaining'), findsOneWidget);
+  });
+
+  testWidgets('Changing practice duration in Settings updates the finish time and duration on the front screen',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const SetAndSitApp());
+    await tester.pumpAndSettle();
+
+    // Initially front screen shows default 20 min practice
+    expect(find.text('20 min practice'), findsOneWidget);
+
+    // Tap settings gear icon
+    await tester.tap(find.byIcon(Icons.settings));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Settings'), findsOneWidget);
+
+    // Find TextField for duration and change to 35
+    final durationTextField = find.byType(TextField).first;
+    await tester.enterText(durationTextField, '35');
+    await tester.pumpAndSettle();
+
+    // Tap back button in Settings
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.pumpAndSettle();
+
+    // Front screen should now show 35 min practice and updated finish time
+    expect(find.text('35 min practice'), findsOneWidget);
+  });
+
+  testWidgets('PracticeScreen lifecycle resume after expiration finishes session immediately',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final silenceItem = PauseSilenceItem(
+      10,
+      displayTitle: 'Quiet Space',
+      phaseName: 'Phase 1: Settling',
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PracticeScreen(
+          isDeveloperMode: true,
+          sessionQueue: [silenceItem],
+          targetDurationSeconds: 10,
+          preparationDelaySeconds: 0,
+          selectedMeditationType: 'Focused Calm',
+          buildDebugScreen: () => const SizedBox.shrink(),
+          onEndSession: () {},
+        ),
+      ),
+    );
+
+    await tester.pump();
+    expect(find.text('Sit Complete'), findsNothing);
+
+    // Simulate 15 seconds passing while app is in background
+    await tester.pump(const Duration(seconds: 15));
+
+    // Simulate app going inactive (switching apps) and then resuming
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+
+    // Should immediately display finished state
+    expect(find.text('Sit Complete'), findsOneWidget);
+    expect(find.text('End of Formal Practice'), findsOneWidget);
   });
 }

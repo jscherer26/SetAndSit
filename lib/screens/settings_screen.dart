@@ -14,6 +14,7 @@ class SettingsScreen extends StatefulWidget {
   final VoidCallback? onOpenManagePractices;
   final VoidCallback? onOpenManageVoices;
   final VoidCallback? onOpenBellSettings;
+  final VoidCallback? onOpenAbout;
 
   const SettingsScreen({
     super.key,
@@ -29,6 +30,7 @@ class SettingsScreen extends StatefulWidget {
     this.onOpenManagePractices,
     this.onOpenManageVoices,
     this.onOpenBellSettings,
+    this.onOpenAbout,
   });
 
   @override
@@ -195,10 +197,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      behavior: HitTestBehavior.opaque,
-      child: Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _handleBack();
+      },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.opaque,
+        child: Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
@@ -634,10 +642,77 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
               ],
+
+              // Separate About Card
+              if (widget.onOpenAbout != null) ...[
+                const SizedBox(height: 18),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: AppColors.cardBorder),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppColors.cardShadow,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(24),
+                    clipBehavior: Clip.antiAlias,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 4,
+                      ),
+                    leading: Container(
+                      width: 42,
+                      height: 42,
+                      decoration: const BoxDecoration(
+                        color: AppColors.backgroundSand,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.info_outline,
+                        color: AppColors.darkOlive,
+                        size: 22,
+                      ),
+                    ),
+                    title: const Text(
+                      'About Set&Sit',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textBlack,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      'App info, mission, feedback, and licenses',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.textMuted,
+                    ),
+                    onTap: () {
+                      _handleNavigationSilently();
+                      widget.onOpenAbout!();
+                    },
+                  ),
+                ),
+                ),
+              ],
             ],
           ),
         ),
       ),
+    ),
     ),
     );
   }

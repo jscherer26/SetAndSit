@@ -39,10 +39,10 @@ void main() {
         'S01', 'S02', 'S03', 'S04', 'S06', 'S07', 'S08', 'S12', 'S13', 'S15', 'S16',
       ]);
 
-      // 2. Trauma-Informed Regulation
+      // 2. Trauma-Sensitive Grounding
       final ti = practices[1];
       expect(ti.id, 'trauma_informed');
-      expect(ti.name, 'Trauma-Informed Regulation');
+      expect(ti.name, 'Trauma-Sensitive Grounding');
       expect(
         ti.subtitle,
         'High agency, down-regulation, safety anchoring, bypasses forced breathwork.',
@@ -217,8 +217,8 @@ void main() {
       await tester.tap(find.byIcon(Icons.chevron_right).first);
       await tester.pumpAndSettle();
 
-      // Second practice is Trauma-Informed Regulation
-      expect(find.text('Trauma-Informed Regulation'), findsWidgets);
+      // Second practice is Trauma-Sensitive Grounding
+      expect(find.text('Trauma-Sensitive Grounding'), findsWidgets);
 
       // Tap previous chevron
       await tester.tap(find.byIcon(Icons.chevron_left).first);
@@ -631,9 +631,9 @@ void main() {
       await tester.tap(nextChevron);
       await tester.pumpAndSettle();
 
-      // Should skip Trauma-Informed and jump straight to Open Awareness
+      // Should skip Trauma-Sensitive Grounding and jump straight to Open Awareness
       expect(find.text('Open Awareness / Insight'), findsWidgets);
-      expect(find.text('Trauma-Informed Regulation'), findsNothing);
+      expect(find.text('Trauma-Sensitive Grounding'), findsNothing);
 
       // Tap next again -> Should cycle back to Focused Calm
       await tester.tap(nextChevron);
@@ -800,8 +800,8 @@ void main() {
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
 
-      // Home Screen should immediately switch to Trauma-Informed Regulation (the next included practice)
-      expect(find.text('Trauma-Informed Regulation'), findsWidgets);
+      // Home Screen should immediately switch to Trauma-Sensitive Grounding (the next included practice)
+      expect(find.text('Trauma-Sensitive Grounding'), findsWidgets);
     });
   });
 }
