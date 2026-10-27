@@ -27,7 +27,7 @@ class PracticeScreen extends StatefulWidget {
     super.key,
     required this.sessionQueue,
     required this.targetDurationSeconds,
-    this.preparationDelaySeconds = 10,
+    this.preparationDelaySeconds = 3,
     this.targetClockHour,
     this.targetClockMinute,
     this.targetClockIsAm,

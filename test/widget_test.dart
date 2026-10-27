@@ -12,7 +12,8 @@ void main() {
       'pref_clock_hour': 0,
       'pref_clock_minute': 0,
       'pref_clock_is_am': true,
-      'pref_duration': 20,
+      'pref_duration': 3,
+      'pref_prep_delay': 3,
     });
   });
 
@@ -185,8 +186,8 @@ void main() {
     await tester.pumpWidget(const SetAndSitApp());
     await tester.pumpAndSettle();
 
-    // Initially front screen shows default 20 min practice
-    expect(find.text('20 min practice'), findsOneWidget);
+    // Initially front screen shows default 3 min practice
+    expect(find.text('3 min practice'), findsOneWidget);
 
     // Tap settings gear icon
     await tester.tap(find.byIcon(Icons.settings));

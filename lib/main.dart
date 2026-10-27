@@ -159,10 +159,10 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   AppScreen _currentScreen = AppScreen.configuration;
   AppScreen _previousScreen = AppScreen.configuration;
 
-  int _practiceDurationMinutes = 20;
+  int _practiceDurationMinutes = 3;
   double _instructionDensity = 3.0;
   double _redirectionDensity = 3.0;
-  int _preparationDelaySeconds = 10;
+  int _preparationDelaySeconds = 3;
   String _practiceMode = 'Guided';
 
   List<AudioSegment> _bells = BellData.defaultBells;
@@ -176,13 +176,13 @@ class _RootControllerScreenState extends State<RootControllerScreen>
   int _voiceIndex = 0;
 
   int _clockHour = 8;
-  int _clockMinute = 20;
+  int _clockMinute = 3;
   bool _isAm = true;
   bool _isInitialized = false;
   bool _isDeveloperMode = false;
 
   List<SessionItem> _activeSessionQueue = [];
-  int _activeTargetSeconds = 1200;
+  int _activeTargetSeconds = 180;
 
   @override
   void initState() {

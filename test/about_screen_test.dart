@@ -11,7 +11,8 @@ void main() {
       'pref_clock_hour': 0,
       'pref_clock_minute': 0,
       'pref_clock_is_am': true,
-      'pref_duration': 20,
+      'pref_duration': 3,
+      'pref_prep_delay': 3,
     });
     PackageInfo.setMockInitialValues(
       appName: 'Set&Sit',

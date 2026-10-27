@@ -64,15 +64,15 @@ void main() {
     expect(defaultsText.style?.fontSize, 14);
     expect(defaultsText.style?.fontWeight, FontWeight.w600);
 
-    // Edit duration: change 20 -> 35
-    final durationFinder = find.widgetWithText(TextField, '20');
-    expect(durationFinder, findsOneWidget);
+    // Edit duration: change 3 -> 35
+    final durationFinder = find.byType(TextField).first;
+    expect(tester.widget<TextField>(durationFinder).controller?.text, '3');
     await tester.enterText(durationFinder, '35');
     await tester.pump(const Duration(milliseconds: 50));
 
-    // Edit delay: change 10 -> 15
-    final delayFinder = find.widgetWithText(TextField, '10');
-    expect(delayFinder, findsOneWidget);
+    // Edit delay: change 3 -> 15
+    final delayFinder = find.byType(TextField).at(1);
+    expect(tester.widget<TextField>(delayFinder).controller?.text, '3');
     await tester.enterText(delayFinder, '15');
     await tester.pump(const Duration(milliseconds: 50));
 

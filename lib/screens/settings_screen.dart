@@ -21,7 +21,7 @@ class SettingsScreen extends StatefulWidget {
     required this.practiceDurationMinutes,
     required this.instructionDensity,
     required this.redirectionDensity,
-    this.preparationDelaySeconds = 10,
+    this.preparationDelaySeconds = 3,
     required this.onPracticeDurationChanged,
     required this.onInstructionDensityChanged,
     required this.onRedirectionDensityChanged,

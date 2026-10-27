@@ -161,10 +161,18 @@ class PreferencesService {
   static Future<SavedState> loadState() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final duration = prefs.getInt('pref_duration') ?? 20;
+      var duration = prefs.getInt('pref_duration');
+      if (duration == null || duration == 20) {
+        duration = 3;
+        await prefs.setInt('pref_duration', 3);
+      }
       final instruction = prefs.getDouble('pref_instruction_density') ?? 3.0;
       final redirection = prefs.getDouble('pref_redirection_density') ?? 3.0;
-      final delay = prefs.getInt('pref_prep_delay') ?? 10;
+      var delay = prefs.getInt('pref_prep_delay');
+      if (delay == null || delay == 10) {
+        delay = 3;
+        await prefs.setInt('pref_prep_delay', 3);
+      }
       final mode = prefs.getString('pref_practice_mode') ?? 'Guided';
       final bellId = prefs.getString('pref_selected_bell_id') ?? 'bell_meditation';
       final practiceId = prefs.getString('pref_selected_practice_id') ?? 'focused_calm';
@@ -180,7 +188,7 @@ class PreferencesService {
       }
       final voiceIdx = prefs.getInt('pref_selected_voice_idx') ?? 0;
       final clockHour = prefs.getInt('pref_clock_hour') ?? 8;
-      final clockMin = prefs.getInt('pref_clock_minute') ?? 20;
+      final clockMin = prefs.getInt('pref_clock_minute') ?? 3;
       final clockIsAm = prefs.getBool('pref_clock_is_am') ?? true;
 
       return SavedState(
@@ -202,10 +210,10 @@ class PreferencesService {
     } catch (e) {
       debugPrint('[PreferencesService] Error during disk load: $e');
       return SavedState(
-        practiceDurationMinutes: 20,
+        practiceDurationMinutes: 3,
         instructionDensity: 3.0,
         redirectionDensity: 3.0,
-        preparationDelaySeconds: 10,
+        preparationDelaySeconds: 3,
         practiceMode: 'Guided',
         bells: BellData.defaultBells,
         selectedBellId: 'bell_meditation',
@@ -214,7 +222,7 @@ class PreferencesService {
         selectedVoiceIndex: 0,
         selectedVoiceId: 'grace',
         targetClockTimeHour: 8,
-        targetClockTimeMinute: 20,
+        targetClockTimeMinute: 3,
         targetClockTimeIsAm: true,
       );
     }
@@ -241,7 +249,7 @@ class SavedState {
     required this.practiceDurationMinutes,
     required this.instructionDensity,
     required this.redirectionDensity,
-    this.preparationDelaySeconds = 10,
+    this.preparationDelaySeconds = 3,
     this.practiceMode = 'Guided',
     required this.bells,
     required this.selectedBellId,
