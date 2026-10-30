@@ -1,4 +1,13 @@
 {
-  "staged_at": null,
-  "variants": {}
+  "staged_at": "2026-10-28T08:37:37.888411",
+  "variants": {
+    "S01_v01": {
+      "variant_name": "Gentle Arrival",
+      "text": "Welcome [pause] arriving into this space... and letting the weight of whatever came before begin to soften and settle.",
+      "word_count": 19,
+      "durations": {
+        "alex": 8.99
+      }
+    }
+  }
 }
