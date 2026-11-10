@@ -1,0 +1,16 @@
+# Ignore build and generated directories
+/build/
+/.gradle/
+/.dart_tool/
+/macos/Flutter/ephemeral/
+
+# Ignore large log files or lock files
+*.log
+pubspec.lock
+package-lock.json
+
+# Ignore media and assets if you have large image/video folders
+/assets/
+
+# Ignore specific large files you don't need the AI to read
+# path/to/large_file.dart

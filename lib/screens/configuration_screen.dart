@@ -457,11 +457,22 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     final currentBellIndex =
         availableBells.indexWhere((b) => b.id == currentBell.id);
 
+    final size = MediaQuery.of(context).size;
+    final isCompactScreen = size.height < 850;
+    final heroDialOuterSize = (isCompactScreen ? (size.height * 0.28).clamp(230.0, 270.0) : 300.0).toDouble();
+    final heroDialInnerSize = heroDialOuterSize * 0.8;
+    final heroVerticalSpacing = isCompactScreen ? 16.0 : 36.0;
+    final itemVerticalSpacing = isCompactScreen ? 10.0 : 14.0;
+    final buttonVerticalSpacing = isCompactScreen ? 18.0 : 28.0;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          padding: EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: isCompactScreen ? 12 : 20,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -558,7 +569,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 ],
               ),
 
-              const SizedBox(height: 36),
+              SizedBox(height: heroVerticalSpacing),
 
               // Hero Circular Dial
               Center(
@@ -567,20 +578,20 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                     behavior: HitTestBehavior.opaque,
                     onTap: () => _showTimeAdjustmentDialog(context),
                     child: Container(
-                      width: 300,
-                      height: 300,
+                      width: heroDialOuterSize,
+                      height: heroDialOuterSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColors.circleOuterGlow.withValues(alpha: 0.5),
                         border: Border.all(
                           color: AppColors.circleBorder,
-                          width: 12,
+                          width: isCompactScreen ? 10 : 12,
                         ),
                       ),
                       child: Center(
                         child: Container(
-                          width: 240,
-                          height: 240,
+                          width: heroDialInnerSize,
+                          height: heroDialInnerSize,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: AppColors.white,
@@ -603,7 +614,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                                   color: AppColors.textMuted,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: isCompactScreen ? 4 : 8),
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Row(
@@ -613,8 +624,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                                   children: [
                                     Text(
                                       formattedTime,
-                                      style: const TextStyle(
-                                        fontSize: 48,
+                                      style: TextStyle(
+                                        fontSize: isCompactScreen ? 40 : 48,
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.textBlack,
                                         letterSpacing: -1,
@@ -623,8 +634,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                                     const SizedBox(width: 6),
                                     Text(
                                       amPmText,
-                                      style: const TextStyle(
-                                        fontSize: 20,
+                                      style: TextStyle(
+                                        fontSize: isCompactScreen ? 18 : 20,
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.textBlack,
                                       ),
@@ -643,11 +654,11 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                                 ),
                               ),
 
-                              const SizedBox(height: 8),
+                              SizedBox(height: isCompactScreen ? 6 : 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 6,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isCompactScreen ? 14 : 18,
+                                  vertical: isCompactScreen ? 4 : 6,
                                 ),
                                 decoration: BoxDecoration(
                                   color: AppColors.backgroundSand,
@@ -671,7 +682,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 ),
               ),
 
-              const SizedBox(height: 36),
+              SizedBox(height: heroVerticalSpacing),
 
               // Guided vs Silent Toggle Pill
               Container(
@@ -739,7 +750,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: isCompactScreen ? 14 : 20),
 
               // Practice Card (Guided mode only)
               if (isGuided) ...[
@@ -762,7 +773,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         }
                       : null,
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: itemVerticalSpacing),
 
                 // Voice Card
                 VoiceStepperCard(
@@ -790,7 +801,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         }
                       : null,
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: itemVerticalSpacing),
               ],
 
               // Bell Card
@@ -817,7 +828,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 },
               ),
 
-              const SizedBox(height: 28),
+              SizedBox(height: buttonVerticalSpacing),
 
               // Begin Practice Button
               SizedBox(
@@ -852,7 +863,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              // Bottom padding ensures the button is fully visible 
+              // and has breathing room above system bars / safe area.
+              SizedBox(height: isCompactScreen ? 20 : 32),
             ],
           ),
         ),

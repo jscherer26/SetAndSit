@@ -613,6 +613,11 @@ class _PracticeScreenState extends State<PracticeScreen>
         ((totalDuration - _totalSecondsRemaining) / totalDuration)
             .clamp(0.0, 1.0);
 
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isCompactScreen = screenHeight < 850;
+    final circleOuterSize = isCompactScreen ? 190.0 : 220.0;
+    final circleInnerSize = isCompactScreen ? 144.0 : 168.0;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -623,7 +628,10 @@ class _PracticeScreenState extends State<PracticeScreen>
         backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: isCompactScreen ? 10 : 16,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -674,13 +682,13 @@ class _PracticeScreenState extends State<PracticeScreen>
                   Text(
                     widget.selectedMeditationType,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 30,
+                    style: TextStyle(
+                      fontSize: isCompactScreen ? 26 : 30,
                       fontWeight: FontWeight.bold,
                       color: AppColors.darkOlive,
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: isCompactScreen ? 16 : 28),
 
                   // Ambient Breathing Circle (continues pulsing while muted)
                   AnimatedBuilder(
@@ -694,20 +702,20 @@ class _PracticeScreenState extends State<PracticeScreen>
                       );
                     },
                     child: Container(
-                      width: 220,
-                      height: 220,
+                      width: circleOuterSize,
+                      height: circleOuterSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColors.circleOuterGlow,
                         border: Border.all(
                           color: AppColors.circleBorder,
-                          width: 8,
+                          width: isCompactScreen ? 7 : 8,
                         ),
                       ),
                       child: Center(
                         child: Container(
-                          width: 168,
-                          height: 168,
+                          width: circleInnerSize,
+                          height: circleInnerSize,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: AppColors.white,
@@ -719,8 +727,8 @@ class _PracticeScreenState extends State<PracticeScreen>
                                 Text(
                                   '$_preparationSecondsRemaining',
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 48,
+                                  style: TextStyle(
+                                    fontSize: isCompactScreen ? 42 : 48,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.darkOlive,
                                   ),
@@ -736,11 +744,11 @@ class _PracticeScreenState extends State<PracticeScreen>
                                   ),
                                 ),
                               ] else if (_isFinished) ...[
-                                const Text(
+                                Text(
                                   'Sit Complete',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 22,
+                                    fontSize: isCompactScreen ? 20 : 22,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.textBlack,
                                   ),
@@ -758,8 +766,8 @@ class _PracticeScreenState extends State<PracticeScreen>
                                 Text(
                                   _formatTime(_totalSecondsRemaining),
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 36,
+                                  style: TextStyle(
+                                    fontSize: isCompactScreen ? 32 : 36,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.textBlack,
                                   ),
@@ -781,11 +789,11 @@ class _PracticeScreenState extends State<PracticeScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: isCompactScreen ? 12 : 16),
 
                   // Progress Line anchored directly below the circle (width matches the circle)
                   SizedBox(
-                    width: 220,
+                    width: circleOuterSize,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(3),
                       child: LinearProgressIndicator(
@@ -806,7 +814,7 @@ class _PracticeScreenState extends State<PracticeScreen>
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: isCompactScreen ? 12 : 16),
 
                   if (_isPreparing) ...[
                     Container(
@@ -827,10 +835,10 @@ class _PracticeScreenState extends State<PracticeScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: isCompactScreen ? 8 : 12),
                     ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight: 76,
+                      constraints: BoxConstraints(
+                        minHeight: isCompactScreen ? 54 : 76,
                       ),
                       child: Container(
                         width: double.infinity,
@@ -941,12 +949,12 @@ class _PracticeScreenState extends State<PracticeScreen>
                         ],
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: isCompactScreen ? 8 : 12),
 
                     // Spoken Guidance Text with minHeight so it never causes layout shifts
                     ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight: 76,
+                      constraints: BoxConstraints(
+                        minHeight: isCompactScreen ? 58 : 76,
                       ),
                       child: Container(
                         width: double.infinity,
